@@ -1,1 +1,38 @@
-[{"id":0,"title":"Producto de Prueba","description":"Este es el producto de prueba","price":200,"thumbnail":"Sin imagen","code":"abc123","stock":25}]
+[
+    {
+        "id":0,
+        "title":"Fender stratocaster",
+        "description":"Este es el producto de prueba",
+        "price":200,   
+        "thumbnail":"Sin imagen",
+        "code":"abc123",
+        "stock":25
+    },
+    {
+        "id":1,
+        "title":"Audinac AT-600",
+        "description":"Este es el producto de prueba",
+        "price":300,   
+        "thumbnail":"Sin imagen",
+        "code":"abc234",
+        "stock":25
+    },
+    {
+        "id":2,
+        "title":"Sony Muteki",
+        "description":"Este es el producto de prueba",
+        "price":400,   
+        "thumbnail":"Sin imagen",
+        "code":"abc567",
+        "stock":25
+    },
+    {
+        "id":3,
+        "title":"teclado Korg",
+        "description":"Este es el producto de prueba",
+        "price":500,   
+        "thumbnail":"Sin imagen",
+        "code":"abc8910",
+        "stock":25
+    }
+]

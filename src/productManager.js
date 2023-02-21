@@ -1,7 +1,12 @@
-const fs = require('fs');
+
+import fs from "fs";
 
 class productManager{
-    #path = "./data.json" ;
+    #path = "" ;
+    
+    constructor(path){
+        this.#path = path;
+    }
 
     async addProduct(title, description, price, thumbnail, code, stock){
         const products = await this.loadProduct();
@@ -33,7 +38,7 @@ class productManager{
             return [];
         }       
     }
-    async loadCount(){ //carga el contador con el ultimo "id" del array producto
+    async loadCount(){
         const arrayProduct = await this.loadProduct();
         const long = arrayProduct.length;
         if(long == 0){
@@ -54,23 +59,21 @@ class productManager{
     async getProduct(){
         try{
             const product = await this.loadProduct();
-            product.forEach((prod)=>{
-                console.log(prod)
-            })
+            return product;
         }catch(e){
-            console.log("No hay productos para mostrar")
+            return [];
         }
     }
 
-    async getProductById(id){
+    async getProductById(pid){
         const product = await this.loadProduct();
         const productById = product.find(
-            (prod)=> prod.id === id
+            (prod)=> prod.id === pid
         );
         if(!productById){
-            console.log("El producto buscado no existe")
+            return "El producto buscado no existe";
         }else{
-            console.log("El producto buscado es: \n",productById)
+            return productById;
         }
     }
 
@@ -79,7 +82,7 @@ class productManager{
         this.productExistence(id);
         const newArrayProducts = product.map( prod =>{
             if(prod.id == id){
-                return { ...prod, id, ...newdata}
+                return {...prod, id, ...newdata}
             }
             return prod
         })
@@ -94,15 +97,4 @@ class productManager{
     }
 }
 
-function main(){
-    const groupProducts = new productManager() // con esto creo el objeto
-
-    //groupProducts.addProduct("Producto de Prueba","Este es el producto de prueba", 200, "Sin imagen", "abc123", 25) //agrego el primer producto
-
-    //groupProducts.getProductById() //me muestra error al no encontrar un producto con dicho ID
-
-    //groupProducts.updateProduct(6, {price: 1000, stock: 10})
-
-    //groupProducts.deleteProduct(5)
-}
-main();
+export default productManager
