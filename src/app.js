@@ -1,35 +1,21 @@
-import  express  from "express";
+import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
 
-import productManager from "./productManager.js";
+import productsRouter from "./Routes/products.Router.js";
+import cartsRouter from "./Routes/carts.router.js"
 
-const groupProducts = new productManager("././data.json");
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 
-app.get("/products", async(req, res)=>{
-    try{
-        const { limit } = req.query;
-        let productData = await groupProducts.getProduct();
-        if(!limit){ 
-            res.send(productData);
-        }else{
-            productData.length = parseInt(limit); 
-            res.send(productData);
-        }
-    }catch(err){
-        res.status(401).send(err);
-    }  
-})
+app.use("/api/products", productsRouter);
 
-app.get("/products/:pid", async(req , res)=>{
-    try{
-        const { pid } = req.params;
-        let productById = await groupProducts.getProductById(parseInt(pid));
-        res.send(productById);
-    }catch(err){
-        res.status(404).send(err);
-    }
-})
+app.use("/api/carts", cartsRouter);
+
+app.use(express.static(__dirname + '/../public' ));
 
 app.listen("8080", ()=>{
     console.log("Server listening in port 8080");
-})
+});
