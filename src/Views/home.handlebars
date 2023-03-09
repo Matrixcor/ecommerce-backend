@@ -1,0 +1,20 @@
+<div>
+    <h1> listado de productos </h1>
+    {{#each arrayProd}}
+        <div>
+            <div>
+                <ul>
+                    <li> <strong>Id:</strong> {{id}} </li>
+                    <li> Title: {{title}} </li>
+                    <li> Description: {{description}} </li>
+                    <li> Price: {{price}} </li>
+                    <li> Code: {{code}} </li>
+                    <li> Status: {{status}} </li>
+                    <li> Category: {{category}} </li>
+                    <li> Stock: {{stock}} </li>
+                    <li> Thumbnail: {{thumbnail}} </li>
+                </ul>
+            </div>               
+        </div>
+    {{/each}}
+</div>

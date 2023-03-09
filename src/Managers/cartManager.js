@@ -1,4 +1,7 @@
 import fs from "fs"
+import productManager from "../Managers/productManager.js";
+
+const product = new productManager("./././products.json");
 
 class cartManager{
     #path = "" ;
@@ -15,7 +18,7 @@ class cartManager{
         }
         const cartToAdd = [...carts, newCart];
         await fs.promises.writeFile(this.#path, JSON.stringify(cartToAdd));
-        return "success";
+        return "success, New Cart Created";
     }
 
     async getCarts(){
@@ -43,35 +46,40 @@ class cartManager{
             (cart)=> cart.id === cid
         );
         if(!cartById){
-            return "El carrito buscado no existe";
+            return "El carrito buscado no existe"; //error de si no lo encuentra
         }
         return (cartById.products);
     }
 
     async handleCartProduct(cid,pid){
         const carts = await this.getCarts();
-
         let cartProduc = await this.getProductsInCart(cid); // si no existe el carrito
-        if(Array.isArray(cartProduc)){
-            return " no se puede agregar el producto";
+        const existProductToAdd = await product.getProductById(pid); // importo de productManager para saber si existe el producto en la base de datos
+        
+        if(typeof(existProductToAdd) == "string"){ //esta parte se puede mejorar
+            return " no se puede agregar el producto porque el producto seleccionado no existe";
         }
+        if(typeof(cartProduc) == "string"){
+            return " no se puede agregar el producto porque el carrito seleccionado no existe";
+        }
+        
         let comparedprod = await cartProduc.some( (prod) => prod.id == pid );
         if(comparedprod){
             await this.updateCartProduct(cid,pid, cartProduc, carts);
+            return("La cantidad del producto fue actualizada");
         }else{
-            await this.addProduct(cid,pid, cartProduc, carts);
+            await this.addProduct(cid,pid,carts);
+            return("El producto se agrego correctamente");
         }
     }
 
-    async addProduct(cid, pid, cartProduc, carts){ 
+    async addProduct(cid, pid, carts){ 
         const newproductToAdd = {
             id: pid,
-            quantity
+            quantity: 1
         }
-        const newArrayProduct = [...cartProduc, newproductToAdd];
-        carts[cid].products = newArrayProduct;
+        await carts[cid].products.push(newproductToAdd);
         await fs.promises.writeFile(this.#path, JSON.stringify(carts));
-        return("succes");
     }
 
     async updateCartProduct(cid, pid, cartProduc, carts){
@@ -85,7 +93,6 @@ class cartManager{
         });
         carts[cid].products = arrayProductUpdate;
         await fs.promises.writeFile(this.#path, JSON.stringify(carts));
-        return("succes");
     }
 }
 

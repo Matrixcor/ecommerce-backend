@@ -5,20 +5,21 @@ class productManager{
     constructor(path){
         this.#path = path;
     }
-    async addProduct(newUser){
+    async addProduct(newData){
         const products = await this.getProduct();
         const count = await this.loadCount();
-        const { title, description, price, code, status, category, stock, thumbnail } = newUser
+
+        const { title, description, price, code, status, category, stock, thumbnail } = newData;
+
         if(!title || !description || !price || !code || !status || !category || !stock || !thumbnail){
-            return "complete todo los campos";
+            return {mesagge:"complete todo los campos"};
         }
         
         const  productWithSameCode = products.some(
             (prod) => prod.code === code
         );
         if(productWithSameCode){
-            //throw new Error ("El Codigo ingresado ya existe, por favor elija otro.");
-            return "El Codigo ingresado ya existe, por favor elija otro.";
+            return {mesagge:"El Codigo ingresado ya existe, por favor elija otro."};
         }
         
         const newProduct = {
@@ -30,11 +31,11 @@ class productManager{
             status,
             category,
             stock,
-            thumbnail: []
+            thumbnail: thumbnail
         };
         const productsToAdd = [...products, newProduct];
         await fs.promises.writeFile(this.#path, JSON.stringify(productsToAdd));
-        return "succes";
+        return {data: productsToAdd, mesagge:"producto agregado correctamente"};
     }
     async loadCount(){
         const arrayProduct = await this.getProduct();
@@ -45,13 +46,13 @@ class productManager{
             return arrayProduct[long - 1].id + 1;
         }
     }
-    async productExistence(id){ //verifica si el producto existe
+    async productExistence(pid){ //verifica si el producto existe
         const product = await this.getProduct();
         const  productExist = product.some(
-            (prod) => prod.id === id
+            (prod) => prod.id === pid
         );
         if(!productExist){
-            throw new Error ("El producto seleccionado no existe, por favor elija otro.");
+            throw new Error ("El producto seleccionado no existe");
         }
     }
     async getProduct(){
@@ -75,23 +76,25 @@ class productManager{
         }
     }
 
-    async updateProduct(id, newdata){
+    async updateProduct(pid, newdata){
         const product = await this.getProduct();
-        this.productExistence(id);
-        const newArrayProducts = product.map( prod =>{
-            if(prod.id == id){
-                return {...prod, id, ...newdata}
+        this.productExistence(pid);
+        const newArrayProducts = await product.map( prod =>{
+            if(prod.id === pid){
+                return {...prod, id: prod.id, ...newdata}
             }
             return prod;
         })
         await fs.promises.writeFile(this.#path, JSON.stringify(newArrayProducts))
+        return {newArrayProducts, message: "El producto fue actualizado correctamente"};
     }
 
-    async deleteProduct(id){
+    async deleteProduct(pid){
         const product = await this.getProduct();
-        this.productExistence(id);
-        const newArrayProduct = product.filter(prod => prod.id != id);
+        await this.productExistence(pid);
+        const newArrayProduct = product.filter(prod => prod.id != pid);
         await fs.promises.writeFile(this.#path, JSON.stringify(newArrayProduct))
+        return {data: newArrayProduct, mesagge:"producto eliminado correctamente"};
     }
 }
 

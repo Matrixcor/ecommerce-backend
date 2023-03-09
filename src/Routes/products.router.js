@@ -1,4 +1,3 @@
-
 import { Router, json, urlencoded } from "express";
 import productManager from "../Managers/productManager.js";
 import dataStorage from "../uploader.js"
@@ -26,7 +25,6 @@ productsRouter.get("/",async(req, res)=>{ // trae los productos
 })
 
 productsRouter.get("/:pid", async(req, res)=>{
-    // listo un solo producto
     try{
         const { pid } = req.params;
         let productById = await groupProducts.getProductById(parseInt(pid));
@@ -37,34 +35,34 @@ productsRouter.get("/:pid", async(req, res)=>{
 })
 
 productsRouter.post("/", dataStorage.single("file"), async(req, res)=>{
-    //falla la carga de la ruta de la imagen, aparece doble slash.
+    let newProduct;
     if(!req.file){
-        console.log("path vacio")
+        newProduct = {...req.body, thumbnail: []};
     }else{
-        let newUser = {...req.body, thumbnail: req.file.path};
-        let createdUser = await groupProducts.addProduct(newUser);
-        res.send(createdUser);
+        newProduct = {...req.body, thumbnail: req.file.path};
     }
+    const createdProduct = await groupProducts.addProduct(newProduct);
+    req.io.emit("sendData", createdProduct.data)
+    res.send(createdProduct.mesagge);
 })
 
-productsRouter.put("/:id",async(req, res)=>{
-//debe actualizar el producto
+productsRouter.put("/:pid",async(req, res)=>{
     try{
         const { pid } = req.params;
         const newData = req.body;
         let productsUpdated = await groupProducts.updateProduct(parseInt(pid), newData);
-        res.send(productsUpdated);
+        res.send(productsUpdated.message);
     }catch(err){
-        res.status(404).send(err);
+        res.status(404).send(err,"El producto no se pudo actualizar");
     }    
 })
 
-productsRouter.delete("/:id",async(req,res)=>{
-//debe eliminar el producto
+productsRouter.delete("/:pid", async(req,res)=>{
     try{
         const { pid } = req.params;
-        let productDeleted = await groupProducts.deleteProduct(parseInt(pid));
-        res.send(productDeleted);
+        const productDeleted = await groupProducts.deleteProduct(parseInt(pid));
+        req.io.emit("sendData", productDeleted.data)
+        res.send(productDeleted.mesagge);
     }catch(err){
         res.status(404).send(err);
     }
