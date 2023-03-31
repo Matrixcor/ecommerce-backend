@@ -5,7 +5,7 @@ class chatManagerDb {
     try {
       const messages = await chatModel.find().lean();
       return messages ;
-    } catch (error) {
+    }catch (error) {
       return "Error - Cannot restore messages";
     }
   }
@@ -15,7 +15,6 @@ class chatManagerDb {
       const result = await chatModel.create(data);
       const messages = await this.getMessages();
       return messages;
-      
     } catch (error) {
       return "Error - Cannot save message";
     }

@@ -38,12 +38,13 @@ class productManagerDb {
 
     async updateProduct(pid, newdata){
         try {
-            
-            const updatedProduct = await productModel.findOneAndUpdate(
-              { _id: pid },
-              newdata,
-              { new: true }
-            );
+            const updatedProduct = await productModel.findOneAndUpdate({ 
+                _id: pid 
+            },
+                newdata,
+            { 
+                new: true 
+            });
             const productsUpdate = await this.getProduct();
             return { data: productsUpdate , message: "El producto fue actualizado correctamente" };
         }catch (error) {
@@ -53,7 +54,6 @@ class productManagerDb {
 
     async deleteProduct(pid){
         try{
-            
             const productDelete= await productModel.deleteOne({ _id: pid });
             const newArrayProduct = await this.getProduct();
             return { data: newArrayProduct, mesagge:"producto eliminado correctamente" };

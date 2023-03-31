@@ -5,7 +5,6 @@ import cartManagerDb from "../Dao/ManagersDb/cartManagerDb.js";
 const groupCarts = new cartManagerDb();
 
 const cartsRouter = Router();
-
 cartsRouter.use(json()); 
 
 cartsRouter.post("/", async(req,res)=>{
@@ -30,7 +29,7 @@ cartsRouter.get("/:cid", async (req,res)=>{
 cartsRouter.post("/:cid/product/:pid", async(req,res)=>{
     try{
         const { cid, pid } = req.params;
-        const productAdded = await groupCarts.handleCartProduct( cid , pid );
+        const productAdded = await groupCarts.handleCartProduct(cid,pid);
         res.send(productAdded.message);
     }catch(err){
         res.status(404).send(err,"no se pudo actualizar el producto");
