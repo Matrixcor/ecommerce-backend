@@ -8,8 +8,7 @@ socket.on("sendData",(data)=>{
         BoxProduct.innerHTML = `
         <div>
             <div>
-                <ul>
-                    <li> <strong>Id:</strong> ${data.id} </li>
+                <ul>    
                     <li> Title: ${data.title} </li>
                     <li> Description: ${data.description} </li>
                     <li> Price: ${data.price} </li>
@@ -25,3 +24,5 @@ socket.on("sendData",(data)=>{
         Container.appendChild(BoxProduct);
         });
 });
+
+//<li> <strong>Id:</strong> ${data.id} </li>
