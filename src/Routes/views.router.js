@@ -24,4 +24,19 @@ viewsRouter.get("/chat", async(req,res)=>{
     }
 });
 
+viewsRouter.get("/carts/:cid", async(req,res)=>{
+    try{
+        const cartsArray = [];
+        res.render("carts", cartsArray);
+    }catch(error){
+        res.render("error");
+    }
+});
+viewsRouter.get("/products", async(req,res)=>{
+    try{
+        res.render("products");
+    }catch(error){
+        res.render("error");
+    }
+});
 export default viewsRouter;

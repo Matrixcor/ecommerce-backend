@@ -15,7 +15,17 @@ cartsRouter.post("/", async(req,res)=>{
         res.status(404).send(err, "no se pudo generar el carrito");
     }
 })
-
+/*
+- PUT api/carts/:cid deberá actualizar 
+el carrito con un arreglo de 
+productos con el formato 
+especificado arriba.
+- PUT api/carts/:cid/products/:pid 
+deberá poder actualizar SÓLO la 
+cantidad de ejemplares del producto 
+por cualquier cantidad pasada desde 
+req.body
+*/
 cartsRouter.get("/:cid", async (req,res)=>{
     try{
         const { cid } = req.params;
@@ -30,6 +40,28 @@ cartsRouter.post("/:cid/product/:pid", async(req,res)=>{
     try{
         const { cid, pid } = req.params;
         const productAdded = await groupCarts.handleCartProduct(cid,pid);
+        
+        res.send(productAdded.message);
+    }catch(err){
+        res.status(404).send(err,"no se pudo actualizar el producto");
+    }
+})
+
+cartsRouter.delete("/:cid/products/:pid", async(req,res)=>{
+    try{
+        const { cid, pid } = req.params;
+        const productAdded = await groupCarts.deleteProduct(cid,pid);
+
+        res.send(productAdded.message);
+    }catch(err){
+        res.status(404).send(err,"no se pudo actualizar el producto");
+    }
+})
+
+cartsRouter.delete("/:cid", async(req,res)=>{
+    try{
+        const { cid } = req.params;
+        const productAdded = await groupCarts.deleteAllProducts(cid);
         res.send(productAdded.message);
     }catch(err){
         res.status(404).send(err,"no se pudo actualizar el producto");

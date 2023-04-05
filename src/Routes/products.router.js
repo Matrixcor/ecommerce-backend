@@ -12,13 +12,17 @@ productsRouter.use(json());
 productsRouter.get("/",async(req, res)=>{
     try{
         const { limit } = req.query;
-        const productData = await groupProducts.getProduct();
-        if(!limit){
-            res.send(productData);
-        }else{
-            productData.length = parseInt(limit);
-            res.send(productData);
-        }
+        const { page } = req.query;
+        const { sort } = req.params;
+        const { queryKey } = req.params;
+        const { queryKeyValue } = req.params;
+        
+        // probar como llegan los parametros
+        
+        const productData = await groupProducts.getProduct( limit , page, sort, queryKey, queryKeyValue );
+        
+        
+        res.send(productData);
     }catch(err){
         res.status(401).send(err);
     }

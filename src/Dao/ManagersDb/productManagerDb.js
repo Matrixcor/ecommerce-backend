@@ -1,3 +1,4 @@
+import { query } from "express";
 import productModel from "../Models/productModel.js";
 
 class productManagerDb {
@@ -18,14 +19,29 @@ class productManagerDb {
         }
     }
 
-    async getProduct(){
+
+
+
+    async getProduct(limit, page, sort, queryKey, queryKeyValue){
         try {
-            const product = await productModel.find().lean();
+            let limitSearch = limit ? limit : 10;
+            let pageSearch = page ? page : 1;
+            let orderSearch = sort ? {price: sort} : false ;
+            let searchKey = queryKey;
+            let searchKeyValue = queryKeyValue;
+
+            const filterOptions = { limit: limitSearch, page: pageSearch, sort: orderSearch};
+
+            const product = await productModel( { [searchKey] : [searchKeyValue] }, filterOptions)
+
+            //const product = await productModel.find().lean();
             return product;
         } catch (error) {
             return "Error trying to retrieve the products";
         };
     }
+
+
 
     async getProductById(pid){
         const productById = await productModel.findById(pid);
