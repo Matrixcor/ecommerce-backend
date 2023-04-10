@@ -8,34 +8,51 @@ class productManagerDb {
         try{
             const { title, description, price, code, status, category, stock, thumbnail } = newData;
             if(!title || !description || !price || !code || !status || !category || !stock || !thumbnail){
-                return {mesagge:"complete todo los campos"};
+                return {status: "Error", mesagge:"complete todo los campos"};
             }
             
             const productsToAdd = await productModel.create({ title, description, price, code, status, category, stock, thumbnail });
             const productsAdd = await this.getProduct();
-            return {data: productsAdd, mesagge:"producto agregado correctamente"};
+            return {status: "succes", payload: productsAdd, mesagge:"producto agregado correctamente"};
         }catch(error) {
-            return {data: "El producto no se agrego correctamente"};
+            return {status: "Error", message: "El producto no se agrego correctamente"};
         }
     }
 
 
 
 
-    async getProduct(limit, page, sort, queryKey, queryKeyValue){
+    async getProduct(title, page, limit, sort){
         try {
             let limitSearch = limit ? limit : 10;
             let pageSearch = page ? page : 1;
             let orderSearch = sort ? {price: sort} : false ;
-            let searchKey = queryKey;
-            let searchKeyValue = queryKeyValue;
+            
+            let searchKey = { title }
+// ver como obtener el valor del query para poder hacer la busqueda
+            console.log("query",searchKey.title)
+            
+        function searchK(str){
+            const words = str.split("-");
+            const wordsToUpper = words.map((p)=>
+                p[0].toUpperCase() + p.slice(1)
+            )
+            const newsearchKey = wordsToUpper.join(" ")
+            return (newsearchKey)
+        };
+            const ver = searchK(searchKey.title);
+        console.log("devuelve ",ver)
 
+          /*  
             const filterOptions = { limit: limitSearch, page: pageSearch, sort: orderSearch};
 
-            const product = await productModel( { [searchKey] : [searchKeyValue] }, filterOptions)
-
+            const product = await productModel( 
+                {[searchKey] : [searchKeyValue]}, 
+                filterOptions
+            )
+*/
             //const product = await productModel.find().lean();
-            return product;
+            return " ingresa al endpoint";
         } catch (error) {
             return "Error trying to retrieve the products";
         };

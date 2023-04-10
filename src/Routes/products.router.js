@@ -11,15 +11,17 @@ productsRouter.use(json());
 
 productsRouter.get("/",async(req, res)=>{
     try{
-        const { limit } = req.query;
+        /*
+        const { title } = req.query;
         const { page } = req.query;
-        const { sort } = req.params;
-        const { queryKey } = req.params;
-        const { queryKeyValue } = req.params;
+        const { limit } = req.query;
+        const { sort } = req.query;
+        */
+        const query =  req.query;
         
         // probar como llegan los parametros
-        
-        const productData = await groupProducts.getProduct( limit , page, sort, queryKey, queryKeyValue );
+        console.log("req:  ",query)
+        const productData = await groupProducts.getProduct( title, page, limit, sort );
         
         
         res.send(productData);
