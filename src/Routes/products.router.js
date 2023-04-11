@@ -11,6 +11,7 @@ productsRouter.use(json());
 
 productsRouter.get("/",async(req, res)=>{
     try{
+<<<<<<< HEAD
         // los posibles params a recibir para hacer la busqueda
         const { title } = req.query;
         const { price } = req.query ;
@@ -22,6 +23,20 @@ productsRouter.get("/",async(req, res)=>{
         const { sort } = req.query;
 
         const query =  { title, price, code } ;
+=======
+        /*
+        const { title } = req.query;
+        const { page } = req.query;
+        const { limit } = req.query;
+        const { sort } = req.query;
+        */
+        const query =  req.query;
+        
+        // probar como llegan los parametros
+        console.log("req:  ",query)
+        const productData = await groupProducts.getProduct( title, page, limit, sort );
+        
+>>>>>>> dbb7ca6f5aa706bd5eb215a5d3a8c12ba517f686
         
         const productData = await groupProducts.getProduct( query, page, limit, sort );
         req.io.emit("sendSearchData", productData);

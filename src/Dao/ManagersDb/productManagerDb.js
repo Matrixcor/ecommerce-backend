@@ -20,6 +20,7 @@ class productManagerDb {
         }
     }
 
+<<<<<<< HEAD
     async getProduct(query, page, limit, sort){
         try {
             let limitSearch = limit ? limit : 10;
@@ -72,6 +73,42 @@ class productManagerDb {
                 }
             }
             return { status: "succes",...newResult}
+=======
+
+
+
+    async getProduct(title, page, limit, sort){
+        try {
+            let limitSearch = limit ? limit : 10;
+            let pageSearch = page ? page : 1;
+            let orderSearch = sort ? {price: sort} : false ;
+            
+            let searchKey = { title }
+// ver como obtener el valor del query para poder hacer la busqueda
+            console.log("query",searchKey.title)
+            
+        function searchK(str){
+            const words = str.split("-");
+            const wordsToUpper = words.map((p)=>
+                p[0].toUpperCase() + p.slice(1)
+            )
+            const newsearchKey = wordsToUpper.join(" ")
+            return (newsearchKey)
+        };
+            const ver = searchK(searchKey.title);
+        console.log("devuelve ",ver)
+
+          /*  
+            const filterOptions = { limit: limitSearch, page: pageSearch, sort: orderSearch};
+
+            const product = await productModel( 
+                {[searchKey] : [searchKeyValue]}, 
+                filterOptions
+            )
+*/
+            //const product = await productModel.find().lean();
+            return " ingresa al endpoint";
+>>>>>>> dbb7ca6f5aa706bd5eb215a5d3a8c12ba517f686
         } catch (error) {
             return "Error trying to retrieve the products";
         };
