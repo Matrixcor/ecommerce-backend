@@ -1,5 +1,6 @@
 import { query } from "express";
 import productModel from "../Models/productModel.js";
+import { paginate } from "mongoose-paginate-v2";
 
 class productManagerDb {
     
@@ -8,40 +9,73 @@ class productManagerDb {
         try{
             const { title, description, price, code, status, category, stock, thumbnail } = newData;
             if(!title || !description || !price || !code || !status || !category || !stock || !thumbnail){
-                return {mesagge:"complete todo los campos"};
+                return {status: "Error", mesagge:"complete todo los campos"};
             }
             
             const productsToAdd = await productModel.create({ title, description, price, code, status, category, stock, thumbnail });
             const productsAdd = await this.getProduct();
-            return {data: productsAdd, mesagge:"producto agregado correctamente"};
+            return {status: "succes", payload: productsAdd, mesagge:"producto agregado correctamente"};
         }catch(error) {
-            return {data: "El producto no se agrego correctamente"};
+            return {status: "Error", message: "El producto no se agrego correctamente"};
         }
     }
 
-
-
-
-    async getProduct(limit, page, sort, queryKey, queryKeyValue){
+    async getProduct(query, page, limit, sort){
         try {
             let limitSearch = limit ? limit : 10;
             let pageSearch = page ? page : 1;
-            let orderSearch = sort ? {price: sort} : false ;
-            let searchKey = queryKey;
-            let searchKeyValue = queryKeyValue;
+            let orderSearch = sort == "desc" ? -1 : sort == "asc"? 1 : false ;
+            let searchKey = {};
+            let newResult;
 
+            async function getallProduct(){
+                const products = await productModel.find().lean();
+                return {status: "succes", 
+                    payload: products.docs,
+                    totalPages: products.totalPages,
+                    prevPage: products.prevPage,
+                    nextPage: products.nextPage,
+                    page: products.page,
+                    hasPrevPage: products.hasPrevPage,
+                    hasNextPage: products.hasNextPage,
+                    prevLink: products.prevLink,
+                    nextLink: products.nextLink
+                };
+            }
+
+            // voy a pecar con el anidamiento de los condicionales
+            query.title ? searchKey = {title: query.title} : query.price ? searchKey = {price: query.price}  : query.code ? searchKey = {code: query.code} : getallProduct()
             const filterOptions = { limit: limitSearch, page: pageSearch, sort: orderSearch};
 
-            const product = await productModel( { [searchKey] : [searchKeyValue] }, filterOptions)
-
-            //const product = await productModel.find().lean();
-            return product;
+            const product = await productModel.paginate( 
+                searchKey , 
+                filterOptions
+            );
+            const result = {
+                payload: product.docs,
+                totalPages: product.totalPages,
+                prevPage: product.prevPage,
+                nextPage: product.nextPage,
+                page: product.page,
+                hasPrevPage: product.hasPrevPage,
+                hasNextPage: product.hasNextPage,
+            };
+            if(product.hasPrevPage == false & product.hasNextPage == false){
+                newResult = { ...result, 
+                    prevLink: null,
+                    nextLink: null 
+                }
+            }else{
+                newResult = { ...result, 
+                    prevLink: product.prevLink,
+                    nextLink: product.nextLink 
+                }
+            }
+            return { status: "succes",...newResult}
         } catch (error) {
             return "Error trying to retrieve the products";
         };
     }
-
-
 
     async getProductById(pid){
         const productById = await productModel.findById(pid);

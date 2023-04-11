@@ -18,7 +18,7 @@ socket.on("sendData",(data)=>{
                     <li> Stock: ${data.stock} </li>
                     <li> Thumbnail: ${data.thumbnail} </li>
                 </ul>
-            </div>               
+            </div>
         </div>
         `;
         Container.appendChild(BoxProduct);

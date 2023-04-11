@@ -11,18 +11,22 @@ productsRouter.use(json());
 
 productsRouter.get("/",async(req, res)=>{
     try{
-        const { limit } = req.query;
+        // los posibles params a recibir para hacer la busqueda
+        const { title } = req.query;
+        const { price } = req.query ;
+        const { code } = req.query;
+        
+        // filtros
         const { page } = req.query;
-        const { sort } = req.params;
-        const { queryKey } = req.params;
-        const { queryKeyValue } = req.params;
+        const { limit } = req.query;
+        const { sort } = req.query;
+
+        const query =  { title, price, code } ;
         
-        // probar como llegan los parametros
-        
-        const productData = await groupProducts.getProduct( limit , page, sort, queryKey, queryKeyValue );
-        
-        
+        const productData = await groupProducts.getProduct( query, page, limit, sort );
+        req.io.emit("sendSearchData", productData);
         res.send(productData);
+        
     }catch(err){
         res.status(401).send(err);
     }

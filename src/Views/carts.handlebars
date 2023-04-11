@@ -1,7 +1,23 @@
 <h1> SU CARRITO DE COMPRAS TIENE:</h1>
 <div>
-    
+
+    {{#each arr}}
+        <div>
+            <div>
+                <ul>
+                    <li> Title: {{this.title}} </li>
+                    <li> Description: {{description}} </li>
+                    <li> Price: {{price}} </li>
+                    <li> Code: {{code}} </li>
+                    <li> Status: {{status}} </li>
+                    <li> Category: {{category}} </li>
+                    <li> Stock: {{stock}} </li>
+                    <li> Thumbnail: {{thumbnail}} </li>
+                </ul>
+            </div>               
+        </div>
+    {{/each}}
 </div>
 
-<script src="/socket.io/socket.io.js"></script>
-<script src="/js/carts.js"></script>
+<!-- <script src="/socket.io/socket.io.js"></script>
+<script src="/js/carts.js"></script> -->
