@@ -50,4 +50,30 @@ viewsRouter.get("/products", async(req,res)=>{
         res.render("error");
     }
 });
+
+viewsRouter.get("/login", async(req,res)=>{
+    try{
+        res.render("login");
+    }catch(error){
+        res.render("error");
+    }
+});
+
+viewsRouter.get("/register", async(req,res)=>{
+    try{
+        res.render("register");
+    }catch(error){
+        res.render("error");
+    }
+});
+
+viewsRouter.get("/profile", async(req,res)=>{
+    try{
+        const dataUser = req.session;
+        res.render("profile", {dataUser});
+    }catch(error){
+        res.render("error");
+    }
+});
+
 export default viewsRouter;
