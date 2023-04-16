@@ -58,14 +58,13 @@ app.use(
         secret: "key-secret",
         saveUninitialized: true,
         resave: true,
-        //cookie: {secure: true},
     })
 );
 //middleware de autenticacion
 function auth( req,res, next){
     if(req.session?.user === "user" && req.session?.isAdmin){
         return next();
-    }
+    };
     return res.status(401).send("Error de autenticacion")
 }
 

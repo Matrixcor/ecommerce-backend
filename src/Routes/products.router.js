@@ -24,8 +24,8 @@ productsRouter.get("/",async(req, res)=>{
         const query =  { title, price, code } ;
         
         const productData = await groupProducts.getProduct( query, page, limit, sort );
-        req.io.emit("sendSearchData", productData);
-        res.send(productData);
+        req.io.emit("sendSearchData", productData.payload);
+        res.send(productData.payload);
         
     }catch(err){
         res.status(401).send(err);

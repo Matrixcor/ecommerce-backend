@@ -3,38 +3,52 @@ import authManagerDb from "../Dao/ManagersDb/authManagerDb.js";
 
 const authGroup = new authManagerDb();
 const authRouter = Router();
-//register
-authRouter.post("/register", async(req,res)=>{
+//registro de usuario
+authRouter.post("/register", async (req,res)=>{
     try{
         const { email , password } = req.body;
         const userTocompare = await authGroup.registerNewUser( email, password ); //registra al usuario en la DB
-        userTocompare ? res.redirect("/profile") : res.send(userTocompare.message) // no logro hacer la redireccion a la seccion profile
-        res.send(userTocompare)
+        console.log(userTocompare)
+        
+        if(userTocompare.userAdmin){
+            req.session.user = email;
+            req.session.rol = "isAdmin";
+        }else{
+            req.session.user = email;
+            req.session.rol = "user";
+        }
+        userTocompare.redirect ? res.redirect("/profile") : res.send(userTocompare.message)
     }catch(err){
         res.status(404).send(err);
     }
 })
-//login
+//login de usuario
 authRouter.post("/login", async(req, res)=>{
     try{
         const { email , password } = req.body;
         const login = await authGroup.loginUser(email , password);
-        login ? res.redirect("/profile") : res.send(userTocompare.message) // no logro hacer la redireccion a la seccion profile
+        if(login.userAdmin){
+            req.session.user = email;
+            req.session.rol = "isAdmin";
+        }else{
+            req.session.user = email;
+            req.session.rol = "user";
+        }
+        login.redirect ? res.redirect("/products") : res.send(login.message)
     }catch(err){
         res.status(404).send(err);
     }
 })
 
-//logOut
+//logOut de usuario
 
-authRouter.get("/logout", async()=>{
+authRouter.get("/logout", async(req,res,next)=>{
     req.session.destroy((err)=>{
         if(err){
-            return res.status(500).send({status: "error", payload: err})
+            return res.status(500).send("LogOut succes!");
         };
-        res.redirect("/login")
-        res.send("LogOut succes!")
-    })
+        res.redirect("/login");
+    });
 })
 
 

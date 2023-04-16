@@ -85,7 +85,14 @@ class productManagerDb {
             return productById;
         };        
     }
-
+    async getViewProducts(){ // lo que trae trae productos para el view router
+        const products = await productModel.find().lean();
+        if(!products){
+            return "No se encontraron productos"
+        }
+        
+        return products ;
+    }
     async updateProduct(pid, newdata){
         try {
             const updatedProduct = await productModel.findOneAndUpdate({ 

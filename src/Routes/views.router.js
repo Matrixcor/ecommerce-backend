@@ -9,7 +9,7 @@ const groupCarts = new cartManagerDb();
 const viewsRouter = Router();
 
 viewsRouter.get("/", async (req,res)=>{
-    const arrayProd = await groupProducts.getProduct();
+    const arrayProd = await groupProducts.getViewProducts();
     res.render("home", {arrayProd});
 });
 
@@ -30,22 +30,29 @@ viewsRouter.get("/carts/:cid", async(req,res)=>{
     try{
         const { cid } = req.params;
         const cartsArray = await groupCarts.getProductsInCart(cid);
-        let arr;
-
-        for(let i = 0 ; i < cartsArray.products.length ; i++){
-            arr = { ...arr, ...cartsArray.products[i].product }
+        let prod = [];
+        for(let i=0 ; i< cartsArray.products.length ; i++){
+            const objt = { 
+                id: cartsArray.products[i].product._id,
+                quantity: cartsArray.products[i].quantity
+            };
+            prod.push({...objt})
         }
-        console.log(arr) 
+        res.render("carts",{prod});
 
-        res.render("carts", {arr});
     }catch(error){
         res.render("error");
     }
 });
+
+// vistas webs 
+
 viewsRouter.get("/products", async(req,res)=>{
     try{
-        const listProd = [];
-        res.render("products",listProd);
+        const arrayViewProd = await groupProducts.getViewProducts();
+        const dataLoginUser = req.session;
+        const data = { arrayViewProd, dataLoginUser }
+        res.render("products", {data});
     }catch(error){
         res.render("error");
     }
