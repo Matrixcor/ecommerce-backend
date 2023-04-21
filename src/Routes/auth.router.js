@@ -28,8 +28,8 @@ authRouter.post("/login", passport.authenticate( "loginStrategy", {
     if(!req.user){
         return res.status(401).send({ error: "credential invalid"})
     }
-    req.session.userId = req.user._id;
-    req.session.name = req.user.email;
+    const {_id, email} = req.user;
+    req.session.user = {_id, email};
     res.redirect("/products")
 });
 authRouter.get("/Login-Failure", (req,res)=>{ // ruta en caso de que falle el registro
@@ -62,10 +62,10 @@ authRouter.get("/logout", async(req,res)=>{
                 if(err){
                     return res.status(500).send("LogOut succes!");
                 }
-                res.send("Session finalizada")
+                res.redirect("/login");
             })
         }
-        //res.redirect("/login");
+        
     });
 })
 

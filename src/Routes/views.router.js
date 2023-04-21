@@ -50,9 +50,9 @@ viewsRouter.get("/carts/:cid", async(req,res)=>{
 viewsRouter.get("/products", async(req,res)=>{
     try{
         const arrayViewProd = await groupProducts.getViewProducts();
-        const dataLoginUser = req.session;
-        console.log(dataLoginUser)
+        const dataLoginUser = req.session.user;
         const data = { arrayViewProd, dataLoginUser }
+        
         res.render("products", {data});
     }catch(error){
         res.render("error");
