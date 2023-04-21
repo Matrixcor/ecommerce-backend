@@ -60,7 +60,6 @@ const startPassport = ()=>{
         async(accesToken, refreshToken, profile, done) =>{
             try{
                 const user = await userModel.findOne({ email: profile.username });
-                console.log(profile)
                 if(!user){
                     const newUser = {
                         first_name: profile._json.name,
@@ -80,7 +79,7 @@ const startPassport = ()=>{
     ))
 
     passport.serializeUser((user, done)=>{
-        done(null, user._id); // puedo guardar en la session datos como email, o tipo de usuario?
+        done(null, user._id);
     });
     passport.deserializeUser(async(id, done)=>{
         const user = await userModel.findById(id);
