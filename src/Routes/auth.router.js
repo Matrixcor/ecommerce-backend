@@ -1,53 +1,71 @@
 import { Router, json, urlencoded } from "express";
-import authManagerDb from "../Dao/ManagersDb/authManagerDb.js";
+import passport from "passport";
 
-const authGroup = new authManagerDb();
+//const authGroup = new authManagerDb();
 const authRouter = Router();
-//registro de usuario
-authRouter.post("/register", async (req,res)=>{
-    try{
-        const { email , password } = req.body;
-        const userTocompare = await authGroup.registerNewUser( email, password ); //registra al usuario en la DB
-        console.log(userTocompare)
-        
-        if(userTocompare.userAdmin){
-            req.session.user = email;
-            req.session.rol = "isAdmin";
-        }else{
-            req.session.user = email;
-            req.session.rol = "user";
-        }
-        userTocompare.redirect ? res.redirect("/profile") : res.send(userTocompare.message)
-    }catch(err){
-        res.status(404).send(err);
-    }
+
+// quite lo de los roles debido a que me surgio la duda sobre como evitar el harcodeo del password para hacer
+// la distincion entre user y admins.
+
+//registro de usuario con local strategy
+
+authRouter.post("/register", passport.authenticate( "registerStrategy", {
+    failureRedirect: "/api/sessions/Register-Failure"
+}), (req,res)=>{
+    res.redirect("/products")
+});
+authRouter.get("/api/sessions/Register-Failure", (req,res)=>{ // ruta en caso de que falle el registro
+    res.send("No fue posible registra el usuario")
 })
-//login de usuario
-authRouter.post("/login", async(req, res)=>{
-    try{
-        const { email , password } = req.body;
-        const login = await authGroup.loginUser(email , password);
-        if(login.userAdmin){
-            req.session.user = email;
-            req.session.rol = "isAdmin";
-        }else{
-            req.session.user = email;
-            req.session.rol = "user";
-        }
-        login.redirect ? res.redirect("/products") : res.send(login.message)
-    }catch(err){
-        res.status(404).send(err);
+
+
+//login de usuario con local strategy
+
+authRouter.post("/login", passport.authenticate( "loginStrategy", {
+    failureRedirect: "/api/sessions/Login-Failure"
+}), async(req,res)=>{
+
+    if(!req.user){
+        return res.status(401).send({ error: "credential invalid"})
     }
+    req.session.userId = req.user._id;
+    req.session.name = req.user.email;
+    res.redirect("/products")
+});
+authRouter.get("/Login-Failure", (req,res)=>{ // ruta en caso de que falle el registro
+    res.send({error:"No se puede loggear el usuario"})
 })
+
+
+// autenticacion con github strategy
+
+authRouter.get("/github", passport.authenticate("github", 
+    { scope: ["user: email"]})
+);
+
+authRouter.get("/github-callback", passport.authenticate("github", { failureRedirect: "/api/sessions/Register-Failure"}),
+    (req,res) =>{
+        req.session.user = req.user;
+        res.redirect("/products")
+        // aqui falla el obtener datos para mostrar username en el views router, por como esta estructurado el profile
+    }
+);
 
 //logOut de usuario
 
-authRouter.get("/logout", async(req,res,next)=>{
-    req.session.destroy((err)=>{
+authRouter.get("/logout", async(req,res)=>{
+    req.logOut((err)=>{
         if(err){
-            return res.status(500).send("LogOut succes!");
-        };
-        res.redirect("/login");
+            return res.send("No se pudo cerrar la sesion")
+        }else{
+            req.session.destroy( err =>{
+                if(err){
+                    return res.status(500).send("LogOut succes!");
+                }
+                res.send("Session finalizada")
+            })
+        }
+        //res.redirect("/login");
     });
 })
 

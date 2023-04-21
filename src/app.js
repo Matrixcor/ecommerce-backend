@@ -1,18 +1,20 @@
 import express from "express";
-import mongoose from "mongoose";
-import session from "express-session";
-import MongoStore from "connect-mongo";
-import __dirname from "./utils.js";
 import { json , urlencoded } from "express";
+import { engine } from "express-handlebars";
+import session from "express-session";
+import mongoose from "mongoose";
+import MongoStore from "connect-mongo";
 import { Server } from "socket.io";
+import passport from "passport";
 
+import __dirname from "./utils.js";
 import viewsRouter from "./Routes/views.router.js";
 import authRouter from "./Routes/auth.router.js";
 import productsRouter from "./Routes/products.router.js";
 import cartsRouter from "./Routes/carts.router.js";
 import chatManagerDb from "./Dao/ManagersDb/chatManagerDb.js";
 
-import { engine } from "express-handlebars";
+import startPassport from "./Config/passport.config.js";
 
 const app = express();
 const groupMessages = new chatManagerDb();
@@ -53,20 +55,20 @@ app.use(
     session({
         store: MongoStore.create({
             mongoUrl: "mongodb+srv://frenzy9304:bsKb83RDJ8GHztsI@clusterecommerce.erfilm8.mongodb.net/?retryWrites=true&w=majority" ,
-            ttl:10000
+            ttl:1000
         }),
         secret: "key-secret",
         saveUninitialized: true,
         resave: true,
     })
 );
-//middleware de autenticacion
-function auth( req,res, next){
-    if(req.session?.user === "user" && req.session?.isAdmin){
-        return next();
-    };
-    return res.status(401).send("Error de autenticacion")
-}
+//middleware de passport
+
+startPassport();
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 
 // router views
 app.use("/", viewsRouter);

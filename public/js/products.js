@@ -1,5 +1,3 @@
-
-import cartManagerDb from "../../src/Dao/ManagersDb/cartManagerDb";
 const socket = io();
 
 // asignar valor al id de boton para poder agregar al carrito

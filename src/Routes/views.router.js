@@ -1,7 +1,7 @@
 import { Router } from "express";
 import productManagerDb from "../Dao/ManagersDb/productManagerDb.js";
 import cartManagerDb from "../Dao/ManagersDb/cartManagerDb.js";
-import chatManagerDb from "../Dao/ManagersDb/chatManagerDb.js";
+import { userModel } from "../Dao/Models/user.Model.js";
 
 const groupProducts = new productManagerDb();
 const groupCarts = new cartManagerDb();
@@ -51,6 +51,7 @@ viewsRouter.get("/products", async(req,res)=>{
     try{
         const arrayViewProd = await groupProducts.getViewProducts();
         const dataLoginUser = req.session;
+        console.log(dataLoginUser)
         const data = { arrayViewProd, dataLoginUser }
         res.render("products", {data});
     }catch(error){
@@ -77,7 +78,10 @@ viewsRouter.get("/register", async(req,res)=>{
 viewsRouter.get("/profile", async(req,res)=>{
     try{
         const dataUser = req.session;
-        res.render("profile", {dataUser});
+        const dataUserInSession = await userModel.findOne({_id: dataUser.passport.user})
+        const dataTransfer = dataUserInSession.email;
+        
+        res.render("profile", {dataTransfer});
     }catch(error){
         res.render("error");
     }
