@@ -1,14 +1,57 @@
 import { Router, json, urlencoded } from "express";
 import passport from "passport";
+import { userModel } from "../Dao/Models/user.Model.js";
+import { createHash, isValidPassword, createToken, autenthicateToken } from "../utils.js";
 
 //const authGroup = new authManagerDb();
 const authRouter = Router();
 
-// quite lo de los roles debido a que me surgio la duda sobre como evitar el harcodeo del password para hacer
-// la distincion entre user y admins.
+authRouter.post("/register", async(req,res)=>{
+    const { first_name, last_name, email, age, password } = req.body;
+    const userExist = await userModel.findOne({ email: email });
+    if(userExist) return res.status(409).send("el usuario ya existe");
+    //creamos el usuario
+    const newUser = {
+        first_name, 
+        last_name,
+        email,
+        age,
+        password: createHash(password)
+    };
+    const createUser = await userModel.create(newUser);
+    //generamos el token
+    const userForToken = { first_name, last_name, email, age}
+    const accesToken = createToken({ userForToken });
+    //res.send({ staus: "ok", accesToken });
+    res.cookie("coder-cookie-token", accesToken, {maxAge: 60*60*1000, httpOnly: true}).send({status: "ok"});
+});
+
+authRouter.post("/login", async(req,res)=>{
+    const { email, password }= req.body;
+
+    const loginUser = await userModel.findOne({ email: email});
+    
+    if(!loginUser){
+        return res.status(409).send("El usuario ingresado no existe")
+    }
+    if(isValidPassword(loginUser, password)){
+        const user = { email, password }
+        const token = createToken(user);
+        res.cookie("coder-cookie-token", token, {maxAge: 60*60*1000, httpOnly: true}).send({status: "ok"});
+    
+    }else{
+        return res.status(409).json("Invalid Credentials");
+    }
+});
+
+authRouter.post("/profile", autenthicateToken,async(req,res)=>{
+    res.send("acceso al recurso")
+});
+
 
 //registro de usuario con local strategy
 
+/*
 authRouter.post("/register", passport.authenticate( "registerStrategy", {
     failureRedirect: "/api/sessions/Register-Failure"
 }), (req,res)=>{
@@ -17,7 +60,6 @@ authRouter.post("/register", passport.authenticate( "registerStrategy", {
 authRouter.get("/api/sessions/Register-Failure", (req,res)=>{ // ruta en caso de que falle el registro
     res.send("No fue posible registra el usuario")
 })
-
 
 //login de usuario con local strategy
 
@@ -35,7 +77,7 @@ authRouter.post("/login", passport.authenticate( "loginStrategy", {
 authRouter.get("/Login-Failure", (req,res)=>{ // ruta en caso de que falle el registro
     res.send({error:"No se puede loggear el usuario"})
 })
-
+*/
 
 // autenticacion con github strategy
 

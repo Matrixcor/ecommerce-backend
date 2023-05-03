@@ -58,7 +58,7 @@ viewsRouter.get("/products", async(req,res)=>{
         res.render("error");
     }
 });
-
+/*
 viewsRouter.get("/login", async(req,res)=>{
     try{
         res.render("login");
@@ -74,7 +74,7 @@ viewsRouter.get("/register", async(req,res)=>{
         res.render("error");
     }
 });
-
+*/
 viewsRouter.get("/profile", async(req,res)=>{
     try{
         const dataUser = req.session;

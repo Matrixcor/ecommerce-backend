@@ -1,10 +1,33 @@
 import passport from "passport";
 import LocalStrategy from "passport-local";
+import  jwt from "passport-jwt";
 import GithubStrategy from "passport-github2";
-import { createHash , isValidPassword } from "../utils.js";
+import { createHash , isValidPassword, cookieExtractor } from "../utils.js";
 import { userModel } from "../Dao/Models/user.Model.js";
 
+
+const JWTStrategy = jwt.Strategy;
+const ExtractJWt = jwt.ExtractJwt;
+
 const startPassport = ()=>{
+
+    passport.use("JWT",
+        new JWTStrategy(
+            { jwtFromRequest: ExtractJWt.fromExtractors([cookieExtractor]),
+                secretOrKey: "key-secret",
+            },
+            async (jwtPayload, done)=>{
+                try{
+                    return done(null, jwtPayload)
+                }catch(err){
+                    return done(err)
+                }
+            }
+        )
+    );
+
+
+    /*
     passport.use("registerStrategy", new LocalStrategy(
         {
             usernameField: "email",
@@ -50,7 +73,7 @@ const startPassport = ()=>{
             }
         }
     ))
-
+        */
     passport.use("github", new GithubStrategy(
         { //credenciales
             clientID: "Iv1.d0f0f9007c0636a8",

@@ -6,8 +6,9 @@ import mongoose from "mongoose";
 import MongoStore from "connect-mongo";
 import { Server } from "socket.io";
 import passport from "passport";
+import cookieParser from "cookie-parser";
 
-import __dirname from "./utils.js";
+import __dirname, { cookieExtractor } from "./utils.js";
 import viewsRouter from "./Routes/views.router.js";
 import authRouter from "./Routes/auth.router.js";
 import productsRouter from "./Routes/products.router.js";
@@ -20,6 +21,7 @@ const app = express();
 const groupMessages = new chatManagerDb();
 app.use(urlencoded({extended: true}));
 app.use(json());
+app.use(cookieParser())
 
 app.engine('handlebars', engine());
 app.set('views', __dirname + '/Views');
@@ -30,10 +32,9 @@ const httpServer = app.listen("8080", ()=>{
     console.log("Server listening in port 8080");
 });
 const io = new Server(httpServer);
+
 //chat
 io.on("connection", (socket) => {
-    console.log("New client connected.");
-
     socket.on("new-message", async (data) => {
       const allMessages = await groupMessages.newMessage(data);
       io.emit("messages", allMessages);
@@ -63,11 +64,8 @@ app.use(
     })
 );
 //middleware de passport
-
 startPassport();
 app.use(passport.initialize());
-app.use(passport.session());
-
 
 
 // router views
