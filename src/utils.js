@@ -14,27 +14,31 @@ export const createHash = (password)=>{
 export const isValidPassword = (user, password)=>{
     return bcrypt.compareSync(password, user.password)
 };
-
-
 // implementacion para migrar a JSON WEB TOKEN
 
 const PRIVATE_KEY = "key-secret";
 
 export const createToken = (user)=>{
     const token = jwt.sign(user,PRIVATE_KEY, {
-        expiresIn: "60s"
+        expiresIn: "24h"
     });
     return token;
 };
 
 // middleware para paginas privadas
+/*
 export const autenthicateToken = (req,res,next)=>{
-    const authHeader = req.headers["authorization"];
-    if(!authHeader){
-        return res.sendStatus(401)
-    };
+    
+    //llamar al cookie extractor
+    
+    //const authHeader = req.headers["authorization"]; // cambiar por cookies
+    //if(!authHeader){
+    //    return res.sendStatus(401)
+    //};
+    //const token = authHeader.split(" ")[1];
+    
+    const token = cookieExtractor(req);
 
-    const token = authHeader.split(" ")[1];
     // esto por si necesitamos la data en alguna pagina privada
     jwt.verify(token, PRIVATE_KEY, (err, info)=>{
         if(err) return res.sendStatus(401);
@@ -42,11 +46,12 @@ export const autenthicateToken = (req,res,next)=>{
         next();
     })
 };
-
+*/
 export const cookieExtractor = (req) =>{
-    const token = null;
+    let token = null;
     if(req && req.cookies){
-        token = req.cookies["coder-cookie-token"];
+        token = req.cookies["cookie-token"];
+        
     }
     return token;
 };

@@ -2,6 +2,7 @@ import { Router } from "express";
 import productManagerDb from "../Dao/ManagersDb/productManagerDb.js";
 import cartManagerDb from "../Dao/ManagersDb/cartManagerDb.js";
 import { userModel } from "../Dao/Models/user.Model.js";
+import passport from "passport";
 
 const groupProducts = new productManagerDb();
 const groupCarts = new cartManagerDb();
@@ -50,15 +51,15 @@ viewsRouter.get("/carts/:cid", async(req,res)=>{
 viewsRouter.get("/products", async(req,res)=>{
     try{
         const arrayViewProd = await groupProducts.getViewProducts();
-        const dataLoginUser = req.session.user;
+       const dataLoginUser = "";
+        //req.session.user;
         const data = { arrayViewProd, dataLoginUser }
-        
         res.render("products", {data});
     }catch(error){
         res.render("error");
     }
 });
-/*
+
 viewsRouter.get("/login", async(req,res)=>{
     try{
         res.render("login");
@@ -74,14 +75,13 @@ viewsRouter.get("/register", async(req,res)=>{
         res.render("error");
     }
 });
-*/
-viewsRouter.get("/profile", async(req,res)=>{
+
+viewsRouter.get("/profile", passport.authenticate("jwt", {sessions: false}), async(req,res)=>{
     try{
-        const dataUser = req.session;
-        const dataUserInSession = await userModel.findOne({_id: dataUser.passport.user})
-        const dataTransfer = dataUserInSession.email;
-        
-        res.render("profile", {dataTransfer});
+        const dataUser = req.body;
+       
+        console.log(dataUser)
+        res.render("profile");
     }catch(error){
         res.render("error");
     }

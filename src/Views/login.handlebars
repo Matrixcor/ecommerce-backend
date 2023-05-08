@@ -2,7 +2,7 @@
 <div class="container">
 
     <div class="formContainer">
-        <form class="form" method="post" action="/api/sessions/login" >
+        <form class="formLogin" method="post" action="/api/sessions/login">
             <div class="InputContainer">
                 <label > Nombre de Usuario: </label>
                 <input type="text" placeholder="Escriba aqui su nombre" name="email">
@@ -13,13 +13,17 @@
             </div>
             <div class="butonContainer">
                 <button type="submit">Login</button>
-                <a href="/register"> Registrate</a>
+                <a href="/register">
+                    <button>Registrarse</button>
+                </a>
             </div>
         </form>
     </div>
-    <div>
+    <div class="ButtonContainer">
         <a href="/api/sessions/github">
             <button> Login with  Github</button>
         </a>
     </div>
 </div>
+
+<script src=""></script>

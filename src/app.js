@@ -1,9 +1,10 @@
+import "./Config/server.config.js"; 
 import express from "express";
 import { json , urlencoded } from "express";
 import { engine } from "express-handlebars";
-import session from "express-session";
+//import session from "express-session";
 import mongoose from "mongoose";
-import MongoStore from "connect-mongo";
+//import MongoStore from "connect-mongo";
 import { Server } from "socket.io";
 import passport from "passport";
 import cookieParser from "cookie-parser";
@@ -19,9 +20,10 @@ import startPassport from "./Config/passport.config.js";
 
 const app = express();
 const groupMessages = new chatManagerDb();
+
 app.use(urlencoded({extended: true}));
 app.use(json());
-app.use(cookieParser())
+app.use(cookieParser());
 
 app.engine('handlebars', engine());
 app.set('views', __dirname + '/Views');
@@ -46,27 +48,16 @@ io.on("connection", (socket) => {
     })
     
 });
+
 // middleware socket
 app.use((req,res,next)=>{ 
     req.io = io;
     next();
 });
-//middleware session
-app.use(
-    session({
-        store: MongoStore.create({
-            mongoUrl: "mongodb+srv://frenzy9304:bsKb83RDJ8GHztsI@clusterecommerce.erfilm8.mongodb.net/?retryWrites=true&w=majority" ,
-            ttl:1000
-        }),
-        secret: "key-secret",
-        saveUninitialized: true,
-        resave: true,
-    })
-);
+
 //middleware de passport
 startPassport();
 app.use(passport.initialize());
-
 
 // router views
 app.use("/", viewsRouter);
@@ -74,11 +65,10 @@ app.use("/api/sessions",authRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 
-
+const url = process.env.MONGO_URL;
 mongoose
 .connect(
-    "mongodb+srv://frenzy9304:bsKb83RDJ8GHztsI@clusterecommerce.erfilm8.mongodb.net/?retryWrites=true&w=majority"
-)
-.then((conn)=>{
+    url
+).then((conn)=>{
     console.log("Connected to DB!");
 });

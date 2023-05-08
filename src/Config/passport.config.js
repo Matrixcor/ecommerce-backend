@@ -1,5 +1,5 @@
+import "./server.config.js"
 import passport from "passport";
-import LocalStrategy from "passport-local";
 import  jwt from "passport-jwt";
 import GithubStrategy from "passport-github2";
 import { createHash , isValidPassword, cookieExtractor } from "../utils.js";
@@ -10,21 +10,22 @@ const JWTStrategy = jwt.Strategy;
 const ExtractJWt = jwt.ExtractJwt;
 
 const startPassport = ()=>{
-
-    passport.use("JWT",
-        new JWTStrategy(
-            { jwtFromRequest: ExtractJWt.fromExtractors([cookieExtractor]),
+    passport.use("jwt",
+        new JWTStrategy( //aqui extrae la cookie
+            {
+                jwtFromRequest: ExtractJWt.fromExtractors([cookieExtractor]),
                 secretOrKey: "key-secret",
             },
-            async (jwtPayload, done)=>{
+            async (jwt_Payload, done)=>{
                 try{
-                    return done(null, jwtPayload)
+                    return done(null, jwt_Payload)
                 }catch(err){
                     return done(err)
                 }
             }
         )
     );
+    
 
 
     /*
@@ -74,39 +75,42 @@ const startPassport = ()=>{
         }
     ))
         */
-    passport.use("github", new GithubStrategy(
-        { //credenciales
-            clientID: "Iv1.d0f0f9007c0636a8",
-            clientSecret: "80565194764f45b6be44f872dabbdb7c7768d652",
-            callbackURL: "http://localhost:8080/api/sessions/github-callback"
-        },
-        async(accesToken, refreshToken, profile, done) =>{
-            try{
-                const user = await userModel.findOne({ email: profile.username });
-                if(!user){
-                    const newUser = {
-                        first_name: profile._json.name,
-                        last_name: null ,
-                        age: null,
-                        email: profile._json.username,
-                    };
-                    const createdUser = await userModel.create(newUser);
-                    return done(null, createdUser);
-                }else{
-                    return done(null, user);
+    const clientID = process.env.GIT_CLIENTID;
+    const clientSecret = process.env.GIT_CLIENTSECRET;
+    const callbackURL = process.env.GIT_CALLBACKURL;
+    
+    passport.use("github", 
+        new GithubStrategy(
+            { //credenciales
+                clientID,
+                clientSecret,
+                callbackURL
+            },
+            async(accesToken, refreshToken, profile, done) =>{
+                try{
+                    console.log("profile: ", profile )
+                    
+                    const user = await userModel.findOne({ email: profile.username });
+                    if(!user){
+                        const newUser = {
+                            first_name: profile._json.name,
+                            last_name: null ,
+                            age: null,
+                            email: profile._json.username,
+                        };
+                        const createdUser = await userModel.create(newUser);
+                        return done(null, createdUser);
+                        
+                    }else{
+                        return done(null, user);
+                    }
+                    
+                }catch(err){
+                    return done(err);
                 }
-            }catch(err){
-                return done(err);
             }
-        }
-    ))
-
-    passport.serializeUser((user, done)=>{
-        done(null, user._id);
-    });
-    passport.deserializeUser(async(id, done)=>{
-        const user = await userModel.findById(id);
-        return done(null, user)
-    });
+        )
+    )
+    
 }
 export default startPassport;

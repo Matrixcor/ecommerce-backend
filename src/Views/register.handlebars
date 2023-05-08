@@ -1,12 +1,30 @@
 <h1> Formulario de REGISTRO</h1>
 <div>
-    <form method="post" action="/api/sessions/register">
-        <div>
-            <input type="text" placeholder="Escriba aqui su nombre" name="email">
+    <form class="formRegister" method="post" action="/api/sessions/register">
+        <div class="InputContainer">
+            <label > Nombre: </label>
+            <input type="text" placeholder="Escriba aqui su nombre" name="first_name">
         </div>
-        <div>
-            <input type="password" placeholder="Escriba aqui su contraseña" name="password">
+        <div class="InputContainer">
+            <label > Apellido: </label>
+            <input type="text" placeholder="Escriba aqui su apellido" name="last_name">
         </div>
-        <button type="submit">Register</button>
+        <div class="InputContainer">
+            <label > Ingrese su edad: </label>
+            <input type="text" placeholder="Escriba aqui su Edad" name="age">
+        </div>
+        <div class="InputContainer">
+            <label > Email: </label>
+            <input type="text" placeholder="Escriba aqui su Email" name="email">
+        </div>
+        <div class="InputContainer">
+            <label> Contraseña: </label>
+            <input type="password" placeholder="Escriba aqui su contraseña" name="password">             
+        </div>
+        <div class="butonContainer">
+            <button type="submit">Register</button>
+        </div>
     </form>
 </div>
+
+<script src=""></script>
