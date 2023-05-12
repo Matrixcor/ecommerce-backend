@@ -1,90 +1,26 @@
 import { Router } from "express";
-import productManagerDb from "../Dao/ManagersDb/productManagerDb.js";
-import cartManagerDb from "../Dao/ManagersDb/cartManagerDb.js";
-import { userModel } from "../Dao/Models/user.Model.js";
 import passport from "passport";
 
-const groupProducts = new productManagerDb();
-const groupCarts = new cartManagerDb();
+import { viewsController } from "../Controllers/views.controller.js";
 
 const viewsRouter = Router();
 
-viewsRouter.get("/", async (req,res)=>{
-    const arrayProd = await groupProducts.getViewProducts();
-    res.render("home", {arrayProd});
-});
+viewsRouter.get("/", viewsController.homeViewController);
 
-viewsRouter.get("/real-time-products", (req,res)=>{
-    const realTimeArray = [];
-    res.render('real_time_products', realTimeArray);
-});
+viewsRouter.get("/real-time-products", viewsController.realTimeViewController);
 
-viewsRouter.get("/chat", async(req,res)=>{
-    try{
-        res.render("chat");
-    }catch(error){
-        res.render("error");
-    }
-});
+viewsRouter.get("/chat", viewsController.chatViewController);
 
-viewsRouter.get("/carts/:cid", async(req,res)=>{
-    try{
-        const { cid } = req.params;
-        const cartsArray = await groupCarts.getProductsInCart(cid);
-        let prod = [];
-        for(let i=0 ; i< cartsArray.products.length ; i++){
-            const objt = { 
-                id: cartsArray.products[i].product._id,
-                quantity: cartsArray.products[i].quantity
-            };
-            prod.push({...objt})
-        }
-        res.render("carts",{prod});
-
-    }catch(error){
-        res.render("error");
-    }
-});
+viewsRouter.get("/carts/:cid", viewsController.cartProdViewController);
 
 // vistas webs 
 
-viewsRouter.get("/products", async(req,res)=>{
-    try{
-        const arrayViewProd = await groupProducts.getViewProducts();
-       const dataLoginUser = "";
-        //req.session.user;
-        const data = { arrayViewProd, dataLoginUser }
-        res.render("products", {data});
-    }catch(error){
-        res.render("error");
-    }
-});
+viewsRouter.get("/products", viewsController.prodsViewController);
 
-viewsRouter.get("/login", async(req,res)=>{
-    try{
-        res.render("login");
-    }catch(error){
-        res.render("error");
-    }
-});
+viewsRouter.get("/login", viewsController.loginViewController);
 
-viewsRouter.get("/register", async(req,res)=>{
-    try{
-        res.render("register");
-    }catch(error){
-        res.render("error");
-    }
-});
+viewsRouter.get("/register", viewsController.registerViewController);
 
-viewsRouter.get("/profile", passport.authenticate("jwt", {sessions: false}), async(req,res)=>{
-    try{
-        const dataUser = req.body;
-       
-        console.log(dataUser)
-        res.render("profile");
-    }catch(error){
-        res.render("error");
-    }
-});
+viewsRouter.get("/profile", passport.authenticate("jwt", {sessions: false}), viewsController.profileViewController);
 
 export default viewsRouter;

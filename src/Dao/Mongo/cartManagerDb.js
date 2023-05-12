@@ -1,5 +1,5 @@
-import cartsModel from "../Models/cartsModel.js";
-import productModel from "../Models/productModel.js";
+import cartsModel from "./Models/cartsModel.js";
+import productModel from "./Models/productModel.js";
 
 class cartManagerDb{
         

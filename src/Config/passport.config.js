@@ -1,10 +1,9 @@
-import "./server.config.js"
 import passport from "passport";
 import  jwt from "passport-jwt";
 import GithubStrategy from "passport-github2";
 import { createHash , isValidPassword, cookieExtractor } from "../utils.js";
-import { userModel } from "../Dao/Models/user.Model.js";
-
+import { userModel } from "../Dao/Mongo/Models/user.Model.js";
+import { enviromentOptions } from "./enviroment.options.js";
 
 const JWTStrategy = jwt.Strategy;
 const ExtractJWt = jwt.ExtractJwt;
@@ -75,9 +74,9 @@ const startPassport = ()=>{
         }
     ))
         */
-    const clientID = process.env.GIT_CLIENTID;
-    const clientSecret = process.env.GIT_CLIENTSECRET;
-    const callbackURL = process.env.GIT_CALLBACKURL;
+    const clientID = enviromentOptions.git.git_clientID;
+    const clientSecret = enviromentOptions.git.git_clientSecret;
+    const callbackURL = enviromentOptions.git.git_callbackURL;
     
     passport.use("github", 
         new GithubStrategy(

@@ -1,11 +1,23 @@
+import multer from "multer";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import bcrypt from "bcrypt";
-
 import jwt from "jsonwebtoken";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+// para subir archivos a la carpeta public
+const storage = multer.diskStorage({
+    destination: './public/img',
+    filename: function(req, file, cb){
+        cb(null, file.originalname);
+    }
+});
+const dataStorage = multer({ storage });
+export {dataStorage};
+
+
 
 export const createHash = (password)=>{
     return bcrypt.hashSync(password, bcrypt.genSaltSync())
@@ -19,7 +31,7 @@ export const isValidPassword = (user, password)=>{
 const PRIVATE_KEY = "key-secret";
 
 export const createToken = (user)=>{
-    const token = jwt.sign(user,PRIVATE_KEY, {
+    const token = jwt.sign(user, PRIVATE_KEY, {
         expiresIn: "24h"
     });
     return token;
