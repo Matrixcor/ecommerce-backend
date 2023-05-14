@@ -14,10 +14,9 @@ class productService {
             );
             if(productWithSameCode) return {status: "error",mesagge:"El Codigo ingresado ya existe, por favor elija otro."};
             
-            const res = await productManagerDb.addProduct(title, description, price, code, status, category, stock, thumbnail );
-            const product = await productManagerDb.getAllProduct();
-            const listProd = res.status == "succes" ? res : product
-            return listProd;
+            const listProd = await productManagerDb.addProduct(title, description, price, code, status, category, stock, thumbnail );
+            
+            return {status: "succes", payload: listProd};
         }catch(error){
             return {status: "Error", message: "El producto no se agrego correctamente"};
         }
@@ -72,8 +71,11 @@ class productService {
     static updateProdService = async(pid, newData)=>{
         try{
             //verificar que no este vacio el pid ni el data
-            const boolean = true;
-            const productsUpdated = await productManagerDb.updateProduct(pid, newData, boolean);
+            const { title, description, price, code, status, category, stock, thumbnail } = newData;
+            if(! pid || !title || !description || !price || !code || !status || !category || !stock || !thumbnail){
+                return {status: "Error", mesagge:"Verifique Los datos ingresados"};
+            }
+            const productsUpdated = await productManagerDb.updateProduct(pid, newData);
             return {status:"succes", payload: productsUpdated, message:"Product has been updated"};
         }catch(err){
             return {status: "error", message:"This product do not be updated"};
@@ -82,7 +84,7 @@ class productService {
 
     static deleteProdService = async(pid)=>{
         const productDeleted = await productManagerDb.deleteProduct(pid);
-        if(productDeleted.status == "error") return {status:"error", message:"Error, Don't delete product"};
+        if(productDeleted == "error") return {status:"error", message:"Error, Don't delete product"};
         return {status:"succes", payload: productDeleted, message: "Product has been deleted"};
     }
 }

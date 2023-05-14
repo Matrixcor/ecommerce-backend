@@ -5,8 +5,9 @@ class productManagerDb {
     
     static addProduct = async(title, description, price, code, status, category, stock, thumbnail)=>{        
         try{
-            const res = await productModel.create({ title, description, price, code, status, category, stock, thumbnail });
-            return {status:"succes", payload: res};
+            await productModel.create({ title, description, price, code, status, category, stock, thumbnail });
+            const arrayProd = await productModel.find().lean();
+            return arrayProd;
         }catch(error){
             return {status: "Error", message: "El producto no se agrego correctamente"};
         }
@@ -35,11 +36,7 @@ class productManagerDb {
 
     static getFilterProduc = async(searchKey, filterOptions)=>{
         try{
-            console.log("filter prod")
-            const product = await productModel.paginate( 
-                searchKey , 
-                filterOptions
-            );
+            const product = await productModel.paginate(searchKey, filterOptions);
             return product;
         } catch (error) {
             return "Error trying to retrieve the products";
@@ -63,10 +60,10 @@ class productManagerDb {
         return {status:"succes", payload: products};
     };
 
-    static updateProduct = async(pid, newData, boolean)=>{
+    static updateProduct = async(pid, newData)=>{
         try {
-            await productModel.findOneAndUpdate({ _id: pid},newData,{new: boolean});
-            const productsUpdate = await this.getProduct();
+            await productModel.findOneAndUpdate({ _id: pid},newData,{new: true});
+            const productsUpdate = await productModel.find().lean();
             return {status:"succes", payload: productsUpdate};
         }catch (error) {
             return {status:"error", message: "Error updating product"};
@@ -76,7 +73,7 @@ class productManagerDb {
     static deleteProduct = async(pid)=>{
         try{
             await productModel.deleteOne({ _id: pid });
-            const newArrayProduct = await this.getProduct();
+            const newArrayProduct = await productModel.find().lean();
             return {status:"succes", payload: newArrayProduct };
         }catch (error) {
             return {Status:"error", mesagge: "Error deleting product" };

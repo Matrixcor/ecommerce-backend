@@ -1,17 +1,17 @@
 const socket = io();
 
 // asignar valor al id de boton para poder agregar al carrito
-async function sendProduct(pid){
+//async function sendProduct(pid){
     /* aun no habilito la opcion de colocar los productos en determinado carrito
     
     console.log("envie producto", pid)
     const cartGroup = new cartManagerDb();
     await cartGroup.addProduct(pid)
     */
-}
-socket.on("sendSearchData",(result)=>{
+//}
+socket.on("sendData",(result)=>{
     const data = result.payload;
-    const Container = document.querySelector("#productContainer")
+    const Container = document.querySelector("#containerProduct")
     Container.innerHTML = "";
     data.forEach(data => {
         const { _id, title, description, price, code, status, category, stock, thumbnail } = data;
@@ -35,4 +35,5 @@ socket.on("sendSearchData",(result)=>{
         `;
         Container.appendChild(BoxProduct);
     });
+    
 });

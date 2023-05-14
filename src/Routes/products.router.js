@@ -1,11 +1,12 @@
 import { Router, json, urlencoded } from "express";
 import { productsController } from "../Controllers/products.controller.js";
 import {dataStorage} from "../utils.js"
-
+import { productService } from "../Services/productService.js";
 const productsRouter = Router();
 
 productsRouter.use(urlencoded({extended: true}));
 productsRouter.use(json());
+
 
 productsRouter.get("/", productsController.getProdController);
 

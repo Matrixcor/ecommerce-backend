@@ -12,8 +12,8 @@ class viewsController {
         res.render("home", {arrayProd});
     };
 
-    static realTimeViewController = (req,res)=>{
-        const realTimeArray = [];
+    static realTimeViewController = async(req,res)=>{
+      const realTimeArray = [];
         res.render('real_time_products', realTimeArray);
     };
     
@@ -24,7 +24,8 @@ class viewsController {
             res.render("error");
         }
     };
-    
+    //hasta aca bien
+
     static cartProdViewController = async(req,res)=>{
         try{
             const { cid } = req.params;
@@ -48,11 +49,16 @@ class viewsController {
     
     static prodsViewController = async(req,res)=>{
         try{
-            const arrayViewProd = await groupProducts.getViewProducts();
-            const dataLoginUser = "";
-            
-            const data = { arrayViewProd, dataLoginUser }
-            res.render("products", {data});
+
+            const {last_name, first_name, email, role} = req.user; 
+            const dataLoginUser = {last_name, first_name, email, role};
+            console.log(dataLoginUser)
+        
+
+            const data = await viewsService.webGetProdService();
+            const arrayProd = data.payload;
+            const info = { arrayProd, dataLoginUser}
+            res.render("products", {info});
         }catch(error){
             res.render("error");
         }
@@ -77,7 +83,6 @@ class viewsController {
     static profileViewController = async(req,res)=>{
         try{
             const dataUser = req.body;
-            //console.log(dataUser)
             res.render("profile");
         }catch(error){
             res.render("error");
@@ -86,78 +91,3 @@ class viewsController {
 }
 
 export { viewsController };
-
-
-/*
-export const realTimeViewController = (req,res)=>{
-    const realTimeArray = [];
-    res.render('real_time_products', realTimeArray);
-};
-
-export const chatViewController= async(req,res)=>{
-    try{
-        res.render("chat");
-    }catch(error){
-        res.render("error");
-    }
-};
-
-export const cartProdViewController = async(req,res)=>{
-    try{
-        const { cid } = req.params;
-        const cartsArray = await groupCarts.getProductsInCart(cid);
-        let prod = [];
-        for(let i=0 ; i< cartsArray.products.length ; i++){
-            const objt = { 
-                id: cartsArray.products[i].product._id,
-                quantity: cartsArray.products[i].quantity
-            };
-            prod.push({...objt})
-        }
-        res.render("carts",{prod});
-
-    }catch(error){
-        res.render("error");
-    }
-};
-
-// vistas web
-
-export const prodsViewController = async(req,res)=>{
-    try{
-        const arrayViewProd = await groupProducts.getViewProducts();
-        const dataLoginUser = "";
-        //req.session.user;
-        const data = { arrayViewProd, dataLoginUser }
-        res.render("products", {data});
-    }catch(error){
-        res.render("error");
-    }
-};
-
-export const loginViewController = async(req,res)=>{
-    try{
-        res.render("login");
-    }catch(error){
-        res.render("error");
-    }
-};
-
-export const registerViewController = async(req,res)=>{
-    try{
-        res.render("register");
-    }catch(error){
-        res.render("error");
-    }
-};
-
-export const profileViewController = async(req,res)=>{
-    try{
-        const dataUser = req.body;
-        console.log(dataUser)
-        res.render("profile");
-    }catch(error){
-        res.render("error");
-    }
-};
-*/

@@ -1,8 +1,8 @@
 <h1> PRODUCTOS </h1>
 <div class="dataUserContainer">
     <div class="hGroup">
-        <h4> Bienvenido {{data.dataLoginUser.email}}</h4>
-        <h4> You are an: {{data.dataLoginUser.rol}}</h4>
+        <h4> Bienvenido {{info.dataLoginUser.first_name}}</h4>
+        <h4> You are an: {{info.dataLoginUser.role}}</h4>
     </div>
     <div>
         <form action="/api/sessions/logout">
@@ -12,7 +12,7 @@
 </div>
 
 <div id="productContainer">
-    {{#each data.arrayViewProd}}
+    {{#each info.arrayProd}}
         <div>
             <div>
                 <ul>

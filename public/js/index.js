@@ -1,9 +1,7 @@
-
+/*
 const socket = io();
-console.log("ingresa al archivo")
 
 socket.on("sendData",(data)=>{
-    console.log(data)
     const Container = document.querySelector("#containerProduct")
     Container.innerHTML = "";
     data.forEach(data => {
@@ -27,3 +25,4 @@ socket.on("sendData",(data)=>{
         Container.appendChild(BoxProduct);
         });
 });
+*/

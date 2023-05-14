@@ -28,12 +28,14 @@ chatInput.addEventListener("keyup",(ev)=>{
 
 const panel = document.getElementById("panel");
 socket.on("messages", (data)=>{
+    console.log(data)
+    
     let messages ="";
     data.forEach((m)=>{
         messages += `<b> ${m.username}: </b> ${m.message} </br>`;
     });
     panel.innerHTML = messages;
-
+    
 })
 
 socket.on("new-user", (username)=>{

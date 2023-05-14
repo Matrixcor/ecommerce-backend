@@ -1,6 +1,6 @@
 import { Router } from "express";
 import passport from "passport";
-
+import authenticate from "../middlewares/authenticate.js";
 import { viewsController } from "../Controllers/views.controller.js";
 
 const viewsRouter = Router();
@@ -15,7 +15,7 @@ viewsRouter.get("/carts/:cid", viewsController.cartProdViewController);
 
 // vistas webs 
 
-viewsRouter.get("/products", viewsController.prodsViewController);
+viewsRouter.get("/products", authenticate("jwt"), viewsController.prodsViewController);
 
 viewsRouter.get("/login", viewsController.loginViewController);
 
