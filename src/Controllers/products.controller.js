@@ -1,5 +1,4 @@
-import  { productService } from "../Services/productService.js"
-import { query } from "express";
+import  { productServices } from "../Repository/index.Repository.js"
 
 class productsController{
 
@@ -10,7 +9,7 @@ class productsController{
         }else{
             newProduct = {...req.body, thumbnail: req.file.path};
         }
-        const createdProduct = await productService.addProdService(newProduct);
+        const createdProduct = await productServices.addProdService(newProduct);
         req.io.emit("sendData", createdProduct);
         res.send(createdProduct);
     };
@@ -27,7 +26,7 @@ class productsController{
             const { sort } = req.query;
             const query =  { title, price, code };
 
-            const productData = await productService.getProdService(query, page, limit, sort );
+            const productData = await productServices.getProdService(query, page, limit, sort );
             req.io.emit("sendData", productData.payload);
             res.send(productData.payload);
         }catch(err){
@@ -38,7 +37,7 @@ class productsController{
     static getProdByIdController = async(req, res)=>{
         try{
             const { pid } = req.params;
-            let productById = await productService.getByIdProdService(pid);
+            let productById = await productServices.getByIdProdService(pid);
             res.send(productById.payload);
         }catch(err){
             res.status(404).send(err);
@@ -49,9 +48,9 @@ class productsController{
         try{
             const { pid } = req.params;
             const newData = req.body;
-            const productsUpdated = await productService.updateProdService(pid, newData);
+            const productsUpdated = await productServices.updateProdService(pid, newData);
             
-            req.io.emit("sendData", productsUpdated.payload);
+            req.io.emit("sendDataCart", productsUpdated.payload);
             res.send(productsUpdated.message);
         }catch(err){
             res.status(404).send(err,"El producto no se pudo actualizar");
@@ -61,7 +60,7 @@ class productsController{
     static deleteProdController = async(req,res)=>{
         try{
             const { pid } = req.params;
-            const productDeleted = await productService.deleteProdService(pid);
+            const productDeleted = await productServices.deleteProdService(pid);
             req.io.emit("sendData", productDeleted.payload);
             res.send(productDeleted.message);
         }catch(err){

@@ -1,92 +1,91 @@
-import {productManagerDb} from "../Dao/Mongo/productManagerDb.js";
 
-class productService {
-    static addProdService = async(newData)=>{
+class productRepository {
+    constructor(dao){
+        this.dao = dao;
+    };
+    async addProdService(newData){
         try{
             const { title, description, price, code, status, category, stock, thumbnail } = newData;
             if(!title || !description || !price || !code || !status || !category || !stock || !thumbnail){
                 return {status: "Error", mesagge:"complete todo los campos"};
             }
-            //verifica si el producto ya esta en la DB
-            const compare = await productManagerDb.getForSomeProduct();
-            const  productWithSameCode = compare.some(
-                (prod) => prod.code === code
-            );
+            const compare = await this.dao.getForSomeProduct();  //verifica si el producto ya esta agregado
+            const  productWithSameCode = compare.some( (prod) => prod.code === code );
             if(productWithSameCode) return {status: "error",mesagge:"El Codigo ingresado ya existe, por favor elija otro."};
-            
-            const listProd = await productManagerDb.addProduct(title, description, price, code, status, category, stock, thumbnail );
-            
+            const listProd = await this.dao.addProduct(title, description, price, code, status, category, stock, thumbnail );
             return {status: "succes", payload: listProd};
         }catch(error){
             return {status: "Error", message: "El producto no se agrego correctamente"};
         }
     };
 
-    static getProdService = async (query, page, limit, sort)=>{
+    async getProdService(query, page, limit, sort){
         try {
             let limitSearch = limit ? limit : 10;
             let pageSearch = page ? page : 1;
             let orderSearch = sort == "desc" ? -1 : sort == "asc"? 1 : false ;
-            let searchKey = {};
+            let searchKey;
             let newResult;
-
+            let product;
             // voy a pecar con el anidamiento de los condicionales
-            query.title ? searchKey = {title: query.title} : query.price ? searchKey = {price: query.price}  : query.code ? searchKey = {code: query.code} : productManagerDb.getAllProduct();
+            query.title ? searchKey = {title: query.title} : query.price ? searchKey = {price: query.price}  : query.code ? searchKey = {code: query.code} : product = await this.dao.getAllProduct();
             const filterOptions = { limit: limitSearch, page: pageSearch, sort: orderSearch};
             // solicito productos aplicando filtros
-
-            const product = await productManagerDb.getFilterProduc(searchKey,filterOptions);
-            const result = {
-                payload: product.docs,
-                totalPages: product.totalPages,
-                prevPage: product.prevPage,
-                nextPage: product.nextPage,
-                page: product.page,
-                hasPrevPage: product.hasPrevPage,
-                hasNextPage: product.hasNextPage,
-            };
-            if(product.hasPrevPage == false & product.hasNextPage == false){
-                newResult = { ...result, 
+            if(searchKey != null) {
+                product = await this.dao.getFilterProduc(searchKey,filterOptions);
+                const result = {
+                    payload: product.docs,
+                    totalPages: product.totalPages,
+                    prevPage: product.prevPage,
+                    nextPage: product.nextPage,
+                    page: product.page,
+                    hasPrevPage: product.hasPrevPage,
+                    hasNextPage: product.hasNextPage,
+                };
+                if(product.hasPrevPage == false & product.hasNextPage == false){
+                    newResult = { ...result, 
                     prevLink: null,
                     nextLink: null 
+                    }
+                }else{
+                    newResult = { ...result, 
+                        prevLink: product.prevLink,
+                        nextLink: product.nextLink 
+                    }
                 }
-            }else{
-                newResult = { ...result, 
-                    prevLink: product.prevLink,
-                    nextLink: product.nextLink 
-                }
-            }
-            return { status: "succes", payload: newResult }
+                return { status: "succes", payload: newResult}
+            } 
+            return { status: "succes", payload: product.payload }
         } catch (error) {
             return {status: "error", message:"Error trying to retrieve the products"};
         };
     };
 
-    static getByIdProdService = async(pid)=>{  
+    async getByIdProdService(pid){  
         if(!pid) return {status: "error", message: "Ingrese un valor de ID"};
-        const productById = await productManagerDb.getProdById(pid);
+        const productById = await this.dao.getProdById(pid);
         return productById;
     };
 
-    static updateProdService = async(pid, newData)=>{
+    async updateProdService(pid, newData){
         try{
             //verificar que no este vacio el pid ni el data
             const { title, description, price, code, status, category, stock, thumbnail } = newData;
             if(! pid || !title || !description || !price || !code || !status || !category || !stock || !thumbnail){
                 return {status: "Error", mesagge:"Verifique Los datos ingresados"};
             }
-            const productsUpdated = await productManagerDb.updateProduct(pid, newData);
+            const productsUpdated = await this.dao.updateProduct(pid, newData);
             return {status:"succes", payload: productsUpdated, message:"Product has been updated"};
         }catch(err){
             return {status: "error", message:"This product do not be updated"};
         }
     };
 
-    static deleteProdService = async(pid)=>{
-        const productDeleted = await productManagerDb.deleteProduct(pid);
+    async deleteProdService(pid){
+        const productDeleted = await this.dao.deleteProduct(pid);
         if(productDeleted == "error") return {status:"error", message:"Error, Don't delete product"};
         return {status:"succes", payload: productDeleted, message: "Product has been deleted"};
     }
 }
 
-export { productService };
+export { productRepository };

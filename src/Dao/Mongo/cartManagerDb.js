@@ -1,5 +1,5 @@
-import cartsModel from "./Models/cartsModel.js";
-import productModel from "./Models/productModel.js";
+
+import cartsModel from "../Mongo/Models/cartsModel.js";
 
 class cartManagerDb{
         
@@ -7,15 +7,15 @@ class cartManagerDb{
         try {
             const newCart = { products: [] };
             const cartArray = await cartsModel.create(newCart);
-            return { status: "succes", payload: newCart, message: "success, New Cart Created" };
+            return { status: "succes", cartArray };
         }catch(error){
             return { status: "error", message: "Error - cart not created" };
         }
     }
 
     async getCarts(){
-        try{ //trae datos de la db
-            const carts = await cartsModel.find().lean();
+        try{ 
+            const carts = await cartsModel.find().lean(); //trae datos de la db
             return { status: "succes", payload: carts, message: "El producto se agrego correctamente" };
         }catch(error){
             return { stat: 400, result: "Error trying to retrieve the carts" };
@@ -30,22 +30,6 @@ class cartManagerDb{
         return (cartById);
     }
 
-    async handleCartProduct(cid,pid){
-        const cartProduc = await this.getProductsInCart(cid); // si no existe el carrito
-
-        if(typeof(cartProduc.products) == "string"){
-            return { status:"error", message:"no se puede agregar el producto porque el carrito seleccionado no existe"};
-        } 
-        const arrayToCompare = cartProduc.products;
-        const comparedprod = arrayToCompare.some((prod) => prod.product._id.toString() === pid );
-
-        if(comparedprod){
-            return await this.updateCartProduct(cid,pid,cartProduc);
-        }else{
-            return await this.addProduct(cid,pid,cartProduc);
-        } 
-    }
-
     async addProduct(cid, pid, cartProduc){ 
         try {
             const cart = cartProduc;
@@ -54,13 +38,13 @@ class cartManagerDb{
                 quantity: 1 
             });
             await cart.save();
-            return { status: "succes", payload: cart, message: "El producto se agrego correctamente" };
+            return { status: "succes", payload: cart, mesagge:"producto agregado correctamente" };
         } catch (error) {
             return { status: "error", message: "error el producto no se pudo agregar" };
         }
     }
 
-    async updateCartProduct(cid,pid, cartProduc){
+    async incrementCartProdQuantity(cid,pid, cartProduc){
         try{
             const array = cartProduc;
             for(let i = 0; i < array.products.length; i++) {
@@ -70,51 +54,36 @@ class cartManagerDb{
                 }
             };
             await array.save();
-            return { status: "succes", payload: array, message: "La cantidad de producto se actualizo correctamente" };
+            return { status: "succes", payload: array, mesagge:"producto actualizado correctamente" };
         }catch(err){
             return { message: "Error al actualizar la cantidad de producto" };
         }
     }
-
-    async deleteProduct(cid, pid){
-        try{
-            const cartmodify = await this.getProductsInCart(cid)
-            
-            for (let i=0 ; i < cartmodify.products.length ; i++){
-
-                if(cartmodify.products[i].product._id.toString() === pid) {
-                    cartmodify.products[i].quantity > 1 ? modQuantity(i) : quitItem(cid, pid)
-                };
-            };
-            async function modQuantity(i){
-                cartmodify.products[i].quantity --;
-                await cartmodify.save();
-                return { status: "succes", payload: cartmodify, mesagge:"producto eliminado correctamente" };
-            }
-            async function quitItem(cid, pid){                
-               let deleted = await cartsModel.updateOne(
-                {_id: cid},
-                { $pull: { products: {product: pid } }}
-               )
-               return { status: "succes", payload: cartmodify, mesagge:"El producto se quito del carrito correctamente" };
-            }            
-        }catch (error) {
-            return { status: "Error", mesagge: "Error deleting product" };
-        }
+        
+    async decrementCartProdQuantity(i, cartmodify){ //elimino de a un producto 
+        cartmodify.products[i].quantity --;
+        await cartmodify.save();
+        return { status: "succes", payload: cartmodify, mesagge:"producto eliminado correctamente" };
     }
 
-    async deleteAllProducts(cid){
+    async quitCartProduct(cid, pid){  // cuando queda un solo producto lo quito directamente del carrito
+        let deleted = await cartsModel.updateOne(
+            {_id: cid},
+            { $pull: { products: {product: pid } }}
+        )
+        return { status: "succes", payload: deleted, mesagge:"El producto se quito del carrito correctamente" };
+    }            
+    
+    async deleteAllProducts(cart){
         try{
-            const deleteAll= await this.getProductsInCart(cid);
-            const cart = deleteAll;
             cart.products = [];
             await cart.save();
-            return { status:"succes", payload: cart, message: "El carrito se vacio correctamente" };
+            return { status:"succes", message: "El carrito se vacio correctamente" };
             
         }catch (error) {
-            return { mesagge: "Error deleting product" };
+            return { status: "Error" ,mesagge: "Error deleting product" };
         }
     }
 }
 
-export default cartManagerDb;
+export { cartManagerDb };

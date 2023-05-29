@@ -3,7 +3,7 @@ import { paginate } from "mongoose-paginate-v2";
 
 class productManagerDb {
     
-    static addProduct = async(title, description, price, code, status, category, stock, thumbnail)=>{        
+    async addProduct (title, description, price, code, status, category, stock, thumbnail){        
         try{
             await productModel.create({ title, description, price, code, status, category, stock, thumbnail });
             const arrayProd = await productModel.find().lean();
@@ -13,12 +13,12 @@ class productManagerDb {
         }
     };
     //get para ver si esta agregado el producto
-    static getForSomeProduct = async()=>{
+    async getForSomeProduct(){
         const prod = await productModel.find().lean();
         return prod;
     };
 
-    static getAllProduct = async()=>{
+    async getAllProduct(){
         const products = await productModel.find().lean();
         return {
             status: "succes", 
@@ -34,16 +34,16 @@ class productManagerDb {
         };
     };
 
-    static getFilterProduc = async(searchKey, filterOptions)=>{
+    async getFilterProduc(searchKey, filterOptions){
         try{
-            const product = await productModel.paginate(searchKey, filterOptions);
-            return product;
+            const arrayProd= await productModel.paginate(searchKey, filterOptions);
+            return arrayProd;
         } catch (error) {
             return "Error trying to retrieve the products";
         };
     };
 
-    static getProdById = async(pid)=>{
+    async getProdById(pid){
         const productById = await productModel.findById(pid);
         if(!productById){
             return {status:"error", message:"El producto buscado no se encuentra"}
@@ -52,7 +52,7 @@ class productManagerDb {
         };        
     };
 
-    static getViewProducts = async()=>{ // lo que trae trae productos para el view router
+    async getViewProducts(){ // lo que trae trae productos para el view router
         const products = await productModel.find().lean();
         if(!products){
             return {status:"error", message:"No se encontraron productos"}
@@ -60,7 +60,7 @@ class productManagerDb {
         return {status:"succes", payload: products};
     };
 
-    static updateProduct = async(pid, newData)=>{
+    async updateProduct(pid, newData){
         try {
             await productModel.findOneAndUpdate({ _id: pid},newData,{new: true});
             const productsUpdate = await productModel.find().lean();
@@ -70,7 +70,7 @@ class productManagerDb {
         }
     };
 
-    static deleteProduct = async(pid)=>{
+    async deleteProduct(pid){
         try{
             await productModel.deleteOne({ _id: pid });
             const newArrayProduct = await productModel.find().lean();
@@ -81,4 +81,4 @@ class productManagerDb {
     };
 }
 
-export {productManagerDb};
+export  {productManagerDb};

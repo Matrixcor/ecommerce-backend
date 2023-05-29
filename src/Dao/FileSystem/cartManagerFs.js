@@ -1,9 +1,9 @@
 import fs from "fs"
-import productManager from "../Managers/productManager.js";
+import { productManagerFs } from "../FileSystem/productManagerFs.js";
 
-const product = new productManager("./././products.json");
+const product = new productManagerFs("./././products.json");
 
-class cartManager{
+class cartManagerFs{
     #path = "" ;
     constructor(path){
         this.#path = path;
@@ -96,4 +96,4 @@ class cartManager{
     }
 }
 
-export default cartManager
+export { cartManagerFs }

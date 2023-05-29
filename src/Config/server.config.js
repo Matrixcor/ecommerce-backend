@@ -9,7 +9,5 @@ export default {
     private_key: process.env.PRIVATE_KEY,
     git_clientID: process.env.GIT_CLIENTID,
     git_clientSecret: process.env.GIT_CLIENTSECRET,
-    git_callbackURL: process.env.GIT_CALLBACKURL,
-    admin_email: process.env.ADMIN_EMAIL,
-    admin_password: process.env.ADMIN_PASSWORD
+    git_callbackURL: process.env.GIT_CALLBACKURL
 };

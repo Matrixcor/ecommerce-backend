@@ -1,5 +1,5 @@
 
-import chatManagerDb from "../Dao/Mongo/chatManagerDb.js";
+import {chatManagerDb} from "../Dao/Mongo/chatManagerDb.js";
 // en caso de exportar el socket de chat
 const groupMessages = new chatManagerDb();
 

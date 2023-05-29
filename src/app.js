@@ -9,7 +9,7 @@ import {__dirname} from "./utils.js";
 import viewsRouter from "./Routes/views.router.js";
 import authRouter from "./Routes/auth.router.js";
 import productsRouter from "./Routes/products.router.js";
-import cartsRouter from "./Routes/carts.router.js";
+import cartsRouter from "./Routes/cart.router.js";
 import startPassport from "./Config/passport.config.js";
 import { enviromentOptions } from "./Config/enviroment.options.js";
 import  {chatController}  from "./Controllers/chat.controller.js";
@@ -33,7 +33,7 @@ const httpServer = app.listen(enviromentOptions.server.port, ()=>{
 const io = new Server(httpServer);
 
 //chat
-import chatManagerDb from "./Dao/Mongo/chatManagerDb.js";
+import {chatManagerDb} from "./Dao/Mongo/chatManagerDb.js";
 
 const groupMessages = new chatManagerDb();
 
@@ -52,7 +52,6 @@ io.on("connection", (socket) => {
     });
 });
 
-
 // middleware socket
 app.use((req,res,next)=>{ 
     req.io = io;
@@ -68,7 +67,3 @@ app.use("/", viewsRouter);
 app.use("/api/sessions",authRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
-
-//mongo conection
-const { connectDB } = await import ("./Config/dBConnections.js");
-connectDB;

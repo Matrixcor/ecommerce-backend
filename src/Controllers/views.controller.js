@@ -1,13 +1,9 @@
 import {productManagerDb} from "../Dao/Mongo/productManagerDb.js";
-import { viewsService } from "../Services/views.Service.js";
-import cartManagerDb from "../Dao/Mongo/cartManagerDb.js";
-
-const groupProducts = new productManagerDb();
-const groupCarts = new cartManagerDb();
+import { viewServices, ticketServices } from "../Repository/index.Repository.js";
 
 class viewsController {
     static homeViewController = async(req,res)=>{
-        const homeProducts = await viewsService.homeGetProdService();
+        const homeProducts = await viewServices.homeGetProdService();
         const arrayProd = homeProducts.payload;
         res.render("home", {arrayProd});
     };
@@ -29,36 +25,46 @@ class viewsController {
     static cartProdViewController = async(req,res)=>{
         try{
             const { cid } = req.params;
-            const cartsArray = await groupCarts.getProductsInCart(cid);
-            let prod = [];
-            for(let i=0 ; i< cartsArray.products.length ; i++){
-                const objt = { 
-                    id: cartsArray.products[i].product._id,
-                    quantity: cartsArray.products[i].quantity
-                };
-                prod.push({...objt})
-            }
-            res.render("carts",{prod});
-    
+            const mostrar = await viewServices.cartGetViewProdService(cid);
+            const prod = mostrar.products;
+            req.io.emit("sendDataCart", prod);
+
+            res.render("carts")
+        }catch(error){
+            res.json(error)
+        }
+    };
+
+    static purchaseWebViewController = async(req,res)=>{
+        try{
+            const { cid } = req.params;
+            res.render("purchase");
         }catch(error){
             res.render("error");
         }
     };
-    
+
+    static ticketViewController = async(req,res)=>{
+        try {
+            const {cid} = req.params
+            const { email } = req.user;
+            const prodTicket = await ticketServices.newTicketService(cid, email);
+            res.render("tickets", prodTicket)
+        } catch (error) {
+            res.render("error"); 
+        }
+    }
     // vistas web
     
     static prodsViewController = async(req,res)=>{
         try{
-
-            const {last_name, first_name, email, role} = req.user; 
-            const dataLoginUser = {last_name, first_name, email, role};
-            console.log(dataLoginUser)
-        
-
-            const data = await viewsService.webGetProdService();
+            const {last_name, first_name, email, cart, role} = req.user;
+            const dataLoginUser = {last_name, first_name, email, cart, role}; //puedo llamar a un DTO
+            const data = await viewServices.webGetProdService();
             const arrayProd = data.payload;
             const info = { arrayProd, dataLoginUser}
             res.render("products", {info});
+
         }catch(error){
             res.render("error");
         }

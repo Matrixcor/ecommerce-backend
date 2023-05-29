@@ -9,12 +9,19 @@
             <button type="submit">Logout</button>
         </form>
     </div>
+    <div class="cartButtonContainer">
+        
+        <a href="/carts/{{info.dataLoginUser.cart}}">
+            <button> Ver carrito </button>
+        </a>
+        
+    </div>
 </div>
 
 <div id="productContainer">
     {{#each info.arrayProd}}
-        <div>
-            <div>
+        <div class="boxProduct">
+            <div class="product">
                 <ul>
                     
                     <li> <strong>Id:</strong> {{_id}} </li>
@@ -28,10 +35,12 @@
                     <li> Thumbnail: {{thumbnail}} </li>
                     
                 </ul>
-            </div>               
+            </div>
+            <div>
+                <button onclick="handleCart(`{{_id}}`)"><b>Agregar al Carrito</b></button>
+            </div>
         </div>
     {{/each}}
 </div>
-<link rel="stylesheet" href="/public/css/products.css">
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/products.js"></script>

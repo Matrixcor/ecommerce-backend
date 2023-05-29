@@ -1,17 +1,25 @@
-import { Router, json, urlencoded , query } from "express";
-import { createHash , isValidPassword } from "../../utils.js";
 import { userModel} from "./Models/user.Model.js"
 
-class authManagerDb {
+class authManagerDb{
 
-    static userCreate = async(newUser)=>{
+    async userCreate(newUser){
         const createUser = await userModel.create(newUser)
         return createUser;
     }
-    static getUser = async(email)=>{
+    async getUser(email){
         const result = await userModel.findOne({ email: email });
         return result;
     }
+
+    async updateUser(key, newData){
+        try{
+            const email = key;
+            const productsUpdate = await userModel.findOneAndUpdate({ email },newData,{new: true});
+            return {status:"succes", payload: productsUpdate};
+        }catch (error) {
+            return {status:"error", message: "Error updating product"};
+        }
+    }
 }
 
-export {authManagerDb};
+export { authManagerDb };

@@ -1,0 +1,46 @@
+.body{
+    margin: auto;
+}
+.container{
+    width: 50vw;
+    margin: auto;
+}
+.formContainer{
+    margin: auto;
+    align-content: center;
+    background-color: gainsboro;
+}
+.form{
+    display: block;
+    margin: auto;
+    padding: 20px;
+}
+.etiqueta{
+    width: 50%;
+    display: block;
+    margin: auto;
+}
+.InputContainer{
+    width: 250px;
+    margin: auto;
+    padding: 10px;
+}
+.buttonContainer{
+    display: flex;
+    background-color: aqua;
+}
+/* productos */
+.dataUserContainer{
+    display: flex;
+    margin: auto;
+}
+.hGroup{
+    display: flex;
+}
+.productContainer{
+    background-color: grey;
+}
+.boxProduct{
+    width: 500px;
+    margin: auto;
+}

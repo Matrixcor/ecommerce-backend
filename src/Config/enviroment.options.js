@@ -3,16 +3,13 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const enviromentOptions ={
-    fileSystem:{
-        usersFileName: "users.json",
-        productsFileName:"products.json"
+    server:{
+        port: process.env.PORT,
+        host: process.env.HOST,
+        persistence: process.env.PERSISTENCE
     },
     mongoDB:{
         url: process.env.MONGO_URL
-    },
-    server:{
-        port: process.env.PORT,
-        host: process.env.HOST
     },
     devEnviroment:{
         node_env: process.env.NODE_ENV,
@@ -28,5 +25,14 @@ export const enviromentOptions ={
     superAdmin:{
         admin_email: process.env.ADMIN_EMAIL,
         admin_password: process.env.ADMIN_PASSWORD
+    },
+    email:{
+        mail_host: process.env.EMAIL_HOST,
+        mail_port: process.env.EMAIL_PORT
+    },
+    twilio:{
+        twilio_Id: process.env.TWILIO_ID , 
+        twilio_token: process.env.TWILIO_TOKEN,
+        twilio_number: process.env.TWILIO_PHONE
     }
 };

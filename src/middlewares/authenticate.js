@@ -11,5 +11,4 @@ const authenticate = (strategy)=>{
     };
     return passportAuthenticate;
 };
-
 export default authenticate;
