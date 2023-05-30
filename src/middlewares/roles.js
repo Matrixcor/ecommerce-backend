@@ -1,15 +1,15 @@
 
 // chequeo de roles para acceder y modificar cosas
-const checkRole = (role)=>{
-    return(req,res,next)=>{
-    //console.log(req)
+export const checkRole = (role)=>{ // role
+    return async(req,res,next)=>{
+        console.log("req role: ", req.user.role)
+        console.log("role: ", role)
         if(!req.user){
-            return res.json({status:" error", message:" necesitas estar autenticado"})
+            return res.json({status:"Error", message:"Necesitas estar autenticado"})
         }
-        if(role.include(req.user.role)){
-            return res.json({status:"error", message:"no estas autorizado"})
+        if(req.user.role != role ){ //role.include(req.user.role)
+            return res.json({status:"Error", message:"No estas autorizado"})
         }
         next();
     }
 }
-export default checkRole;

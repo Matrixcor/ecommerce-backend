@@ -20,15 +20,19 @@ class productsController{
             const { title } = req.query;
             const { price } = req.query ;
             const { code } = req.query;
+            
             // filtros
             const { page } = req.query;
             const { limit } = req.query;
             const { sort } = req.query;
             const query =  { title, price, code };
-
+            
             const productData = await productServices.getProdService(query, page, limit, sort );
+            // no retorna productos
+            console.log("get al product", productData)
             req.io.emit("sendData", productData.payload);
-            res.send(productData.payload);
+            res.redirect("/products")
+            //res.json(productData.payload);
         }catch(err){
             res.status(401).send(err);
         }

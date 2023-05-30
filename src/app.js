@@ -58,11 +58,11 @@ app.use((req,res,next)=>{
     next();
 });
 
-//middleware de passport
+// middleware de passport
 startPassport();
 app.use(passport.initialize());
 
-// router views
+// routers
 app.use("/", viewsRouter);
 app.use("/api/sessions",authRouter);
 app.use("/api/products", productsRouter);

@@ -1,6 +1,7 @@
 import { Router, json } from "express";
 import passport from "passport";
 import authenticate from "../middlewares/authenticate.js";
+import { checkRole } from "../middlewares/roles.js";
 import { viewsController } from "../Controllers/views.controller.js";
 
 const viewsRouter = Router();
@@ -10,7 +11,7 @@ viewsRouter.get("/", viewsController.homeViewController);
 
 viewsRouter.get("/real-time-products", viewsController.realTimeViewController);
 
-viewsRouter.get("/chat", viewsController.chatViewController); //solo el rol user
+viewsRouter.get("/chat", authenticate("jwt"), checkRole(["user"]) , viewsController.chatViewController); //solo el rol user
 
 viewsRouter.get("/carts/:cid", viewsController.cartProdViewController);
 

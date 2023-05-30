@@ -28,9 +28,9 @@ class productRepository {
             let newResult;
             let product;
             // voy a pecar con el anidamiento de los condicionales
-            query.title ? searchKey = {title: query.title} : query.price ? searchKey = {price: query.price}  : query.code ? searchKey = {code: query.code} : product = await this.dao.getAllProduct();
-            const filterOptions = { limit: limitSearch, page: pageSearch, sort: orderSearch};
-            // solicito productos aplicando filtros
+            query.title ? searchKey = {title: query.title} : query.price ? searchKey = {price: query.price}  : query.code ? searchKey = {code: query.code} : product = await this.dao.getAllProduct(); // si no hay parametros traigo todos los productos
+            const filterOptions = { limit: limitSearch, page: pageSearch, sort: orderSearch}; // armo el filtro si el request tiene algun parametro
+            
             if(searchKey != null) {
                 product = await this.dao.getFilterProduc(searchKey,filterOptions);
                 const result = {

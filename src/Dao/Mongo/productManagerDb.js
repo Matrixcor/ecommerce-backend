@@ -19,7 +19,8 @@ class productManagerDb {
     };
 
     async getAllProduct(){
-        const products = await productModel.find().lean();
+        //const products = await productModel.find().lean();
+        const products = await productModel.paginate({},{});
         return {
             status: "succes", 
             payload: products.docs,
@@ -31,6 +32,7 @@ class productManagerDb {
             hasNextPage: products.hasNextPage,
             prevLink: products.prevLink,
             nextLink: products.nextLink
+            
         };
     };
 
