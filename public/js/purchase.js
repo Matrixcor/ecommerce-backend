@@ -1,7 +1,8 @@
 const socket = io();
 
 socket.on("sendDataPurchase",async(updt)=>{
-    const data = await updt;    
+    const data = await updt;  
+    console.log("data: ",data)  
     const Container = document.querySelector("#cartContainer")
     Container.innerHTML = "";
     data.forEach(data => {

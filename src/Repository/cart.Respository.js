@@ -82,6 +82,7 @@ class cartRepository{
             const cartChecked = [];
             const rejectedProds = [];
             let stokcToUpdate;
+            
             await carts.forEach((p) => {
                 const arrayProd = { //aca puedo aplicar un DTO
                     prodId: p.product._id,
@@ -127,32 +128,35 @@ class cartRepository{
                     rejectedProds.push(reject);
                 }
             };
-            
-            
-            cartChecked.forEach(async(e)=>{
-                const delCartProd = await this.dao.quitCartProduct(cid, e.prodId); //quito los produstos con stock del carrito
-                carts.forEach(async(p)=>{
-                    if(p.product._id == e.prodId){
-                        const newProd={
-                            title: p.product.title, 
-                            description: p.product.description, 
-                            price: p.product.price, 
-                            code: p.product.code, 
-                            status: p.product.status, 
-                            category: p.product.category, 
-                            stock: stokcToUpdate, 
-                            thumbnail: p.product.thumbnail   
-                        }
-                        const updtStockProdDb = await productServices.updateProdService(newProd)
-                    }
-                })
-            })
-            
-            return { payload: cartChecked};
+                
+            console.log("cart cheked: ", cartChecked)
+            return { cartChecked, stokcToUpdate };
         }catch(err){
             return {status: "error", message:"This product do not be updated"};
         }
     };
+
+    async updateCartAndStockProduct(arrayVerified, cid, carts){ //se ejecuta cuando se emite el ticke y confirma la compra
+        arrayVerified.cartChecked.forEach(async(e)=>{
+            const delCartProd = await this.dao.quitCartProduct(cid, e.prodId);
+            const newStock = arrayVerified.stokcToUpdate; //quito los produstos con stock del carrito
+            carts.forEach(async(p)=>{
+                if(p.product._id == e.prodId){
+                    const newProd={
+                        title: p.product.title, 
+                        description: p.product.description, 
+                        price: p.product.price, 
+                        code: p.product.code, 
+                        status: p.product.status, 
+                        category: p.product.category, 
+                        stock: newStock, 
+                        thumbnail: p.product.thumbnail
+                    }
+                    const updtStockProdDb = await productServices.updateProdService(newProd)
+                }
+            })
+        })
+    }
 }
 
 export { cartRepository };

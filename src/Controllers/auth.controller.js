@@ -1,4 +1,6 @@
 import { authServices } from "../Repository/index.Repository.js";
+import { transporter } from "../Config/email.config.js";
+import { emailTemplateLogin } from "../Templates/email.Templates.js";
 
 class authController{
 
@@ -8,6 +10,12 @@ class authController{
 
         if( userCreated.status !== "Error"){
             res.cookie("cookie-token", userCreated.payload, {maxAge: 60*60*1000, httpOnly: true});
+            const content = await transporter.sendMail({
+                from: "Servicio de notificaciones Ecommerce - Backend ",
+                to: userName, //es el correo del usuario registrado
+                subject: "Registro exitoso",
+                html: emailTemplateLogin
+            });
             res.redirect("/products");
         }else{
             res.status(409).json(userCreated.message);
@@ -15,19 +23,24 @@ class authController{
     };
     
     static loginAuthController = async(req,res)=>{
-        const data = req.body;
-        const logRes = await authServices.loginAuthService(data);
-        if(logRes.status !== "Error"){
-            res.cookie("cookie-token", logRes.payload, {maxAge: 60*60*1000, httpOnly: true});
-        }else{
-            res.status(409).json("Invalid Credentials");
+        try {
+            const data = req.body;
+            const userName = req.body.email;
+            const logRes = await authServices.loginAuthService(data);
+            console.log("return del logeo: ", req.body)
+            if(logRes.status !== "Error"){
+                res.cookie("cookie-token", logRes.payload, {maxAge: 60*60*1000, httpOnly: true});
+            }else{
+                res.status(409).json("Invalid Credentials");
+            }           
+            res.redirect("/products");
+        } catch (error) {
+            res.status(409).json({error});
         }
-        res.redirect("/products");
     };
     
     static currentAuthController = async(req,res)=>{ //info que contiene el token desactualizado
         const {last_name, first_name, email, cart, role} = req.user;
-        //console.log("data del current: ",req.user)
         res.json({...req.user});
     };
     

@@ -1,5 +1,7 @@
 import {productManagerDb} from "../Dao/Mongo/productManagerDb.js";
 import { viewServices, ticketServices } from "../Repository/index.Repository.js";
+import { transporter } from "../Config/email.config.js"
+import { emailTemplateTickets } from "../Templates/email.Templates.js"
 
 class viewsController {
     static homeViewController = async(req,res)=>{
@@ -48,7 +50,18 @@ class viewsController {
         try {
             const {cid} = req.params
             const { email } = req.user;
-            const prodTicket = await ticketServices.newTicketService(cid, email);
+            const prodTicket = await ticketServices.newTicketService(cid, email); // genero el ticket y devuelvo para renderizar en el cliente
+             
+            if(prodTicket.status !== "Error"){
+                const templateTicket = await emailTemplateTickets(prodTicket);
+                const content = await transporter.sendMail({
+                    from: "Servicio de notificaciones Ecommerce - Backend ",
+                    to:    email,//userName, //es el correo del usuario registrado
+                    subject: "Servicio de notificaciones Ecommerce - Backend",
+                    html: templateTicket
+                });
+            }
+
             res.render("tickets", prodTicket)
         } catch (error) {
             res.render("error"); 

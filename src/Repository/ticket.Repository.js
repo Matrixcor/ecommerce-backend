@@ -11,11 +11,13 @@ class ticketRepository{
         try {
             
             let totalAmount =0;
-            const cart = await cartServices.getProdCartService(cid); // lo que hay en el carrito
+            const cart = await cartServices.getProdCartService(cid); // trae el carrito de compras
             const carts = cart.products;
-            const arraycheck = await cartServices.updateCartService(carts, cid)
-            const ticketAmount = arraycheck.payload;
-            ticketAmount.forEach((p)=>{
+            const arrayVerified = await cartServices.updateCartService(carts, cid) // obtengo el carrito con los productos filtrados que pasaron la verificacion de stock
+            await cartServices.updateCartAndStockProduct(arrayVerified, cid , carts) // elimina los productos sin stock y actualiza el stock de productos de la DB
+            console.log("arreglo del ticket: ", arrayVerified)
+           
+            arrayVerified.cartChecked.forEach((p)=>{
                 totalAmount = totalAmount + p.amount;
             })
             
@@ -23,7 +25,7 @@ class ticketRepository{
                 code: uuidv4(),
                 purchase_datetime: new Date(),
                 amount: totalAmount,
-                purchaser: email, // podria cambiarlo por el email
+                purchaser: email,
             }
             const ticketToPush = await ticketModel.create(newTicket);
             return ticketToPush; 

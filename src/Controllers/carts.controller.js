@@ -58,7 +58,7 @@ class cartController{
             req.io.emit("sendDataCart", allProductsDeleted);
             res.send(allProductsDeleted);
         }catch(err){
-            res.status(404).send("no se pudo actualizar el producto");
+            res.status(404).send("no se pudo actualizar el Carrito");
         }
     }
 
@@ -68,11 +68,12 @@ class cartController{
             const cart = await cartServices.getProdCartService(cartId); // lo que hay en el carrito
             const carts = cart.products;
             const final = await cartServices.updateCartService(carts, cartId)
-            req.io.emit("sendDataPurchase", final.payload);
+        
+            req.io.emit("sendDataPurchase", final.cartChecked);
             
-            res.json(final.payload)     
+            res.json(final.cartChecked)
         } catch (error) {
-            res.status(404).send("no se pudo actualizar el producto");
+            res.status(404).send("no se pudo concretar la Compra");
         }         
     }
 }

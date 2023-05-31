@@ -1,11 +1,15 @@
 import { enviromentOptions } from "./enviroment.options.js"
+import nodemailer from "nodemailer"
 
-const transporter = nodemailer.createTransport({
-    host:"smtp.gmail.com",
-    port:587,
+const adminUser = enviromentOptions.emailService.mail_Service_User;
+const adminPass = enviromentOptions.emailService.mail_Service_Pass;
+
+export const transporter = nodemailer.createTransport({
+    host: enviromentOptions.emailService.mail_host,
+    port: enviromentOptions.emailService.mail_port,
     auth:{
-        user:adminEmail,
-        pass:adminPass
+        user: adminUser,
+        pass: adminPass
     },
     secure:false,
     tls:{

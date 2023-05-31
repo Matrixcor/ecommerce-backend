@@ -26,9 +26,11 @@ export const enviromentOptions ={
         admin_email: process.env.ADMIN_EMAIL,
         admin_password: process.env.ADMIN_PASSWORD
     },
-    email:{
+    emailService:{
         mail_host: process.env.EMAIL_HOST,
-        mail_port: process.env.EMAIL_PORT
+        mail_port: process.env.EMAIL_PORT,
+        mail_Service_User: process.env.ADMIN_EMAIL_MAILSERVICE,
+        mail_Service_Pass: process.env.ADMIN_PASS_MAILSERVICE
     },
     twilio:{
         twilio_Id: process.env.TWILIO_ID , 
