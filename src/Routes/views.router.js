@@ -15,7 +15,8 @@ viewsRouter.get("/chat", authenticate("jwt"), checkRole(["user"]) , viewsControl
 
 viewsRouter.get("/carts/:cid", viewsController.cartProdViewController);
 
-// vistas webs 
+// vistas webs
+viewsRouter.get("/mockingproducts", viewsController.mockingProdsController);
 
 viewsRouter.get("/products", authenticate("jwt"), viewsController.prodsViewController);
 

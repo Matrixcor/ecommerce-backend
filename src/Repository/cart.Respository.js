@@ -19,11 +19,8 @@ class cartRepository{
 
     async getProdCartService(cid){
         try{
-            //const { cid } = req.params;
             const cartProducts = await this.dao.getProductsInCart(cid);
-            //console.log(cartProducts)
             return cartProducts
-            //res.send(cartProducts);
         }catch(err){
             res.status(404).send(err,"error")
         }
@@ -69,7 +66,6 @@ class cartRepository{
             const deleteAll= await this.dao.getProductsInCart(cid);
             const cart = deleteAll;
             const allProductsDeleted = await this.dao.deleteAllProducts(cart);
-
             return allProductsDeleted;
         }catch(err){
             return {status:" Error", message:"no se pudo actualizar el producto"}
@@ -82,7 +78,6 @@ class cartRepository{
             const cartChecked = [];
             const rejectedProds = [];
             let stokcToUpdate;
-            
             await carts.forEach((p) => {
                 const arrayProd = { //aca puedo aplicar un DTO
                     prodId: p.product._id,
@@ -128,8 +123,6 @@ class cartRepository{
                     rejectedProds.push(reject);
                 }
             };
-                
-            console.log("cart cheked: ", cartChecked)
             return { cartChecked, stokcToUpdate };
         }catch(err){
             return {status: "error", message:"This product do not be updated"};

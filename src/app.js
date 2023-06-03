@@ -12,7 +12,9 @@ import productsRouter from "./Routes/products.router.js";
 import cartsRouter from "./Routes/cart.router.js";
 import startPassport from "./Config/passport.config.js";
 import { enviromentOptions } from "./Config/enviroment.options.js";
+import {chatManagerDb} from "./Dao/Mongo/chatManagerDb.js";
 import  {chatController}  from "./Controllers/chat.controller.js";
+import {errorHandler} from "./middlewares/errorHandler.js"; 
 
 const app = express();
 
@@ -20,6 +22,7 @@ app.use(urlencoded({extended: true}));
 app.use(json());
 app.use(cookieParser());
 
+// handlebars
 app.engine('handlebars', engine());
 app.set('views', __dirname + '/Views');
 app.set('view engine','handlebars');
@@ -33,10 +36,7 @@ const httpServer = app.listen(enviromentOptions.server.port, ()=>{
 const io = new Server(httpServer);
 
 //chat
-import {chatManagerDb} from "./Dao/Mongo/chatManagerDb.js";
-
 const groupMessages = new chatManagerDb();
-
 
 io.on("connection", (socket) => {
     console.log("New client Connected")
@@ -67,3 +67,6 @@ app.use("/", viewsRouter);
 app.use("/api/sessions",authRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
+
+//middleware de error
+app.use(errorHandler);

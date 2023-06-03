@@ -15,8 +15,6 @@ class ticketRepository{
             const carts = cart.products;
             const arrayVerified = await cartServices.updateCartService(carts, cid) // obtengo el carrito con los productos filtrados que pasaron la verificacion de stock
             await cartServices.updateCartAndStockProduct(arrayVerified, cid , carts) // elimina los productos sin stock y actualiza el stock de productos de la DB
-            console.log("arreglo del ticket: ", arrayVerified)
-           
             arrayVerified.cartChecked.forEach((p)=>{
                 totalAmount = totalAmount + p.amount;
             })

@@ -2,12 +2,29 @@ import { authServices } from "../Repository/index.Repository.js";
 import { transporter } from "../Config/email.config.js";
 import { emailTemplateLogin } from "../Templates/email.Templates.js";
 
+import { customErrorRepository } from "../Repository/errorService/customError.Repository.js";
+import { generateUserErrorInfo } from "../Repository/errorService/errorGenerate.Repository.js"
+import { EErrors } from "../Enums/EError.js";
+
 class authController{
 
     static registerAuthController = async(req,res)=>{
         const data = req.body;
-        const userCreated = await authServices.registerAuthService(data);
+        const { first_name, last_name, email, age, password } = data;
+        
+        if(!first_name || !last_name || !email || !age || !password) {
 
+            customErrorRepository.createError({ // genera bien el error, pero no lo detecta el middleware
+                name: "User Register Error",
+                cause: generateUserErrorInfo(data),
+                message: "Error, Faltan algunos campos, o el formato ingresado no es correcto",
+                errorCode: EErrors.INVALID_TYPES_ERROR
+            });
+
+        }
+        
+        const userName = req.body.email;
+        const userCreated = await authServices.registerAuthService(data);
         if( userCreated.status !== "Error"){
             res.cookie("cookie-token", userCreated.payload, {maxAge: 60*60*1000, httpOnly: true});
             const content = await transporter.sendMail({
@@ -25,9 +42,7 @@ class authController{
     static loginAuthController = async(req,res)=>{
         try {
             const data = req.body;
-            const userName = req.body.email;
             const logRes = await authServices.loginAuthService(data);
-            console.log("return del logeo: ", req.body)
             if(logRes.status !== "Error"){
                 res.cookie("cookie-token", logRes.payload, {maxAge: 60*60*1000, httpOnly: true});
             }else{
@@ -49,7 +64,6 @@ class authController{
     };
     
     static gitFailAuthController = (req,res) =>{
-        console.log("redireccion fallida")
         res.redirect("/products")
     };
     
@@ -59,52 +73,3 @@ class authController{
     };
 }
 export {authController};
-
-
-
-/*
-export const registerAuthController = async(req,res)=>{
-    const { first_name, last_name, email, age, password, cart, role } = req.body;
-    const userCreated = await authServices.registerAuthService(first_name, last_name, email, age, password, cart, role);
-    //generamos el token    
-    if( userCreated.status !== "Error"){
-        res.cookie("cookie-token", userCreated.payload, {maxAge: 60*60*1000, httpOnly: true});
-    }else{
-        res.status(409).json("Invalid Credentials");
-    }
-    res.redirect("/products");
-};
-
-export const loginAuthController = async(req,res)=>{
-    const data = req.body;
-    const logRes = await authServices.loginAuthService(data);
-
-    if(logRes.status !== "Error"){
-        res.cookie("cookie-token", logRes.payload, {maxAge: 60*60*1000, httpOnly: true});
-    }else{
-        res.status(409).json("Invalid Credentials");
-    }
-    res.redirect("/products");   
-};
-
-export const currentAuthController = async(req,res)=>{
-    const {last_name, first_name, email, role} = req.user;    
-    res.json({last_name, first_name, email, role});
-};
-
-export const gitLogAuthController =  (req,res)=>{
-    res.json("redireccion exitosa")
-};
-
-export const gitFailAuthController = (req,res) =>{
-    console.log("redireccion fallida")
-    res.redirect("/products")
-};
-
-export const logOutAuthController = async(req,res)=>{
-    //elimino el token del usuario
-    res.clearCookie("cookie-token").json("Delete succes");
-    //debo redireccionar a login
-    res.redirect("/login")
-};
-*/

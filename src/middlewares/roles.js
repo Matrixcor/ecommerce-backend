@@ -2,8 +2,6 @@
 // chequeo de roles para acceder y modificar cosas
 export const checkRole = (role)=>{ // role
     return async(req,res,next)=>{
-        console.log("req role: ", req.user.role)
-        console.log("role: ", role)
         if(!req.user){
             return res.json({status:"Error", message:"Necesitas estar autenticado"})
         }

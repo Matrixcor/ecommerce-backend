@@ -3,13 +3,13 @@ import  { productServices } from "../Repository/index.Repository.js"
 class productsController{
 
     static addProdController = async(req, res)=>{
-        let newProduct;
+        let newData;
         if(!req.file){
-            newProduct = {...req.body, thumbnail: "empty"};
+            newData = {...req.body, thumbnail: "empty"};
         }else{
-            newProduct = {...req.body, thumbnail: req.file.path};
+            newData = {...req.body, thumbnail: req.file.path};
         }
-        const createdProduct = await productServices.addProdService(newProduct);
+        const createdProduct = await productServices.addProdService(newData);
         req.io.emit("sendData", createdProduct);
         res.send(createdProduct);
     };

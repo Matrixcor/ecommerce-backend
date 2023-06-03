@@ -1,13 +1,24 @@
+import { customErrorRepository } from "../Repository/errorService/customError.Repository.js";
+import { EErrors } from "../Enums/EError.js";
+import { generateProductErrorInfo } from "../Repository/errorService/errorGenerate.Repository.js"
 
 class productRepository {
     constructor(dao){
         this.dao = dao;
     };
+
     async addProdService(newData){
         try{
             const { title, description, price, code, status, category, stock, thumbnail } = newData;
             if(!title || !description || !price || !code || !status || !category || !stock || !thumbnail){
-                return {status: "Error", mesagge:"complete todo los campos"};
+
+                customErrorRepository.createError({ // genera bien el error, pero no lo detecta el middleware
+                    name: "Products create Error",
+                    cause: generateProductErrorInfo(newData),
+                    message: "Error, Faltan algunos campos, o el formato ingresado no es correcto",
+                    code: EErrors.INVALID_TYPES_ERROR
+                })
+                console.log("-")
             }
             const compare = await this.dao.getForSomeProduct();  //verifica si el producto ya esta agregado
             const  productWithSameCode = compare.some( (prod) => prod.code === code );
@@ -69,9 +80,13 @@ class productRepository {
 
     async updateProdService(pid, newData){
         try{
-            //verificar que no este vacio el pid ni el data
-            const { title, description, price, code, status, category, stock, thumbnail } = newData;
-            if(! pid || !title || !description || !price || !code || !status || !category || !stock || !thumbnail){
+            const { title, description, price, code, status, category, stock, thumbnail } = newData; //verificamos que no este vacio el pid ni el data
+            if(!pid || !title || !description || !price || !code || !status || !category || !stock || !thumbnail){
+                
+
+
+
+
                 return {status: "Error", mesagge:"Verifique Los datos ingresados"};
             }
             const productsUpdated = await this.dao.updateProduct(pid, newData);

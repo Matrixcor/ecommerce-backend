@@ -1,7 +1,7 @@
-import {productManagerDb} from "../Dao/Mongo/productManagerDb.js";
 import { viewServices, ticketServices } from "../Repository/index.Repository.js";
 import { transporter } from "../Config/email.config.js"
 import { emailTemplateTickets } from "../Templates/email.Templates.js"
+import { generateProducts } from "../utils.js";
 
 class viewsController {
     static homeViewController = async(req,res)=>{
@@ -56,7 +56,7 @@ class viewsController {
                 const templateTicket = await emailTemplateTickets(prodTicket);
                 const content = await transporter.sendMail({
                     from: "Servicio de notificaciones Ecommerce - Backend ",
-                    to:    email,//userName, //es el correo del usuario registrado
+                    to:    email,   //userName, //es el correo del usuario registrado
                     subject: "Servicio de notificaciones Ecommerce - Backend",
                     html: templateTicket
                 });
@@ -68,7 +68,20 @@ class viewsController {
         }
     }
     // vistas web
-    
+    static mockingProdsController = async(req,res)=>{
+        try {
+            const cant = req.query.cant || 50;
+            let arrayProds = [];
+            for(let i=0 ; i< cant ; i++){
+                const prods = await generateProducts();
+                arrayProds.push(prods);
+            }
+            res.json({arrayProds});
+        } catch (error) {
+            res.render("error");  
+        }
+    }
+
     static prodsViewController = async(req,res)=>{
         try{
             const {last_name, first_name, email, cart, role} = req.user;

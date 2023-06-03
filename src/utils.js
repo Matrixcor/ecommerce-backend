@@ -1,9 +1,10 @@
+import { enviromentOptions } from "./Config/enviroment.options.js";
 import multer from "multer";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { enviromentOptions } from "./Config/enviroment.options.js";
+import { faker } from "@faker-js/faker";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -45,3 +46,39 @@ export const cookieExtractor = (req) =>{
     }
     return token;
 };
+// mockups for testing
+
+
+export const generateProducts = async()=>{
+    const {commerce, image, database, string, datatype, person, internet } = faker;
+    
+    return {
+        _id: database.mongodbObjectId(),
+        title: commerce.product(), 
+        description: commerce.productDescription(), 
+        price: parseInt(commerce.price()),
+        code: string.alphanumeric(4), 
+        status: datatype.boolean(), 
+        category: commerce.department(), 
+        stock: parseInt(string.numeric(2)), 
+        thumbnail: image.urlLoremFlickr({category: 'technics'}),
+    }
+};
+
+export const generateUsers = async()=>{
+    return{
+        first_name: person.firstName(sex),
+        last_name: person.lastName(sex),
+        email: internet.email(),
+        age: parseInt(string.numeric(2)),
+        password: internet.password(),
+        cart:{ 
+            type: String,
+        },
+        role:{
+            type: String,
+        }
+    }
+}
+//const mockProduct = generateProducts();
+//console.log("esto genera el mock: ", mockProduct)
