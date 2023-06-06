@@ -1,26 +1,25 @@
-import {EErrors} from "../Enums/EError.js"
+import {EError} from "../Enums/EError.js"
 
 export const errorHandler = (error, req, res, next)=>{
-    console.log("captura el middle", error)
     
     switch(error.code){
-        case EErrors.INVALID_TYPES_ERROR:
-            res.json({ status: "Error", error: error.cause});
+        case EError.INVALID_TYPES_ERROR:
+            res.json({ status: "error", error: error.cause});
             break;
-        case EErrors.ROUTING_ERROR:
-            res.json({ status: "Error", error: error.cause});
+        case EError.ROUTING_ERROR:
+            res.json({ status: "error", error: error.cause});
             break;
-        case EErrors.DATABASE_ERROR:
-            res.json({ status: "Error", error: error.name});
+        case EError.DATABASE_ERROR:
+            res.json({ status: "error", message: error.message});
             break;
-        case EErrors.IVALID_JSON:
-            res.json({ status: "Error", error: error.name});
+        case EError.IVALID_JSON:
+            res.json({ status: "error", error: error.cause});
             break;
-        case EErrors.AUTH_ERROR:
-            res.json({ status: "Error", error: error.name});
+        case EError.AUTH_ERROR:
+            res.json({ status: "error", error: error.cause});
             break;
         default:
-            next(err);
-            res.json({ status: "Error", error: "unHandled error"}); 
+            res.json({ status: "error", error: "unHandled error"}); 
     }
-}
+    
+};

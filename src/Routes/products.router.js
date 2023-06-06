@@ -11,9 +11,9 @@ productsRouter.use(json());
 
 productsRouter.get("/", productsController.getProdController);
 
-productsRouter.get("/:pid", productsController.getProdByIdController); // authenticate("jwt")
+productsRouter.get("/:pid", productsController.getProdByIdController); // authenticate("jwt") , checkRole(["admin"]) quite la autenticaciones para probar directamente - pero sigue sin funcionar el middleware
 
-productsRouter.post("/",dataStorage.single("file"), checkRole(["admin"]), productsController.addProdController); //solo administrador, authenticate("jwt")
+productsRouter.post("/",dataStorage.single("file"), productsController.addProdController); //solo administrador, authenticate("jwt") quite la autenticaciones para probar directamente - pero sigue sin funcionar el middleware
 
 productsRouter.put("/:pid", authenticate("jwt"), checkRole(["admin"]), productsController.updateProdController); //solo administrador
 

@@ -1,17 +1,39 @@
 import  { productServices } from "../Repository/index.Repository.js"
 
+import { customErrorRepository } from "../Repository/errorService/customError.Repository.js";
+import { EError } from "../Enums/EError.js";
+import { generateProductErrorInfo } from "../Repository/errorService/errorGenerate.Repository.js"
+
 class productsController{
 
-    static addProdController = async(req, res)=>{
-        let newData;
-        if(!req.file){
-            newData = {...req.body, thumbnail: "empty"};
-        }else{
-            newData = {...req.body, thumbnail: req.file.path};
+    static addProdController = async(req, res, next)=>{
+        
+        try {
+                let newData;
+            if(!req.file){
+                newData = {...req.body, thumbnail: "empty"};
+            }else{
+                newData = {...req.body, thumbnail: req.file.path};
+            }
+            const { title, description, price, code, status, category, stock, thumbnail } = newData;
+
+            if(!title || !description || !price || !code || !status || !category || !stock || !thumbnail){
+
+                customErrorRepository.createError({ // genera bien el error
+                    name: "Error al crear el producto",
+                    cause: generateProductErrorInfo(newData),
+                    message: "Error, Faltan algunos campos, o el formato ingresado no es correcto",
+                    errorCode: EError.INVALID_TYPES_ERROR
+                })
+            }
+
+            const createdProduct = await productServices.addProdService(newData);
+            req.io.emit("sendData", createdProduct);
+            res.send(createdProduct);
+        } catch (error) {
+            next(error);
         }
-        const createdProduct = await productServices.addProdService(newData);
-        req.io.emit("sendData", createdProduct);
-        res.send(createdProduct);
+        
     };
 
     static getProdController = async(req, res)=>{
@@ -28,8 +50,6 @@ class productsController{
             const query =  { title, price, code };
             
             const productData = await productServices.getProdService(query, page, limit, sort );
-            // no retorna productos
-            console.log("get al product", productData)
             req.io.emit("sendData", productData.payload);
             res.redirect("/products")
             //res.json(productData.payload);

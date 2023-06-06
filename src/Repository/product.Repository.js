@@ -1,6 +1,3 @@
-import { customErrorRepository } from "../Repository/errorService/customError.Repository.js";
-import { EErrors } from "../Enums/EError.js";
-import { generateProductErrorInfo } from "../Repository/errorService/errorGenerate.Repository.js"
 
 class productRepository {
     constructor(dao){
@@ -10,16 +7,7 @@ class productRepository {
     async addProdService(newData){
         try{
             const { title, description, price, code, status, category, stock, thumbnail } = newData;
-            if(!title || !description || !price || !code || !status || !category || !stock || !thumbnail){
-
-                customErrorRepository.createError({ // genera bien el error, pero no lo detecta el middleware
-                    name: "Products create Error",
-                    cause: generateProductErrorInfo(newData),
-                    message: "Error, Faltan algunos campos, o el formato ingresado no es correcto",
-                    code: EErrors.INVALID_TYPES_ERROR
-                })
-                console.log("-")
-            }
+          
             const compare = await this.dao.getForSomeProduct();  //verifica si el producto ya esta agregado
             const  productWithSameCode = compare.some( (prod) => prod.code === code );
             if(productWithSameCode) return {status: "error",mesagge:"El Codigo ingresado ya existe, por favor elija otro."};

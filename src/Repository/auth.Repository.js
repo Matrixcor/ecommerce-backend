@@ -2,10 +2,6 @@ import { enviromentOptions } from "../Config/enviroment.options.js";
 import { createUserDto, generateUserForTokenDto } from "../Dao/Dto/auth.dto.js";
 import { isValidPassword, createToken } from "../utils.js";
 
-import { customErrorRepository } from "./errorService/customError.Repository.js";
-import { EErrors } from "../Enums/EError.js";
-import { generateUserErrorInfo } from "./errorService/errorGenerate.Repository.js";
-
 class authRepository{
     constructor(dao){
         this.dao = dao;
@@ -14,7 +10,7 @@ class authRepository{
     async registerAuthService(data){
         try {
             let role ;
-            const { first_name, last_name, email, age, password } = data;
+            const { email, password } = data;
             
             const userExist = await this.dao.getUser(email)
             if(userExist) return res.status(409).send("el usuario ya existe");

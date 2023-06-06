@@ -68,6 +68,8 @@ class viewsController {
         }
     }
     // vistas web
+
+    
     static mockingProdsController = async(req,res)=>{
         try {
             const cant = req.query.cant || 50;
@@ -81,6 +83,7 @@ class viewsController {
             res.render("error");  
         }
     }
+
 
     static prodsViewController = async(req,res)=>{
         try{
