@@ -80,5 +80,3 @@ export const generateUsers = async()=>{
         }
     }
 }
-//const mockProduct = generateProducts();
-//console.log("esto genera el mock: ", mockProduct)

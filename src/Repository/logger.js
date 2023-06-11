@@ -7,51 +7,51 @@ const currentEnv = enviromentOptions.devEnviroment.node_env;
 
 const customLevels = {
     levels: {
-        debug: 5,
-        http: 4,
-        info: 3,
-        warning: 2,
+        fatal: 0,
         error: 1,
-        fatal: 0
+        warning: 2,
+        info: 3,
+        http: 4,
+        debug: 5,
     },
     colors:{
-        debug: 'white',
-        http: 'green',
-        info: 'blue',
-        warning: 'yellow',
-        error: 'orange',
-        fatal: 'red'
+        fatal: "red",
+        error: "yellow",
+        warning: "magenta",
+        info: "blue",
+        http: "green",
+        debug: "cyan"
     }
-}
-
+};
 
 const devLogger = winston.createLogger({
-    level: customLevels.levels,
+    levels: customLevels.levels,
     transports: [
         new winston.transports.Console({ level: "debug",
         format: winston.format.combine(
-            winston.format.colorize({color: customLevels.colors}),
-            winston.format.simple()
+            winston.format.colorize({colors: customLevels.colors}),
+            winston.format.timestamp({ format: 'YYYY-MM-DD hh:mm:ss.SSS A'}), //
+            winston.format.simple(),
         )
     }) // loggear solo en consola   
     ]
 });
 
-
 const prodLogger = winston.createLogger({
-    level: customLevels.levels,
+    levels: customLevels.levels,
     transports: [
         new winston.transports.Console({ level: "info",
         format: winston.format.combine(
             winston.format.colorize({colors: customLevels.colors}),
-            winston.format.simple()
-        )}), // loogear solo a partir de nivel info
-        new winston.transports.File({ filename: path.join(__dirname,"logs/errors.log"), level: "error" })
+            winston.format.timestamp({ format: 'YYYY-MM-DD hh:mm:ss.SSS A'}),
+            winston.format.simple(), 
+        )
+    }), new winston.transports.File({ filename: path.join(__dirname,"/logs/errors.log"), level: "error" })  
     ]
 });
 //creo el middleware
 
-export const addLogger = (req,res,next)=>{
+export const addLogger = (req,res,next)=>{ // no lo utilizo porque anula las respuestas del controller
     if(currentEnv == "development"){
         req.logger = devLogger;
     }else{
@@ -59,4 +59,14 @@ export const addLogger = (req,res,next)=>{
     }
     req.logger.http(`${req.url} - method: ${req.method}`);
     next(); 
-}
+};
+
+export const currentLogger = ()=>{ // para utilizarlo en los service y los manager
+    let current;
+    if(currentEnv == "development"){
+        current = devLogger;
+    }else{
+        current = prodLogger;
+    }
+    return current;
+};

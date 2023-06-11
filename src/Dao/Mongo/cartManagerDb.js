@@ -9,16 +9,16 @@ class cartManagerDb{
             const cartArray = await cartsModel.create(newCart);
             return { status: "succes", cartArray };
         }catch(error){
-            return { status: "error", message: "Error - cart not created" };
+            return { status: "Error", message: "Error - cart not created" };
         }
     }
 
     async getCarts(){
         try{ 
             const carts = await cartsModel.find().lean(); //trae datos de la db
-            return { status: "succes", payload: carts, message: "El producto se agrego correctamente" };
+            return { status: "succes", payload: carts, message: "El carrito se obtuvo correctamente" };
         }catch(error){
-            return { stat: 400, result: "Error trying to retrieve the carts" };
+            return { status: "Error", message: "Error trying to retrieve the carts" };
         }
     }
  
@@ -40,7 +40,7 @@ class cartManagerDb{
             await cart.save();
             return { status: "succes", payload: cart, mesagge:"producto agregado correctamente" };
         } catch (error) {
-            return { status: "error", message: "error el producto no se pudo agregar" };
+            return { status: "Error", message: "error el producto no se pudo agregar" };
         }
     }
 
@@ -50,7 +50,6 @@ class cartManagerDb{
             for(let i = 0; i < array.products.length; i++) {
                 if(array.products[i].product._id.toString() === pid) {
                     array.products[i].quantity ++;
-                    console.log(array.products[i].quantity)
                 }
             };
             await array.save();

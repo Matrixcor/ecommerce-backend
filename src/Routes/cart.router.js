@@ -15,9 +15,5 @@ cartsRouter.delete("/:cid/products/:pid", cartController.delProdCartController);
 cartsRouter.delete("/:cid", cartController.delAllProdCartController); //solo el usuario
 
 cartsRouter.post("/:cid/purchase", cartController.purchaseCartController); //finaliza proceso de compra
-/*debo corroborar el stock antes de finalizar:
--si hay stock: restarlo del stock de la db
--sin no hay stock, no agrego el producto a la compra( lo quito)
-*/
 
 export default cartsRouter;

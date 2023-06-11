@@ -27,6 +27,7 @@ socket.on("sendDataCart",async(cartProducts)=>{
         `;
         Container.appendChild(BoxProduct);
     });
+    
 });
 
 const getUserCart = async()=>{ //verifica si el usuario tiene un carrito creado
@@ -68,16 +69,16 @@ const quitProd = async(pid)=>{ // cuando presiono el boton de eliminar hago la p
     const cid = varios.cart;
     const push = await fetch(`http://localhost:8080/api/carts/${cid}/products/${pid}`, {method: "DELETE"}) //este activa el socket para mostrar el cart
     .then((res) => res.json()) //debo recibir el id del cart creado
-    .then((data) => { console.log(data) })
+    .then((data) => { return data })
 }
 const purchase = async()=>{
     const varios = await getUserCart();
     const cid = varios.cart;
-    /*
+    
     const push = await fetch(`http://localhost:8080/api/carts/${cid}/purchase`, {method: "POST"}) //este activa el socket para mostrar el cart
     .then((res) => res.json()) //debo recibir el id del cart creado
-    .then((data) => { console.log(data)})     
-    */
+    .then((data) => { return data})     
+    
 }
 handle();
 

@@ -12,7 +12,7 @@ export const errorHandler = (error, req, res, next)=>{
         case EError.DATABASE_ERROR:
             res.json({ status: "error", message: error.message});
             break;
-        case EError.IVALID_JSON:
+        case EError.INVALID_JSON:
             res.json({ status: "error", error: error.cause});
             break;
         case EError.AUTH_ERROR:

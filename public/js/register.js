@@ -18,5 +18,4 @@ registerForm.addEventListener("submit", async(e)=>{
         body: JSON.stringify(formData)
     });
     const body = await response.json();
-    console.log(body)
 });

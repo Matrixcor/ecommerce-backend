@@ -1,4 +1,7 @@
 import { authServices, productServices } from "./index.Repository.js";
+import { currentLogger } from "./logger.js";
+
+const logger = currentLogger();
 
 class cartRepository{
     constructor(dao){
@@ -8,6 +11,10 @@ class cartRepository{
     async newCartService(email){
         try{
             const newCarry =  await this.dao.createNewCart();
+            if(newCarry.status == "Error"){
+                logger.error("Error en newCartService - no se pudo insertar el carrito en la DB")
+                return {status: "Error", message:"El carrito no se pudo generar"}
+            }
             const inf = {cart: newCarry.cartArray._id} // debo traer el id del carrito y guardarlo en el user
             const updateUser = await authServices.updateProfileUser(email, inf);     //retorna el user actualizado
             const data = { newCarry, updateUser}
@@ -22,7 +29,7 @@ class cartRepository{
             const cartProducts = await this.dao.getProductsInCart(cid);
             return cartProducts
         }catch(err){
-            res.status(404).send(err,"error")
+            return {status:"Error", message:"No se pudo obtener el producto"};
         }
     };
 
@@ -31,7 +38,7 @@ class cartRepository{
             const { cid, pid } = data;
             const cartProduc = await this.dao.getProductsInCart(cid); // si no existe el carrito
             if(typeof(cartProduc.products) == "string"){
-                return { status:"error", message:"no se puede agregar el producto porque el carrito seleccionado no existe"};
+                return { status:"Error", message:"no se puede agregar el producto porque el carrito seleccionado no existe"};
             }
             const arrayToCompare = cartProduc.products;
             const comparedprod = arrayToCompare.some((prod) => prod.product._id.toString() === pid );
@@ -41,7 +48,7 @@ class cartRepository{
                 return await this.dao.addProduct(cid,pid,cartProduc);
             }
         }catch(err){
-            return { status: "error", message: "error, no se pudo procesar el producto" }
+            return { status: "Error", message: "error, no se pudo procesar el producto" }
         }
     };
 
@@ -57,7 +64,7 @@ class cartRepository{
             const response = await this.dao.getProductsInCart(cid);
             return response
         }catch(err){
-            res.status(404).send(err,"no se pudo actualizar el producto");
+            return {status:" Error", message:"no se pudo actualizar el producto"}
         }
     };
 
@@ -125,7 +132,7 @@ class cartRepository{
             };
             return { cartChecked, stokcToUpdate };
         }catch(err){
-            return {status: "error", message:"This product do not be updated"};
+            return {status: "Error", message:"This product do not be updated"};
         }
     };
 

@@ -1,64 +1,129 @@
 import { cartServices, productServices, ticketServices } from "../Repository/index.Repository.js";
 
+import { customErrorRepository } from "../Repository/errorService/customError.Repository.js";
+import { generateNewCartErrorInfo, generateGetProdCartErrorInfo, generateDelCartErrorInfo } from "../Repository/errorService/errorGenerate.Repository.js"
+import { EError } from "../Enums/EError.js";
+import { currentLogger } from "../Repository/logger.js";
+
+const logger = currentLogger();
 class cartController{
-    static newCartController = async(req,res)=>{
+    static newCartController = async(req,res, next)=>{
         try{
-            const newCart =  await cartServices.newCartService(req.body); //recibo el usuario actualizado con el id del carrito, retorna el token para actualizar
+            const data = req.body;
+            const newCart =  await cartServices.newCartService(data); //recibo el usuario actualizado con el id del carrito, retorna el token para actualizar
             if( newCart.status != "Error" ){
+                logger.info("Carrito generado correctamente")
                 res.cookie("cookie-token", newCart.data.updateUser.newUserToken, {maxAge: 60*60*1000, httpOnly: true}); //aca debo actualizar el token
             }else{
-                res.status(409).json(update.message);
+                logger.error("Error en newCartController - No se pudo actualizar el carrito dell perfil del uasuario ")
+                customErrorRepository.createError({
+                    name: "User Login Error",
+                    cause: generateNewCartErrorInfo(data),
+                    message: "Error, los datos ingresados son incorrectos",
+                    errorCode: EError.INVALID_JSON
+                });
             }
-            
             res.json(newCart.data.newCarry);
-        }catch(err){
-            res.status(404).send("no se pudo generar el carrito");
+        }catch(error){
+            next(error);
         }
     };
 
-    static getProdCart = async(req,res)=>{
+    static getProdCart = async(req,res, next)=>{
         try{
             const { cid } = req.params;
+            if(!cid){
+                logger.warning("Faltan parametros Cid")
+                customErrorRepository.createError({
+                    name: "Cart id Error",
+                    cause: generateGetProdCartErrorInfo(cid),
+                    message: "Error, Falta el identificador de carrito",
+                    errorCode: EError.INVALID_JSON
+                }); 
+            } 
             const cartProducts = await cartServices.getProdCartService(cid);
             req.io.emit("sendDataCart", cartProducts);
             res.send(cartProducts);
-        }catch(err){
-            res.status(404).send("error")
+        }catch(error){
+            next(error);
         }
     };
 
-    static addProdCartController = async(req,res)=>{
+    static addProdCartController = async(req,res, next)=>{
         try{
             const data = req.params;
             const productAdded = await cartServices.addProdCartService(data);
-
-            req.io.emit("sendDataCart", productAdded.payload);
-            res.json(productAdded);
-        }catch(err){
-            res.status(404).send("no se pudo actualizar el producto");
+            if(createdProduct.status !== "Error"){
+                logger.info("El producto se agrego exitosamente");
+                req.io.emit("sendDataCart", productAdded.payload);
+                res.json(productAdded);
+            }else{
+                logger.warning("El producto no se pudo agregar ");
+                logger.error("Error en addProdCartController - Producto existente");
+                customErrorRepository.createError({
+                    name: "Add prod Cart Error",
+                    cause: generateGetProdCartErrorInfo(cid),
+                    message: "Error, no se pudo agregar el producto al carrito",
+                    errorCode: EError.INVALID_JSON
+                });
+                res.status(409).json(productAdded.message);
+            }
+        }catch(error){
+            next(error);
+            //res.status(404).send("no se pudo actualizar el producto");
         }
     };
 
-    static delProdCartController = async(req,res)=>{
+    static delProdCartController = async(req,res, next)=>{
         try{
             const { cid, pid } = req.params;
             const productDeleted = await cartServices.delProdCartService(cid,pid);
-
-            req.io.emit("sendDataCart", productDeleted);
-            res.json(productDeleted);
-        }catch(err){
-            res.status(404).send("no se pudo actualizar el producto");
+            if(productDeleted.status !== "Error"){
+                logger.info("producto eliminado")
+                req.io.emit("sendDataCart", productDeleted);
+                res.json(productDeleted);
+            }else{
+                customErrorRepository.createError({
+                    name: "Delete prod Cart Error",
+                    cause: generateDelCartErrorInfo(cid, pid),
+                    message: "Error, no se pudo actualizar la cantidad de productos del carrito",
+                    errorCode: EError.INVALID_JSON
+                });
+            };
+        }catch(error){
+            next(error);
+            //res.status(404).send("no se pudo actualizar el producto");
         }
     };
 
-    static delAllProdCartController = async(req,res)=>{
+    static delAllProdCartController = async(req,res, next)=>{
         try{
             const { cid } = req.params;
+            if(!cid){
+                logger.warning("Error, flata identificador de carrito");
+                customErrorRepository.createError({
+                    name: "Delete all Cart Error",
+                    cause: generateGetProdCartErrorInfo(cid),
+                    message: "Error, no se pudo eliminar el carrito porque falta el CID",
+                    errorCode: EError.INVALID_JSON
+                });
+            }
             const allProductsDeleted = await cartServices.delAllProdCartService(cid);
-            req.io.emit("sendDataCart", allProductsDeleted);
-            res.send(allProductsDeleted);
-        }catch(err){
-            res.status(404).send("no se pudo actualizar el Carrito");
+            if(allProductsDeleted.status !== "Error"){
+                req.io.emit("sendDataCart", allProductsDeleted);
+                res.send(allProductsDeleted);
+            }else{
+                logger.error("Error en delAllProdCartController - No se pudo obtener el carrito o actualizar el carrito");
+                customErrorRepository.createError({
+                    name: "Delete all Cart Error",
+                    cause: generateGetProdCartErrorInfo(cid),
+                    message: "Error, no se pudo eliminar el carrito debido a causas internas",
+                    errorCode: EError.INVALID_JSON
+                });
+            }
+        }catch(error){
+            next(error);
+            //res.status(404).send("no se pudo actualizar el Carrito");
         }
     };
 

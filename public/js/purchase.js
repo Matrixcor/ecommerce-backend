@@ -1,12 +1,10 @@
 const socket = io();
 
 socket.on("sendDataPurchase",async(updt)=>{
-    const data = await updt;  
-    console.log("data: ",data)  
+    const data = await updt;   
     const Container = document.querySelector("#cartContainer")
     Container.innerHTML = "";
     data.forEach(data => {
-        console.log("data del each: ",data)
         const { prodTitle, prodPrice, prodImage, prodQuantity, amount } = data;
         let BoxProduct = document.createElement('div');
         BoxProduct.innerHTML = `

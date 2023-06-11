@@ -2,7 +2,6 @@ const socket = io();
 
 socket.on("sendData",(result)=>{
     const data = result.payload;
-    console.log(data)
     const Container = document.querySelector("#containerProduct")
     Container.innerHTML = "";
     data.forEach(data => {

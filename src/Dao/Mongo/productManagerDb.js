@@ -48,7 +48,7 @@ class productManagerDb {
     async getProdById(pid){
         const productById = await productModel.findById(pid);
         if(!productById){
-            return {status:"error", message:"El producto buscado no se encuentra"}
+            return {status:"Error", message:"El producto buscado no se encuentra"}
         }else{
             return {status:"succes", payload: productById};
         };        
@@ -57,7 +57,7 @@ class productManagerDb {
     async getViewProducts(){ // lo que trae trae productos para el view router
         const products = await productModel.find().lean();
         if(!products){
-            return {status:"error", message:"No se encontraron productos"}
+            return {status:"Error", message:"No se encontraron productos"}
         }
         return {status:"succes", payload: products};
     };
@@ -68,7 +68,7 @@ class productManagerDb {
             const productsUpdate = await productModel.find().lean();
             return {status:"succes", payload: productsUpdate};
         }catch (error) {
-            return {status:"error", message: "Error updating product"};
+            return {status:"Error", message: "Error updating product"};
         }
     };
 
@@ -78,7 +78,7 @@ class productManagerDb {
             const newArrayProduct = await productModel.find().lean();
             return {status:"succes", payload: newArrayProduct };
         }catch (error) {
-            return {Status:"error", mesagge: "Error deleting product" };
+            return {Status:"Error", mesagge: "Error deleting product" };
         }
     };
 }

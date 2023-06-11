@@ -40,8 +40,6 @@ const startPassport = ()=>{
             },
             async(accesToken, refreshToken, profile, done) =>{
                 try{
-                    console.log("profile: ", profile )
-                    
                     const user = await userModel.findOne({ email: profile.username });
                     if(!user){
                         const newUser = {

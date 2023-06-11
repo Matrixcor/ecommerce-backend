@@ -15,7 +15,7 @@ import { enviromentOptions } from "./Config/enviroment.options.js";
 import {chatManagerDb} from "./Dao/Mongo/chatManagerDb.js";
 import  {chatController}  from "./Controllers/chat.controller.js";
 import loggerRouter from "./Routes/log.router.js";
-//import { addLogger } from "./Repository/logger.js";
+import { addLogger } from "./Repository/logger.js";
 import { errorHandler } from "./middlewares/errorHandler.js"; 
 
 const app = express();
@@ -40,7 +40,7 @@ app.use((req,res,next)=>{ // middleware socket
     next();
 });
 
-//app.use(addLogger); //middleware de logger
+app.use(addLogger); //middleware de logger
 
 startPassport(); // middleware de passport
 app.use(passport.initialize()); 

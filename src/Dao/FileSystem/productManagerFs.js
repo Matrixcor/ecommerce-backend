@@ -82,7 +82,6 @@ class productManagerFs{
     
     async getFilterProduc(searchKey,filterOptions){ // toda esta logica deberia pasarla al service
         try {
-            //console.log("entra a funcion")
             let newArray;
             let num;
             const element = {}; 
@@ -97,7 +96,6 @@ class productManagerFs{
             const array = product.map( (prod)=>{
                 prop === key;
             })
-            console.log(array)
             //limito el numero de productos a mostrar
             let long = product.length();
             limit <= long ? num = limit : num = long
@@ -105,7 +103,6 @@ class productManagerFs{
                 newArray.push(array[i]);
             }
             
-            console.log("arrayfilter: ", newArray)
             return {FileSystem: true, arrayProd};
         } catch (error) {
             

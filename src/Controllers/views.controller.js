@@ -2,6 +2,9 @@ import { viewServices, ticketServices } from "../Repository/index.Repository.js"
 import { transporter } from "../Config/email.config.js"
 import { emailTemplateTickets } from "../Templates/email.Templates.js"
 import { generateProducts } from "../utils.js";
+import { currentLogger } from "../Repository/logger.js";
+
+const logger = currentLogger();
 
 class viewsController {
     static homeViewController = async(req,res)=>{
@@ -22,16 +25,15 @@ class viewsController {
             res.render("error");
         }
     };
-    //hasta aca bien
 
-    static cartProdViewController = async(req,res)=>{
+    static cartProdViewController = async(req,res)=>{ //muestra el carrito con el boton
         try{
             const { cid } = req.params;
             const mostrar = await viewServices.cartGetViewProdService(cid);
             const prod = mostrar.products;
+        
             req.io.emit("sendDataCart", prod);
-
-            res.render("carts")
+            res.render("carts");
         }catch(error){
             res.json(error)
         }
@@ -56,12 +58,12 @@ class viewsController {
                 const templateTicket = await emailTemplateTickets(prodTicket);
                 const content = await transporter.sendMail({
                     from: "Servicio de notificaciones Ecommerce - Backend ",
-                    to:    email,   //userName, //es el correo del usuario registrado
+                    to: email,   //userName es el correo del usuario registrado
                     subject: "Servicio de notificaciones Ecommerce - Backend",
                     html: templateTicket
                 });
+                logger.info("Email creado correctamente");
             }
-
             res.render("tickets", prodTicket)
         } catch (error) {
             res.render("error"); 
@@ -69,7 +71,6 @@ class viewsController {
     }
     // vistas web
 
-    
     static mockingProdsController = async(req,res)=>{
         try {
             const cant = req.query.cant || 50;
@@ -78,12 +79,12 @@ class viewsController {
                 const prods = await generateProducts();
                 arrayProds.push(prods);
             }
+            logger.info("Mocking generado exitosamente");
             res.json({arrayProds});
         } catch (error) {
             res.render("error");  
         }
     }
-
 
     static prodsViewController = async(req,res)=>{
         try{
@@ -111,6 +112,7 @@ class viewsController {
         try{
             res.render("register");
         }catch(error){
+            logger.warning("Error en registerViewController")
             res.render("error");
         }
     };

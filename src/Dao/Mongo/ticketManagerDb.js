@@ -2,11 +2,8 @@ import ticketModel  from "./Models/tickets.Model.js";
 
 class ticketManagerDb{
     async createTicket(){
-        try {
-            
-            //const ticketToPush = await ticketModel.create(ticketData);
-            console.log("ticket creado");
-            
+        try {  
+            const ticketToPush = await ticketModel.create(ticketData);
             return ticketToPush;
         } catch (error) {
             return error;

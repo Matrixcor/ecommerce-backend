@@ -1,3 +1,6 @@
+import { currentLogger } from "./logger.js";
+
+const logger = currentLogger();
 
 class productRepository {
     constructor(dao){
@@ -10,10 +13,14 @@ class productRepository {
           
             const compare = await this.dao.getForSomeProduct();  //verifica si el producto ya esta agregado
             const  productWithSameCode = compare.some( (prod) => prod.code === code );
-            if(productWithSameCode) return {status: "error",mesagge:"El Codigo ingresado ya existe, por favor elija otro."};
+            if(productWithSameCode) {
+                logger.warning("El codigo de producto ingresado ya existe");
+                return {status: "Error",mesagge:"El Codigo ingresado ya existe, por favor elija otro."};
+            }
             const listProd = await this.dao.addProduct(title, description, price, code, status, category, stock, thumbnail );
             return {status: "succes", payload: listProd};
         }catch(error){
+            logger.error("Error en addProdService - no se pudo Agregar el producto");
             return {status: "Error", message: "El producto no se agrego correctamente"};
         }
     };
@@ -54,14 +61,14 @@ class productRepository {
                 }
                 return { status: "succes", payload: newResult}
             } 
-            return { status: "succes", payload: product.payload }
+            return {status: "succes", payload: product.payload}
         } catch (error) {
-            return {status: "error", message:"Error trying to retrieve the products"};
+            logger.error("Error en getProdService - no se pudo obtener el producto");
+            return {status: "Error", message:"Error trying to retrieve the products"};
         };
     };
 
     async getByIdProdService(pid){  
-        if(!pid) return {status: "error", message: "Ingrese un valor de ID"};
         const productById = await this.dao.getProdById(pid);
         return productById;
     };
@@ -69,24 +76,20 @@ class productRepository {
     async updateProdService(pid, newData){
         try{
             const { title, description, price, code, status, category, stock, thumbnail } = newData; //verificamos que no este vacio el pid ni el data
-            if(!pid || !title || !description || !price || !code || !status || !category || !stock || !thumbnail){
-                
-
-
-
-
+            if(!title || !description || !price || !code || !status || !category || !stock || !thumbnail){
                 return {status: "Error", mesagge:"Verifique Los datos ingresados"};
             }
             const productsUpdated = await this.dao.updateProduct(pid, newData);
             return {status:"succes", payload: productsUpdated, message:"Product has been updated"};
-        }catch(err){
-            return {status: "error", message:"This product do not be updated"};
+        }catch(error){
+            logger.error("Error en updateProdService - no se pudo actualizar el producto");
+            return {status: "Error", message:"This product do not be updated"};
         }
     };
 
     async deleteProdService(pid){
         const productDeleted = await this.dao.deleteProduct(pid);
-        if(productDeleted == "error") return {status:"error", message:"Error, Don't delete product"};
+        if(productDeleted == "Error") return {status:"Error", message:"Error, Don't delete product"};
         return {status:"succes", payload: productDeleted, message: "Product has been deleted"};
     }
 }
