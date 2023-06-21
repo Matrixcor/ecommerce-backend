@@ -18,6 +18,15 @@ class viewsRepository {
             res.render("error");
         }
     }
+
+    async WebGetOwnerProdService(owner){
+        try {
+            const arrayOwnerProd = await this.dao.getViewOwnerProducts(owner);
+            return arrayOwnerProd;
+        } catch (error) {
+            return "Error";
+        }
+    }
     
     async cartGetViewProdService(cid){
         const cartArray = await cartServices.getProdCartService(cid);

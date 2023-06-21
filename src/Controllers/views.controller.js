@@ -12,11 +12,6 @@ class viewsController {
         const arrayProd = homeProducts.payload;
         res.render("home", {arrayProd});
     };
-
-    static realTimeViewController = async(req,res)=>{
-      const realTimeArray = [];
-        res.render('real_time_products', realTimeArray);
-    };
     
     static chatViewController= async(req,res)=>{
         try{
@@ -116,12 +111,56 @@ class viewsController {
             res.render("error");
         }
     };
+
+    static recoveryViewController = async(req,res)=>{
+        try {
+            res.render("restore");
+        } catch (error){
+            logger.warning("Error en el recoveryViewController")
+            res.render("error");
+        }
+    }
+
+    static restoreViewController = async(req,res)=>{
+        try {
+            const token = req.query.token;
+            //renderizo la vista
+            res.render("newpass", {token})
+        } catch (error) {
+            res.render(error)
+        }
+    }
     
     static profileViewController = async(req,res)=>{
         try{
             const dataUser = req.body;
+            console.log(dataUser)
             res.render("profile");
         }catch(error){
+            res.render("error");
+        }
+    };
+
+    static profileCreateViewController = (req,res)=>{
+        try {
+            res.render("createprod");
+        } catch (error) {
+            res.render("error");
+        }
+    };
+
+    static profileDeleteViewController = async(req,res)=>{
+        try {
+            let data;
+            const {last_name, first_name, email, cart, role} = req.user;      //aca debo cargar los productos creados por el owner, por lo tanto debo saber que tipo de usuario es
+            const dataLoginUser = {last_name, first_name, email, cart, role}; //puedo llamar a un DTO
+            //aca deberia colocar el filtro para motrar, si es admin traer todos los productos
+            (role == "admin") ? data = await viewServices.webGetProdService() : data = await viewServices.WebGetOwnerProdService(email); //hasta aca trae los productos del owner para eliminar
+            const arrayProd = data.payload;
+            const info = { arrayProd, dataLoginUser}
+
+            res.render("deleteprod", {info});
+        } catch (error) {
             res.render("error");
         }
     };

@@ -21,3 +21,9 @@ export class generateUserForTokenDto{
         this.role = user.role;
     }
 }
+
+export class generateEmailForTokenDto{
+    constructor(user){
+        this.email = user.email;
+    }
+}

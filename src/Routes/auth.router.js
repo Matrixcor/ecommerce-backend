@@ -9,12 +9,11 @@ authRouter.post("/register", authController.registerAuthController);
 
 authRouter.post("/login", authController.loginAuthController);
 
-authRouter.get("/current", authenticate("jwt"), authController.currentAuthController);
+authRouter.post("/restore", authController.restorePass); //genero token y se lo envio por mail
 
-/*  -autenticacion con github strategy.
-    -la idea es modificar la estrategia para utilizar JWT y asi evitar utilizar session.
-    -tengo que modificar el middleware authenticate.
-*/
+authRouter.post("/recovery", authController.recoveryPass); //recibo la nueva contraseña y actualizo
+
+authRouter.get("/current", authenticate("jwt"), authController.currentAuthController);
 
 authRouter.get("/github", passport.authenticate("github", { scope: ["user: email"]}),authController.gitLogAuthController);
 

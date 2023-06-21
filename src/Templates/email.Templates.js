@@ -8,6 +8,17 @@ export const emailTemplateLogin = `
     </div>
 `;
 
+export const emailTemplateRecovery = (recoveryLink)=>{
+    return `
+        <div>
+            <h1>Recuperacion de Contraseña!!</h1>
+            <img src="https://fs-prod-cdn.nintendo-europe.com/media/images/10_share_images/portals_3/2x1_SuperMarioHub.jpg" style="width:250px"/>
+            <p>Haz click en el enlace pare recuperar tu contraseña:</p>
+            <a href= ${recoveryLink}>Restablecer Contraseña</a>
+        </div>
+    `
+};
+
 export const emailTemplateTickets = async(prodTicket)=>{
     const{ code, purchase_datetime, amount, purchaser}= prodTicket;
     const emailTemplate = `

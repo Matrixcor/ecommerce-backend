@@ -1,11 +1,12 @@
 import { authServices } from "../Repository/index.Repository.js";
 import { transporter } from "../Config/email.config.js";
-import { emailTemplateLogin } from "../Templates/email.Templates.js";
+import { emailTemplateLogin, emailTemplateRecovery } from "../Templates/email.Templates.js";
 
 import { customErrorRepository } from "../Repository/errorService/customError.Repository.js";
 import { generateUserRegErrorInfo, generateUserLogErrorInfo, authLogErrorInfo } from "../Repository/errorService/errorGenerate.Repository.js"
 import { EError } from "../Enums/EError.js";
 import { currentLogger } from "../Repository/logger.js";
+import { verifyEmailToken } from "../utils.js";
 
 const logger = currentLogger();
 
@@ -86,13 +87,48 @@ class authController{
             //res.status(409).json({error});
         }
     };
+    static restorePass = async(req,res,next)=>{ //aca genero el toke
+        //recibo el email, verifico que existe el usuario y recien genero token
+        try {
+            const { email } = req.body;
+            const token = await authServices.restorePassService(email);
+            const recoveryLink = `http://localhost:8080/restore?token=${token.emailToken}`; // es el link del render view del formulario
+            const content = await transporter.sendMail({ // luego envio al email el link con el token
+                from: "Servicio de notificaciones Ecommerce - Backend",
+                to: email, //es el correo del usuario registrado
+                subject: "Recuperacion de contraseña",
+                html: emailTemplateRecovery(recoveryLink) //cambiar el template
+            });
+            res.json({message:"exitoso token"})
+        } catch (error) {
+           //next(error);
+           res.send("error en restorepassword")
+        }
+    };
+
+    //genero funcion de recuperacion del correo
+    static recoveryPass = async(req,res)=>{ //recibo email
+        try {
+            const token = req.query.token;
+            const {password} = req.body;  // recibo los nuevos datos desdel el formulario
+            const data = verifyEmailToken(token); //ahora verifico si es correcto el token
+            if(!data){res.send("el enlace no es valido, por favor genera otro")}// verifico que la contraseña no se al misma que la anterior y luego llamo a la funcion para actualizar la contraseña.
+            const userUpdt = authServices.newPassService(data, password); // campo a actualizar
+            if(userUpdt.message != "Error"){res.send("Cambio de contraseña exitosa")}
+            
+        } catch (error) {
+            //next(error);
+            console.log(error)
+        }    
     
+    };
+
     static currentAuthController = async(req,res)=>{ //info que contiene el token desactualizado
         const {last_name, first_name, email, cart, role} = req.user;
         res.json({...req.user});
     };
     
-    static gitLogAuthController =  (req,res)=>{
+    static gitLogAuthController = (req,res)=>{
         res.json("redireccion exitosa")
     };
     

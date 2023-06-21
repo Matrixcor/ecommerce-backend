@@ -1,0 +1,40 @@
+<div>
+    <h4> SECCION PARA CREAR UN PRODUCTO </h1>
+
+    <div class="formContainer">
+        <form class="formRegister" method="post" action="/api/products/">
+            <div class="InputContainer">
+                <label > Nombre del Producto: </label>
+                <input type="text" placeholder="Escriba aqui el nombre del producto" name="title">
+            </div>
+            <div class="InputContainer">
+                <label > Descripcion: </label>
+                <input type="text" placeholder="Escriba aqui una breve descripcion del producto" name="description">
+            </div>
+            <div class="InputContainer">
+                <label > Ingrese el precio: </label>
+                <input type="text" placeholder="Escriba aqui el valor del producto" name="price">
+            </div>
+            <div class="InputContainer">
+                <label > Ingrese el codigo: </label>
+                <input type="text" placeholder="Escriba aqui el codigo del producto" name="code">
+            </div>
+            <div class="InputContainer">
+                <label> Estado: </label>
+                <input type="text" placeholder="Coloque true o false para activarlo" name="status">             
+            </div>
+            <div class="InputContainer">
+                <label> Categoria: </label>
+                <input type="text" placeholder="Escriba aqui la categoria del producto" name="category">             
+            </div>
+               <div class="InputContainer">
+                <label> Stock: </label>
+                <input type="text" placeholder="Escriba aqui la cantidad del producto" name="stock">             
+            </div>
+
+            <div class="butonContainer">
+                <button type="submit"> Create </button>
+            </div>
+        </form>
+    </div>
+</div>

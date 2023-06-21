@@ -32,6 +32,9 @@ export const enviromentOptions ={
         mail_Service_User: process.env.ADMIN_EMAIL_MAILSERVICE,
         mail_Service_Pass: process.env.ADMIN_PASS_MAILSERVICE
     },
+    emailToken:{
+        email_token: process.env.PRIVATE_EMAIL_KEY
+    },
     twilio:{
         twilio_Id: process.env.TWILIO_ID , 
         twilio_token: process.env.TWILIO_TOKEN,

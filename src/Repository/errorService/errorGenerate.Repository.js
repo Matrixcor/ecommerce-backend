@@ -32,6 +32,7 @@ export const generateProductErrorInfo = (data)=>{
 
         * title: debe ser un String, recibimos:  ${data.title}
         * description: debe ser un String, recibimos: ${data.description}
+        * owner: debe ser un String, recibimos: ${data.owner}
         * price: debe ser Numerico, recibimos: ${data.price}
         * code: debe ser un String, recibimos: ${data.code}
         * status: debe ser un String, recibimos: ${data.status}

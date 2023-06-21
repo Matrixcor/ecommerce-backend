@@ -39,6 +39,23 @@ export const createToken = (user)=>{
     return token;
 };
 
+export const createEmailToken = (email, expireTime)=>{
+    const emailToken = jwt.sign({email}, enviromentOptions.emailToken.email_token, { // averiguar que es el options.gmail.emailtoken, parece que es de config
+        expiresIn: expireTime
+    });
+    return emailToken;
+};
+
+export const verifyEmailToken = (token)=>{
+    try {
+        const info = jwt.verify(token, enviromentOptions.emailToken.email_token);
+        return info.email
+    } catch (error) {
+        return null
+    }
+  
+}
+
 export const cookieExtractor = (req) =>{
     let token = null;
     if(req && req.cookies){
@@ -48,10 +65,8 @@ export const cookieExtractor = (req) =>{
 };
 // mockups for testing
 
-
 export const generateProducts = async()=>{
     const {commerce, image, database, string, datatype, person, internet } = faker;
-    
     return {
         _id: database.mongodbObjectId(),
         title: commerce.product(), 

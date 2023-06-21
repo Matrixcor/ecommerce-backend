@@ -9,7 +9,7 @@ class productRepository {
 
     async addProdService(newData){
         try{
-            const { title, description, price, code, status, category, stock, thumbnail } = newData;
+            const { title, description, owner, price, code, status, category, stock, thumbnail } = newData;
           
             const compare = await this.dao.getForSomeProduct();  //verifica si el producto ya esta agregado
             const  productWithSameCode = compare.some( (prod) => prod.code === code );
@@ -17,7 +17,7 @@ class productRepository {
                 logger.warning("El codigo de producto ingresado ya existe");
                 return {status: "Error",mesagge:"El Codigo ingresado ya existe, por favor elija otro."};
             }
-            const listProd = await this.dao.addProduct(title, description, price, code, status, category, stock, thumbnail );
+            const listProd = await this.dao.addProduct(title, description,owner, price, code, status, category, stock, thumbnail );
             return {status: "succes", payload: listProd};
         }catch(error){
             logger.error("Error en addProdService - no se pudo Agregar el producto");

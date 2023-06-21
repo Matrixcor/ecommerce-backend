@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
     role:{
         type: String,
         require: true,
-        option:["admin","user"],
+        option:["premium","superadmin","admin","user"],
     }
 });
 

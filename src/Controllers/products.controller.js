@@ -14,13 +14,13 @@ class productsController{
         try {
             let newData;
             if(!req.file){
-                newData = {...req.body, thumbnail: "empty"};
+                newData = {...req.body, owner: req.user.email, thumbnail: "empty"}; //agrego el owner desde el jwt
             }else{
-                newData = {...req.body, thumbnail: req.file.path};
+                newData = {...req.body, owner: req.user.email, thumbnail: req.file.path};
             }
-            const { title, description, price, code, status, category, stock, thumbnail } = newData;
-
-            if(!title || !description || !price || !code || !status || !category || !stock || !thumbnail){
+            const { title, description, owner, price, code, status, category, stock, thumbnail } = newData;
+            
+            if(!title || !description || !owner || !price || !code || !status || !category || !stock || !thumbnail){
                 logger.error("Error en addProdController - Datos del producto incompletos");
                 customErrorRepository.createError({ // genera bien el error
                     name: "Error al crear el producto",
@@ -29,7 +29,6 @@ class productsController{
                     errorCode: EError.INVALID_TYPES_ERROR
                 })
             };
-
             const createdProduct = await productServices.addProdService(newData);
             if(createdProduct.status !== "Error"){
                 req.io.emit("sendData", createdProduct);
@@ -109,13 +108,17 @@ class productsController{
     static deleteProdController = async(req,res)=>{
         try{
             const { pid } = req.params;
+            const { role }= req.user;
+            console.log("role delete:", role)
             if(!pid){
                 logger.warning("Falta ingresar el valor Id del producto");
                 logger.error("Error en deleteProdController - no se ingreso el valor id del producto");
                 res.send("Ingrese un valor ID");
             }
-            const productDeleted = await productServices.deleteProdService(pid);
-            req.io.emit("sendData", productDeleted.payload);
+            
+
+            //const productDeleted = await productServices.deleteProdService(pid);
+           // req.io.emit("sendData", productDeleted.payload);
             res.send(productDeleted.message);
         }catch(error){
             res.status(404).send(error);

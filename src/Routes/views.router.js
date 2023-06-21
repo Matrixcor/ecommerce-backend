@@ -9,8 +9,6 @@ viewsRouter.use(json());
 
 viewsRouter.get("/", viewsController.homeViewController);
 
-viewsRouter.get("/real-time-products", viewsController.realTimeViewController);
-
 viewsRouter.get("/chat", authenticate("jwt"), checkRole(["user"]) , viewsController.chatViewController); //solo el rol user
 
 viewsRouter.get("/carts/:cid", viewsController.cartProdViewController);
@@ -28,6 +26,14 @@ viewsRouter.get("/login", viewsController.loginViewController);
 
 viewsRouter.get("/register", viewsController.registerViewController);
 
-viewsRouter.get("/profile", passport.authenticate("jwt", {sessions: false}), viewsController.profileViewController);
+viewsRouter.get("/recovery", viewsController.recoveryViewController); // se renderiza primero y cargo el email para hacer el token
+
+viewsRouter.get("/restore", viewsController.restoreViewController); //renderizo el formulario que redirigio el email para enviar datos de email y nueva password al endpoint
+
+viewsRouter.get("/profile", authenticate("jwt"), viewsController.profileViewController);
+
+viewsRouter.get("/profile/create",authenticate("jwt"), viewsController.profileCreateViewController);
+
+viewsRouter.get("/profile/delete",authenticate("jwt"), viewsController.profileDeleteViewController);
 
 export default viewsRouter;

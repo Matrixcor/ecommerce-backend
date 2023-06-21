@@ -1,6 +1,7 @@
 import { enviromentOptions } from "../Config/enviroment.options.js";
-import { createUserDto, generateUserForTokenDto } from "../Dao/Dto/auth.dto.js";
-import { isValidPassword, createToken } from "../utils.js";
+import { createUserDto, generateUserForTokenDto, generateEmailForTokenDto } from "../Dao/Dto/auth.dto.js";
+import { createHash } from "../utils.js";
+import { isValidPassword, createToken, createEmailToken } from "../utils.js";
 import { currentLogger } from "./logger.js";
 
 const logger = currentLogger();
@@ -51,12 +52,39 @@ class authRepository{
         }
     };
 
-    async updateProfileUser(email, newData){ //por el momento no utilizada
+    async restorePassService(email){ //genero el token
+        try {
+            const loginUser = await this.dao.getUser(email);
+            if(!loginUser) return {status: "Error", message:"El usuario no existe"};
+            const data = new generateEmailForTokenDto(loginUser)
+            const expireTime = 60*60;
+            const emailToken = createEmailToken(data, expireTime);
+            return { status: "succes", emailToken}
+        } catch (error) {
+            return {status: "Error", messge:"no se pudo generar el token, o no se eoncontro el usuario"}
+        }
+    };
+
+    async newPassService(data, password){
+        try {
+            const email = data.email;
+            const user = await this.dao.getUser(email);
+            if(isValidPassword(user, password)){return {status: "Error", messge:"Las contraseñas no deben ser iguales"}}//quiere decir que son iguales las password
+            const newData = {password: createHash(password)}
+            const userUpdated = await this.updateProfileUser(data, newData);
+
+        } catch (error) {
+            return {status: "Error", messge:"no se pudo actualizar la contraseña"}
+        }
+    };
+
+    async updateProfileUser(email, newData){
         try {
             const key = email.email;
-            const updatedUser = await this.dao.updateUser(key, newData)
-            const dat = new generateUserForTokenDto(updatedUser.payload)
-            const newUserToken = createToken({...dat})
+            console.log("esto es el key", newData)
+            const updatedUser = await this.dao.updateUser(key, newData);  
+            const dat = new generateUserForTokenDto(updatedUser.payload);
+            const newUserToken = createToken({...dat});
             return {status:"succes", newUserToken}
         } catch (error) {
             return {status: "Error", message:"Can not Update User profile"};

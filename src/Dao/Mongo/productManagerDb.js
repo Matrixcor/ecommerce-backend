@@ -3,9 +3,9 @@ import { paginate } from "mongoose-paginate-v2";
 
 class productManagerDb {
     
-    async addProduct (title, description, price, code, status, category, stock, thumbnail){        
+    async addProduct (title, description, owner, price, code, status, category, stock, thumbnail){        
         try{
-            await productModel.create({ title, description, price, code, status, category, stock, thumbnail });
+            await productModel.create({ title, description, owner, price, code, status, category, stock, thumbnail });
             const arrayProd = await productModel.find().lean();
             return arrayProd;
         }catch(error){
@@ -60,6 +60,15 @@ class productManagerDb {
             return {status:"Error", message:"No se encontraron productos"}
         }
         return {status:"succes", payload: products};
+    };
+
+    async getViewOwnerProducts(owner){
+        try {
+            const ownerProd = await productModel.find({owner: owner}).lean();
+            return {status:"succes", payload: ownerProd};
+        } catch (error) {
+            return {status:"Error", message:"No se encontraron productos"}
+        }
     };
 
     async updateProduct(pid, newData){

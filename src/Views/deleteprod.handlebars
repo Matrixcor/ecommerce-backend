@@ -1,30 +1,11 @@
-<h1> PRODUCTOS </h1>
-<div class="dataUserContainer">
+<div>
+    <h4> SECCION PARA ELIMINAR UN PRODUCTO</h4>
+
     <div class="hGroup">
         <h4> Bienvenido {{info.dataLoginUser.first_name}}</h4>
         <h4> You are an: {{info.dataLoginUser.role}}</h4>
     </div>
-    <div>
-        <form action="/api/sessions/logout">
-            <button type="submit">Logout</button>
-        </form>
-    </div>
-    <div>
-        <form action="/profile">
-            <button type="submit">Profile</button>
-        </form>
-    </div>
-</div>
-<div>
-    <div class="cartButtonContainer">
-        
-        <a href="/carts/{{info.dataLoginUser.cart}}">
-            <button> Ver carrito </button>
-        </a>
-        
-    </div>
-</div>
-
+    
 <div id="productContainer">
     {{#each info.arrayProd}}
         <div class="boxProduct">
@@ -34,6 +15,7 @@
                     <li> <strong>Id:</strong> {{_id}} </li>
                     <li> Title: {{title}} </li>
                     <li> Description: {{description}} </li>
+                    <li> Owner: {{owner}} </li>
                     <li> Price: {{price}} </li>
                     <li> Code: {{code}} </li>
                     <li> Status: {{status}} </li>
@@ -44,10 +26,9 @@
                 </ul>
             </div>
             <div>
-                <button onclick="handleCart(`{{_id}}`)"><b>Agregar al Carrito</b></button>
+                <button onclick="handleProd(`{{_id}}`)"><b>Eliminar de la Base de datos</b></button>
             </div>
         </div>
     {{/each}}
 </div>
-<script src="/socket.io/socket.io.js"></script>
-<script src="/js/products.js"></script>
+<script src="/js/modifyProdDB.js"></script>

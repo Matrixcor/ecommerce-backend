@@ -9,3 +9,10 @@
 {"level":"error","message":"Error en loginAuthController - Campos incompletos"}
 {"level":"error","message":"Error en loginAuthController - Campos incompletos"}
 {"level":"error","message":"Error en loginAuthController - Campos incompletos"}
+{"level":"error","message":"Error en addProdController - Datos del producto incompletos"}
+{"level":"error","message":"Error en addProdController - Datos del producto incompletos"}
+{"level":"error","message":"Error en addProdController - Datos del producto incompletos"}
+{"level":"error","message":"Error en addProdController - Producto existente"}
+{"level":"error","message":"Error en addProdController - Producto existente"}
+{"level":"error","message":"Error en addProdController - Producto existente"}
+{"level":"error","message":"Error en addProdController - Datos del producto incompletos"}
