@@ -33,16 +33,23 @@ class cartRepository{
         }
     };
 
-    async addProdCartService(data){
+    async addProdCartService(data, user){
         try{
             const { cid, pid } = data;
             const cartProduc = await this.dao.getProductsInCart(cid); // si no existe el carrito
             if(typeof(cartProduc.products) == "string"){
                 return { status:"Error", message:"no se puede agregar el producto porque el carrito seleccionado no existe"};
             }
+
+            const prodOwner = await this.dao.getProdByIdForCart(pid); // aca evito que el role premium agregue sus propios productos al carrito
+            if (prodOwner.owner == user.email && user.role == "premium"){
+                return { status:"Error", message:"Error, eres usuario premium, no puedes agregar tus propios productos al carrito"};
+            }
+
             const arrayToCompare = cartProduc.products;
-            const comparedprod = arrayToCompare.some((prod) => prod.product._id.toString() === pid );
-            if(comparedprod){
+            const comparedprod = arrayToCompare.some((prod) => prod.product._id.toString() === pid);
+
+            if(comparedprod){ //si no existe el prod en el carrito lo agrego
                 return await this.dao.incrementCartProdQuantity(cid,pid,cartProduc);
             }else{
                 return await this.dao.addProduct(cid,pid,cartProduc);

@@ -16,3 +16,7 @@
 {"level":"error","message":"Error en addProdController - Producto existente"}
 {"level":"error","message":"Error en addProdController - Producto existente"}
 {"level":"error","message":"Error en addProdController - Datos del producto incompletos"}
+{"level":"error","message":"Error en addProdCartController - Producto existente"}
+{"level":"error","message":"Error en addProdCartController - Producto existente"}
+{"level":"error","message":"Error en addProdCartController - "}
+{"level":"error","message":"Error en addProdCartController - "}

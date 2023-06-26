@@ -49,17 +49,19 @@ class cartController{
         }
     };
 
-    static addProdCartController = async(req,res, next)=>{
+    static addProdCartController = async(req,res,next)=>{
         try{
             const data = req.params;
-            const productAdded = await cartServices.addProdCartService(data);
-            if(createdProduct.status !== "Error"){
-                logger.info("El producto se agrego exitosamente");
+            const user = req.user;
+            const productAdded = await cartServices.addProdCartService(data, user); //paso los datos del usuario
+
+            if(productAdded.status !== "Error"){
+                logger.info(productAdded.message);
                 req.io.emit("sendDataCart", productAdded.payload);
                 res.json(productAdded);
             }else{
-                logger.warning("El producto no se pudo agregar ");
-                logger.error("Error en addProdCartController - Producto existente");
+                logger.warning(productAdded.message);
+                logger.error("Error en addProdCartController - ",productAdded.message);
                 customErrorRepository.createError({
                     name: "Add prod Cart Error",
                     cause: generateGetProdCartErrorInfo(cid),

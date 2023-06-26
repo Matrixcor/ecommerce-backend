@@ -81,8 +81,8 @@ class authRepository{
     async updateProfileUser(email, newData){
         try {
             const key = email.email;
-            console.log("esto es el key", newData)
-            const updatedUser = await this.dao.updateUser(key, newData);  
+            const updatedUser = await this.dao.updateUser(key, newData);
+            
             const dat = new generateUserForTokenDto(updatedUser.payload);
             const newUserToken = createToken({...dat});
             return {status:"succes", newUserToken}

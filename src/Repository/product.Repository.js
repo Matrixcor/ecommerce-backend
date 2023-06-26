@@ -87,10 +87,23 @@ class productRepository {
         }
     };
 
-    async deleteProdService(pid){
-        const productDeleted = await this.dao.deleteProduct(pid);
-        if(productDeleted == "Error") return {status:"Error", message:"Error, Don't delete product"};
-        return {status:"succes", payload: productDeleted, message: "Product has been deleted"};
+    async deleteProdService(pid, email, role){ //revisar
+        try {
+            let productDeleted;
+            const prodOwner= await this.dao.getProdById(pid);
+            if (prodOwner.owner == email && role == "premium"){
+                productDeleted = await this.dao.deleteProduct(pid);
+            }else{
+                return {status:"Error", message:"Error, no puedes eliminar productos de otros usuarios"}
+            }
+            if(role == "admin"){
+                productDeleted = await this.dao.deleteProduct(pid);
+            }
+            if(productDeleted == "Error") return {status:"Error", message:"Error, Don't delete product"};
+            return {status:"succes", payload: productDeleted, message: "Product has been deleted"};
+        } catch (error) {
+            return {status: "Error", message:"This product do not be Delete"};
+        }
     }
 }
 

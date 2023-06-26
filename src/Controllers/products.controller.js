@@ -108,17 +108,18 @@ class productsController{
     static deleteProdController = async(req,res)=>{
         try{
             const { pid } = req.params;
-            const { role }= req.user;
+            const { role } = req.user;
+            const { email } = req.user.email;
             console.log("role delete:", role)
+            // si es premium debe borrar solo los del mismo owner
             if(!pid){
                 logger.warning("Falta ingresar el valor Id del producto");
                 logger.error("Error en deleteProdController - no se ingreso el valor id del producto");
                 res.send("Ingrese un valor ID");
             }
             
-
-            //const productDeleted = await productServices.deleteProdService(pid);
-           // req.io.emit("sendData", productDeleted.payload);
+            const productDeleted = await productServices.deleteProdService(pid, email, role);
+            // req.io.emit("sendData", productDeleted.payload);
             res.send(productDeleted.message);
         }catch(error){
             res.status(404).send(error);

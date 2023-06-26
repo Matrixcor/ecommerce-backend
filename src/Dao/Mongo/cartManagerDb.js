@@ -1,5 +1,6 @@
 
 import cartsModel from "../Mongo/Models/cartsModel.js";
+import productModel from "./Models/productModel.js";
 
 class cartManagerDb{
         
@@ -28,6 +29,15 @@ class cartManagerDb{
             return "El carrito buscado no existe"; //error de si no lo encuentra
         }
         return (cartById);
+    }
+
+    async getProdByIdForCart(pid){
+        const productById = await productModel.findById(pid);
+        if(!productById){
+            return {status:"Error", message:"El producto buscado no se encuentra"}
+        }else{
+            return productById;
+        };        
     }
 
     async addProduct(cid, pid, cartProduc){ 

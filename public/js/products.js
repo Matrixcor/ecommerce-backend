@@ -32,7 +32,9 @@ socket.on("sendData",(result)=>{
 const getUserCart = async()=>{ //verifica si el usuario tiene un carrito creado
     const userInfo = await fetch("http://localhost:8080/api/sessions/current", {method: "get"}) //puede presentarse el problema de que el cart del user no se actualice y permita generar mas carritos
     .then((res) => res.json()) //debo recibir el id del cart creado
-    .then((data) =>{ return data });
+    .then((data) =>{ 
+        console.log(data)
+        return data });
     return userInfo;
 }
 

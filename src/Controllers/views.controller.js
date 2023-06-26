@@ -133,9 +133,10 @@ class viewsController {
     
     static profileViewController = async(req,res)=>{
         try{
-            const dataUser = req.body;
+            const dataUser = req.user;
+            
             console.log(dataUser)
-            res.render("profile");
+            res.render("profile", {dataUser});
         }catch(error){
             res.render("error");
         }

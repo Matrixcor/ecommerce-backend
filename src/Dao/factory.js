@@ -7,17 +7,20 @@ let connCartDao;
 let connChatDao;
 let connAuthDao;
 let connTicketDao;
+let connUserDao;
 
 switch(persistence){
     case "MONGO":
         const { default: connectDB } = await import ('../Config/dBConnections.js')
         connectDB;
+        const { userManagerDb } = await import('../Dao/Mongo/userManagerDb.js')
         const { authManagerDb } = await import('../Dao/Mongo/authManagerDb.js');
         const { cartManagerDb } = await import('../Dao/Mongo/cartManagerDb.js');
         const { productManagerDb } = await import("./Mongo/productManagerDb.js");
         const { chatManagerDb } = await import('../Dao/Mongo/chatManagerDb.js');
         const { ticketManagerDb } = await import('../Dao/Mongo/ticketManagerDb.js');
 
+        connUserDao = new userManagerDb();
         connAuthDao = new authManagerDb();
         connCartDao = new cartManagerDb();
         connProdDao = new productManagerDb();
@@ -39,4 +42,4 @@ switch(persistence){
         break;
 };
 
-export { connAuthDao, connCartDao, connChatDao, connProdDao, connTicketDao};
+export { connUserDao, connAuthDao, connCartDao, connChatDao, connProdDao, connTicketDao};
