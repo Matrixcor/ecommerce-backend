@@ -1,0 +1,44 @@
+paths:
+  api/carts/:
+    post:
+      summary: Genera un carrito en la Base de datos
+      tags:
+        -Cart
+        -createNewCart
+      response:
+  api/carts/{cid}:
+    get:
+      summary: Consulta los datos del carrito seleccionado por parametros en la Base de datos
+      tags:
+        -Cart
+        -getProdCart
+      response:
+  api/carts/{cid}/products/{pid}:
+    post:
+      summary: Agrega un producto a un carrito seleccionado de Base de datos. Se corrobora que el carrito exista y el producto tambien. si es exitosa las comprobaciones anteriores, se agrega el producto si no esta en el carrito, o se modifica la cantidad del producto dentro del carrito. Acceden al endpoint los usuarios admin y los premium, estos ultimos no pueden agregar sus propios productos al carrito.
+      tags:
+        -Cart
+        -addProdToCart
+      response:
+  api/carts/{cid}/products/{pid}:
+    delete:
+      summary: Elimina un producto seleccionado de un carrito determinado. se realizan validacion de existencia de ambos, de ser exitoso, se quita el producto si solo hay una unidad, o se modifica la cantidad hasta que se elimine completamente.
+      tags:
+        -Cart
+        -deleteProdCart
+      response:
+  api/carts/{cid}:
+    delete:
+      summary: elimina un carrito determinado de la base datos
+      tags:
+        -Cart
+        -deleteAllCart
+      response:
+  api/carts/{cid}/purchase:
+    post:
+      summary: Finaliza el proceso de compra, genera un ticket, modifica valor de stock de los productos en la Db
+      tags:
+        -Cart
+        -purchaseCart
+      response:
+

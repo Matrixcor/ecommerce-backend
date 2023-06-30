@@ -18,6 +18,7 @@ import  {chatController}  from "./Controllers/chat.controller.js";
 import loggerRouter from "./Routes/log.router.js";
 import { addLogger } from "./Repository/logger.js";
 import { errorHandler } from "./middlewares/errorHandler.js"; 
+import { swaggerSpecs } from "./Config/swagger.config.js";
 
 const app = express();
 
@@ -53,6 +54,7 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/", loggerRouter);
 app.use("/api/users", usersRouter);
+app.use("/apidocs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 app.use(errorHandler); //middleware de error
 
