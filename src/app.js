@@ -5,7 +5,7 @@ import { Server } from "socket.io";
 import passport from "passport";
 import cookieParser from "cookie-parser";
 
-import {__dirname} from "./utils.js";
+import { __dirname } from "./utils.js";
 import viewsRouter from "./Routes/views.router.js";
 import authRouter from "./Routes/auth.router.js";
 import productsRouter from "./Routes/products.router.js";
@@ -13,12 +13,13 @@ import cartsRouter from "./Routes/cart.router.js";
 import usersRouter from "./Routes/users.router.js";
 import startPassport from "./Config/passport.config.js";
 import { enviromentOptions } from "./Config/enviroment.options.js";
-import {chatManagerDb} from "./Dao/Mongo/chatManagerDb.js";
-import  {chatController}  from "./Controllers/chat.controller.js";
+import { chatManagerDb } from "./Dao/Mongo/chatManagerDb.js";
+import  { chatController }  from "./Controllers/chat.controller.js";
 import loggerRouter from "./Routes/log.router.js";
 import { addLogger } from "./Repository/logger.js";
 import { errorHandler } from "./middlewares/errorHandler.js"; 
 import { swaggerSpecs } from "./Config/swagger.config.js";
+import swaggerUI from "swagger-ui-express"
 
 const app = express();
 
@@ -54,7 +55,7 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/", loggerRouter);
 app.use("/api/users", usersRouter);
-app.use("/apidocs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+app.use("/apidocs", swaggerUI.serve, swaggerUI.setup(swaggerSpecs));
 
 app.use(errorHandler); //middleware de error
 

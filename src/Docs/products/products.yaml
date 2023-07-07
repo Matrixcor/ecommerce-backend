@@ -1,22 +1,29 @@
 paths:
-  api/products/:
+  /api/products/:
     get:
       summary: Obtiene todos los productos de la Base de datos
-      tags:
-        -Products
-        -getAllProducts
-      response:
-
-  api/products/{pid}:
+      responses:
+        "200":
+          description: todos los productos fueron obtenidos correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/products'
+        "400":
+          description: no se encontro
+        "401":
+          description: Error no estas autorizado
+        "500":
+          description: error db
+  /api/products/{pid}:
     get:
       summary: Obtiene el producto que coincide con el identificador, en la de la Base de datos, solo acceden los administradore y premium
       tags:
-        -Products
-        -getProducById
       parameters:
       - in: path
         name: pid
-
       responses:
         "200":
           description: El producto fue obtenido correctamente
@@ -25,84 +32,161 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#components/schemas/User'
-  api/products/:
+                  $ref: '#/components/schemas/products'
     post:
       summary: Agrega el producto en la Base de datos
       tags:
-        -Products
-        -addProduct
-  api/product/{pid}:
-    put:
-      summary: Actualiza la informacion del producto seleccionado  de la Base de datos. Se requiere loggeo de usuario solo acceden los administradores.
-      tags:
-        -Products
-        -updateProduct
       parameters:
       - in: path
         name: pid
-        required: true
-        description: id del producto que se va a actualizar en la db
-        schema:
-          $type: String
+      responses:
+        "200":
+          description: El producto fue agregado correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/products'
+    put:
+      summary: Actualiza la informacion del producto seleccionado  de la Base de datos. Se requiere loggeo de usuario solo acceden los administradores.
+      tags:
+      parameters:
+        - in: path
+          name: pid
+          required: true
+          description: id del producto que se va a actualizar en la db
+          schema:
+            $type: String
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#components/requestBodies/updateProduct'
-  api/product/:pid:
+              $ref: '#/components/requestBodies/updateProduct'
+      responses:
+        "200":
+          description: El producto fue actualizado correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/products'
+        "400":
+          description: no se encontro
+        "401":
+          description: Error no estas autorizado
+        "500":
+          description: error db
     delete:
       summary: Borra el producto seleccionado de la Base de datos. El usuario debe estar loggeado y deber tener rol administrador o premium
       tags:
-        -Products
-        -deleteProduct
+      parameters:
+      - in: path
+        name: pid
+      responses:
+        "200":
+          description: El producto fue eliminado correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/products'
+ 
 
 components:
   schemas:
-    properties:
-      _id:
-        type: objectId
-        description: Id autogenerado por mongoDb
-      title:
-        type: String
-        description: Nombre completo del producto en cuestion
-      description:
-        type: String
-        description: Descripcion completa del producto, con caracteristicas tecnicas etc.
-      owner: 
-        type: String
-        description: Nombre del vendedor, para este caso se eligio el nombre de email
-      price: 
-        type: Number
-        description: Es el valor unitario del producto
-      code: 
-        type: String
-        description: Es un codigo alfanumerico establecido por el vendedor, a fin de poder llevar su control interno
-      status: 
-        type: Boolean
-        description: Este codigo tendra el valor TRUE o FALSE dependiendo si queremos que salga en alguna pagina principal, o que el producto este habilitado para la venta
-      category: 
-        type: String
-        description: Es la categoria a la cual el producto puede pertenecer
-      stock: 
-        type: Number
-        descritpion: Es la cantidad de produsctos en existencia que posee el vendedor, el cual se modifica de acuerdo a la cantidad de ventas concretadas
-      thumbnail: 
-        type: String
-        description: Aqui se coloca la direccion de la imagen que representa al producto puesto a la venta
-    example:
-      _id: objectId()
-      title: S3 Trio 64
-      description: Acelerador Grafico
-      price: 150000
-      code: abc123456
-      status: true
-      category: informatica
-      stock: 5
-      thumbnail: empty
+    products:
+      type: object
+      properties:
+        _id:
+          type: objectId
+          description: Id autogenerado por mongoDb
+        title:
+          type: string
+          description: Nombre completo del producto en cuestion
+        description:
+          type: string
+          description: Descripcion completa del producto, con caracteristicas tecnicas etc.
+        owner: 
+          type: string
+          description: Nombre del vendedor, para este caso se eligio el nombre de email
+        price: 
+          type: number
+          description: Es el valor unitario del producto
+        code: 
+          type: string
+          description: Es un codigo alfanumerico establecido por el vendedor, a fin de poder llevar su control interno
+        status: 
+          type: boolean
+          description: Este codigo tendra el valor TRUE o FALSE dependiendo si queremos que salga en alguna pagina principal, o que el producto este habilitado para la venta
+        category: 
+          type: string
+          description: Es la categoria a la cual el producto puede pertenecer
+        stock: 
+          type: Number
+          descritpion: Es la cantidad de produsctos en existencia que posee el vendedor, el cual se modifica de acuerdo a la cantidad de ventas concretadas
+        thumbnail: 
+          type: string
+          description: Aqui se coloca la direccion de la imagen que representa al producto puesto a la venta
+      example:
+        _id: objectId('6466d9395d3e67a7555df5fe')
+        title: S3 Trio 64
+        description: Acelerador Grafico
+        price: 150000
+        code: abc123456
+        status: true
+        category: informatica
+        stock: 5
+        thumbnail: empty
 
   requestBodies:
+    addProduct:
+      type: object
+      properties:
+        _id:
+          type: objectId
+          description: Id autogenerado por mongoDb
+        title:
+          type: String
+          description: Nombre completo del producto en cuestion
+        description:
+          type: String
+          description: Descripcion completa del producto, con caracteristicas tecnicas etc.
+        owner: 
+          type: String
+          description: Nombre del vendedor, para este caso se eligio el nombre de email
+        price: 
+          type: Number
+          description: Es el valor unitario del producto
+        code: 
+          type: String
+          description: Es un codigo alfanumerico establecido por el vendedor, a fin de poder llevar su control interno
+        status: 
+          type: Boolean
+          description: Este codigo tendra el valor TRUE o FALSE dependiendo si queremos que salga en alguna pagina principal, o que el producto este habilitado para la venta
+        category: 
+          type: String
+          description: Es la categoria a la cual el producto puede pertenecer
+        stock: 
+          type: Number
+          descritpion: Es la cantidad de produsctos en existencia que posee el vendedor, el cual se modifica de acuerdo a la cantidad de ventas concretadas
+        thumbnail: 
+          type: String
+          description: Aqui se coloca la direccion de la imagen que representa al producto puesto a la venta
+      example:
+        _id: objectId('6466d9395d3e67a7555df5fe')
+        title: S3 Trio 64
+        description: Acelerador Grafico
+        price: 250000
+        code: abc123456
+        status: true
+        category: informatica
+        stock: 5
+        thumbnail: empty
+
     updateProduct:
       type: object
       properties:
@@ -137,7 +221,7 @@ components:
           type: String
           description: Aqui se coloca la direccion de la imagen que representa al producto puesto a la venta
       example:
-        _id: objectId()
+        _id: objectId('6466d9395d3e67a7555df5fe')
         title: S3 Trio 64
         description: Acelerador Grafico
         price: 250000
