@@ -55,12 +55,25 @@ export const verifyEmailToken = (token)=>{
     }
   
 }
-
+/*
 export const cookieExtractor = (req) =>{
     let token = null;
     if(req && req.cookies){
         token = req.cookies["cookie-token"];
     }
+    return token;
+};
+*/
+export const cookieExtractor = (req) =>{ //esta funcion extrae el token cuando se utiliza SWAGGER o los test-
+    let token = null;
+    if(req && req.headers["authorization"]){
+        const authHeader = req.headers["authorization"]
+        token = authHeader.split(" ")[1]
+    }
+    if(req && req.cookies["cookie-token"]){
+        token = req.cookies["cookie-token"];
+    }
+    
     return token;
 };
 // mockups for testing

@@ -1,6 +1,9 @@
 paths:
   /api/products/:
     get:
+      security:
+        - bearerAuth: []
+
       summary: Obtiene todos los productos de la Base de datos
       responses:
         "200":
@@ -10,35 +13,30 @@ paths:
               schema:
                 type: array
                 items: 
-                  $ref: '#/components/schemas/products'
+                  $ref: '#/components/schemas/product'
         "400":
           description: no se encontro
         "401":
           description: Error no estas autorizado
         "500":
           description: error db
-  /api/products/{pid}:
-    get:
-      summary: Obtiene el producto que coincide con el identificador, en la de la Base de datos, solo acceden los administradore y premium
-      tags:
-      parameters:
-      - in: path
-        name: pid
-      responses:
-        "200":
-          description: El producto fue obtenido correctamente
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/products'
+
     post:
+      security:
+        - bearerAuth: [] 
+
       summary: Agrega el producto en la Base de datos
       tags:
-      parameters:
-      - in: path
-        name: pid
+
+      requestBody:
+        description:
+        required: true
+        content:
+          application/json:
+            schema:
+              
+              $ref: '#/components/schemas/product'
+
       responses:
         "200":
           description: El producto fue agregado correctamente
@@ -47,10 +45,38 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/products'
-    put:
-      summary: Actualiza la informacion del producto seleccionado  de la Base de datos. Se requiere loggeo de usuario solo acceden los administradores.
+                  $ref: '#/components/schemas/product'
+  /api/products/{pid}:
+    get:
+      security:
+        - bearerAuth: [] 
+
+      summary: Obtiene el producto que coincide con el identificador, en la de la Base de datos, solo acceden los administradore y premium
       tags:
+      parameters:
+      - in: path
+        name: pid
+        required: true
+        schema:
+          $type: string
+
+      responses:
+        "200":
+          description: El producto fue obtenido correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/product'
+    
+    put:
+      security:
+        - bearerAuth: [] 
+
+      summary: Actualiza la informacion del producto seleccionado de la Base de datos. Se requiere loggeo de usuario solo acceden los administradores.
+      tags:
+
       parameters:
         - in: path
           name: pid
@@ -63,7 +89,8 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/requestBodies/updateProduct'
+              $ref: '#/components/schemas/updateProduct'
+
       responses:
         "200":
           description: El producto fue actualizado correctamente
@@ -72,7 +99,7 @@ paths:
               schema:
                 type: array
                 items: 
-                  $ref: '#/components/schemas/products'
+                  $ref: '#/components/schemas/product'
         "400":
           description: no se encontro
         "401":
@@ -80,11 +107,15 @@ paths:
         "500":
           description: error db
     delete:
+      security:
+        - bearerAuth: [] 
+     
       summary: Borra el producto seleccionado de la Base de datos. El usuario debe estar loggeado y deber tener rol administrador o premium
       tags:
       parameters:
-      - in: path
-        name: pid
+        - in: path
+          name: pid
+          
       responses:
         "200":
           description: El producto fue eliminado correctamente
@@ -93,12 +124,19 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/products'
+                  $ref: '#/components/schemas/product'
  
 
 components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
-    products:
+    product:
       type: object
       properties:
         _id:
@@ -136,51 +174,6 @@ components:
         title: S3 Trio 64
         description: Acelerador Grafico
         price: 150000
-        code: abc123456
-        status: true
-        category: informatica
-        stock: 5
-        thumbnail: empty
-
-  requestBodies:
-    addProduct:
-      type: object
-      properties:
-        _id:
-          type: objectId
-          description: Id autogenerado por mongoDb
-        title:
-          type: String
-          description: Nombre completo del producto en cuestion
-        description:
-          type: String
-          description: Descripcion completa del producto, con caracteristicas tecnicas etc.
-        owner: 
-          type: String
-          description: Nombre del vendedor, para este caso se eligio el nombre de email
-        price: 
-          type: Number
-          description: Es el valor unitario del producto
-        code: 
-          type: String
-          description: Es un codigo alfanumerico establecido por el vendedor, a fin de poder llevar su control interno
-        status: 
-          type: Boolean
-          description: Este codigo tendra el valor TRUE o FALSE dependiendo si queremos que salga en alguna pagina principal, o que el producto este habilitado para la venta
-        category: 
-          type: String
-          description: Es la categoria a la cual el producto puede pertenecer
-        stock: 
-          type: Number
-          descritpion: Es la cantidad de produsctos en existencia que posee el vendedor, el cual se modifica de acuerdo a la cantidad de ventas concretadas
-        thumbnail: 
-          type: String
-          description: Aqui se coloca la direccion de la imagen que representa al producto puesto a la venta
-      example:
-        _id: objectId('6466d9395d3e67a7555df5fe')
-        title: S3 Trio 64
-        description: Acelerador Grafico
-        price: 250000
         code: abc123456
         status: true
         category: informatica
@@ -230,3 +223,6 @@ components:
         category: informatica
         stock: 5
         thumbnail: empty
+
+security:
+  - bearerAuth: []

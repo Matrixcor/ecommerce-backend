@@ -4,6 +4,7 @@ import { customErrorRepository } from "../Repository/errorService/customError.Re
 import { generateNewCartErrorInfo, generateGetProdCartErrorInfo, generateDelCartErrorInfo } from "../Repository/errorService/errorGenerate.Repository.js"
 import { EError } from "../Enums/EError.js";
 import { currentLogger } from "../Repository/logger.js";
+import { userManagerDb } from "../Dao/Mongo/userManagerDb.js";
 
 const logger = currentLogger();
 class cartController{
@@ -15,7 +16,7 @@ class cartController{
                 logger.info("Carrito generado correctamente")
                 res.cookie("cookie-token", newCart.data.updateUser.newUserToken, {maxAge: 60*60*1000, httpOnly: true}); //aca debo actualizar el token
             }else{
-                logger.error("Error en newCartController - No se pudo actualizar el carrito dell perfil del uasuario ")
+                logger.error("Error en newCartController - No se pudo actualizar el carrito dell perfil del usuario ")
                 customErrorRepository.createError({
                     name: "User Login Error",
                     cause: generateNewCartErrorInfo(data),
@@ -53,8 +54,7 @@ class cartController{
         try{
             const data = req.params;
             const user = req.user;
-            const productAdded = await cartServices.addProdCartService(data, user); //paso los datos del usuario
-
+            const productAdded = await cartServices.addProdCartService(data, user); //paso los datos del usuario            
             if(productAdded.status !== "Error"){
                 logger.info(productAdded.message);
                 req.io.emit("sendDataCart", productAdded.payload);

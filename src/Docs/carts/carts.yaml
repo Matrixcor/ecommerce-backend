@@ -1,0 +1,202 @@
+paths:
+  /api/carts/:
+    post:
+      summary: Genera un carrito en la Base de datos
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/userMock'
+      responses:
+        "200":
+          description: el carrito fue creado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/carts'
+        "400":
+          description: no se encontro
+        "401":
+          description: Error no estas autorizado
+        "500":
+          description: error db
+
+  /api/carts/{cid}:
+    get:
+      summary: Consulta los datos del carrito seleccionado por parametros en la Base de datos
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          schema:
+            $type: string
+      responses:
+        "200":
+          description: todos los productos fueron obtenidos correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/carts'
+        "400":
+          description: no se encontro
+        "401":
+          description: Error no estas autorizado
+        "500":
+          description: error db
+
+    delete:
+      summary: elimina todos los productos de un carrito determinado
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          schema:
+            $type: string
+      
+      responses:
+        "200":
+          description: El carrito seleccionado fue vaciado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                items: 
+                  $ref: '#/components/schemas/carts'
+        "400":
+          description: no se encontro
+        "401":
+          description: Error no estas autorizado
+        "500":
+          description: error db
+
+  /api/carts/{cid}/products/{pid}:
+    post:
+      summary: Agrega un producto a un carrito seleccionado de Base de datos. Se corrobora que el carrito exista y el producto tambien. si es exitosa las comprobaciones anteriores, se agrega el producto si no esta en el carrito, o se modifica la cantidad del producto dentro del carrito. Acceden al endpoint los usuarios admin y los premium, estos ultimos no pueden agregar sus propios productos al carrito.
+      security:
+        - bearerAuth: [] 
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          schema:
+            $type: string
+        - in: path
+          name: pid
+          required: true
+          schema:
+            $type: string
+
+      responses:
+        "200":
+          description: todos los productos fueron obtenidos correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                items: 
+                  $ref: '#/components/schemas/carts'
+        "400":
+          description: no se encontro
+        "401":
+          description: Error no estas autorizado
+        "500":
+          description: error db
+
+    delete:
+      summary: Elimina un producto seleccionado de un carrito determinado. se realizan validacion de existencia de ambos, de ser exitoso, se quita el producto si solo hay una unidad, o se modifica la cantidad hasta que se elimine completamente.
+      parameters:
+        - in: path
+          name: cid
+          required: true
+          schema:
+            $type: string
+        - in: path
+          name: pid
+          required: true
+          schema:
+            $type: string
+
+      responses:
+        "200":
+          description: todos los productos fueron obtenidos correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/products'
+        "400":
+          description: no se encontro
+        "401":
+          description: Error no estas autorizado
+        "500":
+          description: error db
+  /api/carts/{cid}/purchase:
+    post:
+      summary: Finaliza el proceso de compra, genera un ticket, modifica valor de stock de los productos en la Db
+      parameters:
+      - in: path
+        name: cid
+        required: true
+        schema:
+          $type: string
+
+      responses:
+        "200":
+          description: todos los productos fueron obtenidos correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/products'
+        "400":
+          description: no se encontro
+        "401":
+          description: Error no estas autorizado
+        "500":
+          description: error db
+
+components:
+  schemas:
+    carts:
+      type: object
+      properties:
+        _id:
+          type: objectId
+        products:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              quantity:
+                type: number
+            
+      example:
+        _id: objectId('64715ec137b4b673bebf5422')
+        products: 
+          product:
+            id: objectId('642643dcd9d4ebf28a2bf631')
+            quantity: 5
+    
+    product:
+      type: object
+      properties:
+        id: 
+          type: string
+          description: id del producto agregado al carrito
+        quantity:
+          type: number
+          description: cantidad del producto agregado
+    
+    userMock:
+      type: object
+      properties:
+        email: admin@admin.com
+

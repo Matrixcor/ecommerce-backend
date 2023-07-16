@@ -36,6 +36,7 @@ class cartRepository{
     async addProdCartService(data, user){
         try{
             const { cid, pid } = data;
+            
             const cartProduc = await this.dao.getProductsInCart(cid); // si no existe el carrito
             if(typeof(cartProduc.products) == "string"){
                 return { status:"Error", message:"no se puede agregar el producto porque el carrito seleccionado no existe"};
@@ -82,7 +83,7 @@ class cartRepository{
             const allProductsDeleted = await this.dao.deleteAllProducts(cart);
             return allProductsDeleted;
         }catch(err){
-            return {status:" Error", message:"no se pudo actualizar el producto"}
+            return {status:" Error", message:"no se pudo vaciar el carrito"}
         }
     }
 

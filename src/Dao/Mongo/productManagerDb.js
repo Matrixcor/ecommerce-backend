@@ -3,7 +3,7 @@ import { paginate } from "mongoose-paginate-v2";
 
 class productManagerDb {
     
-    async addProduct (title, description, owner, price, code, status, category, stock, thumbnail){        
+    async addProduct (title, description, owner, price, code, status, category, stock, thumbnail){     
         try{
             await productModel.create({ title, description, owner, price, code, status, category, stock, thumbnail });
             const arrayProd = await productModel.find().lean();

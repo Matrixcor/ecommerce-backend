@@ -11,9 +11,9 @@ productsRouter.use(json());
 
 productsRouter.get("/", productsController.getProdController);
 
-productsRouter.get("/:pid", productsController.getProdByIdController); // authenticate("jwt") , checkRole(["admin"]) quite la autenticaciones para probar directamente
+productsRouter.get("/:pid", productsController.getProdByIdController); //authenticate("jwt")  quite la autenticaciones para probar directamente
 
-productsRouter.post("/", dataStorage.single("file"), authenticate("jwt"), checkRole(["admin", "premium"]), productsController.addProdController); //solo administrador y premium
+productsRouter.post("/", dataStorage.single("file"), authenticate("jwt"), checkRole(["admin", "premium"]), productsController.addProdController); //solo administrador y premium authenticate("jwt"), checkRole(["admin", "premium"]),
 
 productsRouter.put("/:pid", authenticate("jwt"), checkRole(["admin"]), productsController.updateProdController); //solo administrador
 

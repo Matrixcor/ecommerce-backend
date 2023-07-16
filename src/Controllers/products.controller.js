@@ -110,7 +110,6 @@ class productsController{
             const { pid } = req.params;
             const { role } = req.user;
             const { email } = req.user.email;
-            console.log("role delete:", role)
             // si es premium debe borrar solo los del mismo owner
             if(!pid){
                 logger.warning("Falta ingresar el valor Id del producto");
@@ -120,7 +119,7 @@ class productsController{
             
             const productDeleted = await productServices.deleteProdService(pid, email, role);
             // req.io.emit("sendData", productDeleted.payload);
-            res.send(productDeleted.message);
+            res.send(productDeleted.message); //cambiar para retornar un body de respuesta y que lo tome el test
         }catch(error){
             res.status(404).send(error);
         }
