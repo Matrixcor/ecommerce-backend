@@ -12,6 +12,18 @@ class userController{
         }
         
     };
+    static uploadDocsController = async(req, res)=>{ // en construccion falta guardar docs en la db
+        try {
+            const {uid} = req.params;
+            const { role } = req.user; // puedo sacar el role desde el authenticate, pero 
+            
+            const docs = req.files.map(doc=>({name: doc.originalname, reference: doc.filename}));
+            res.send("exitoso");
+        } catch (error) {
+            res.send(error);
+        }
+        
+    };
 };
 
 export {userController};

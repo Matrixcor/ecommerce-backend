@@ -39,6 +39,9 @@ class authRepository{
             if(!loginUser) return {status: "Error", message:"El usuario no existe"};
 
             if(isValidPassword(loginUser, password)){
+                loginUser.last_connection = new Date();
+                const updtUser = this.dao.updateUser(email, loginUser);
+
                 const dataForToken = new generateUserForTokenDto(loginUser);
                 const accesToken = createToken({...dataForToken});
                 logger.debug("log exitoso - recibio email y password, genero el Token de acceso y lo devuelve al controler");

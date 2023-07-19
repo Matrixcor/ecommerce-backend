@@ -2,7 +2,7 @@
 
 <div>
     <div class="formContainer">
-        <form class="formRegister" method="post" action="/api/products/">
+        <form class="formRegister" action="/api/products/" enctype="multipart/form-data" method="post">
             <div class="InputContainer">
                 <label > Nombre del Producto: </label>
                 <input type="text" placeholder="Escriba aqui el nombre del producto" name="title">
@@ -30,6 +30,10 @@
                <div class="InputContainer">
                 <label> Stock: </label>
                 <input type="text" placeholder="Escriba aqui la cantidad del producto" name="stock">             
+            </div>
+            <div class="InputContainer">
+                <label > Ingrese la imagen del producto: </label>
+                <input type="file" name="prodImg">
             </div>
 
             <div class="butonContainer">

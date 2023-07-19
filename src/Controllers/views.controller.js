@@ -134,9 +134,10 @@ class viewsController {
     static profileViewController = async(req,res)=>{
         try{
             const dataUser = req.user;
-            
-            console.log(dataUser)
-            res.render("profile", {dataUser});
+            const uid = await viewServices.getUserDbService(dataUser.email);
+            const data = { ...dataUser, uid: uid._id}
+            console.log(data)
+            res.render("profile", {data});
         }catch(error){
             res.render("error");
         }

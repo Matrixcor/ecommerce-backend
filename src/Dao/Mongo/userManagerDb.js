@@ -5,6 +5,10 @@ class userManagerDb{
         const result = await userModel.findOne({ _id: uid });
         return result;
     };
+    async getUserByEmail(email){
+        const result = await userModel.findOne({ email: email });
+        return result;
+    };
     async updateUserRole(uid, newData){
         try{
             const _id = uid;

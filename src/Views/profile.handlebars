@@ -1,7 +1,7 @@
 <h1> Seccion PROFILE</h1>
 <div>
-    <h4> Bienvenido {{dataUser.first_name}}</h4>
-    <h4> Tu categoria de usuario es: {{dataUser.role}}</h4>
+    <h4> Bienvenido {{data.first_name}}</h4>
+    <h4> Tu categoria de usuario es: {{data.role}}</h4>
 </div>
 
 
@@ -10,6 +10,29 @@
 </div>
 <div>
     <a href="/profile/delete"><button> Delete Product</button></a>
+</div>
+
+<h4> Formulario carga de documentos</h4>
+<div class="container">
+    <div class="formContainer">
+        <form class="formRegister" action="/{{data.uid}}/documents" enctype="multipart/form-data"  method="post">
+            <div class="InputContainer">
+                <label > Ingrese su identificacion: </label>
+                <input type="file" name="document">
+            </div>
+            <div class="InputContainer">
+                <label > Ingrese su Comprobante de domicilio: </label>
+                <input type="file" name="document">
+            </div>
+            <div class="InputContainer">
+                <label > Ingrese su comprobante de estado de cuenta: </label>
+                <input type="file" name="document">
+            </div>
+            <div class="butonContainer">
+                <button type="submit"> Upload Documents</button>
+            </div>
+        </form>
+    </div> 
 </div>
 <div>
     <a href="/products"><button> Volver</button></a>

@@ -30,6 +30,35 @@ const userSchema = new mongoose.Schema({
         type: String,
         require: true,
         option:["premium","superadmin","admin","user"],
+    },
+    avatar:{
+        type: String,
+        default: " "
+    },
+    documents:{
+        type: [
+            {
+                name: {
+                    type: String, 
+                    require: true
+                },
+                reference: {
+                    type: String,
+                    require: true
+                },
+            },
+        ],
+        default: [],
+    },
+    status:{
+        type: String,
+        require: true,
+        enums: ["incompleto","pendiente","completo"],
+        default: "pendiente"
+    },
+    last_connection:{
+        type: Date,
+        default: null
     }
 });
 

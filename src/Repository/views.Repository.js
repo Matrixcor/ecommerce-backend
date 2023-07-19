@@ -1,4 +1,4 @@
-import { cartServices } from "./index.Repository.js";
+import { cartServices, userServices } from "./index.Repository.js";
 
 class viewsRepository {
     constructor(dao){
@@ -31,6 +31,11 @@ class viewsRepository {
     async cartGetViewProdService(cid){
         const cartArray = await cartServices.getProdCartService(cid);
         return cartArray;
+    }
+
+    async getUserDbService(email){
+        const user = await userServices.userByEmailService(email)
+        return user;
     }
    
 }

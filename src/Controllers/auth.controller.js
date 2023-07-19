@@ -15,9 +15,11 @@ class authController{
     static registerAuthController = async(req,res, next)=>{
         try {
             const data = req.body;
+            const file = req.file.path;
             const { first_name, last_name, email, age, password } = data;
-
-            if(!first_name || !last_name || !email || !age || !password) {
+            const newData = { ...data, avatar: file }
+            
+            if(!first_name || !last_name || !email || !age || !password || !file) {
                 logger.error("Error en registerAuthController - Datos incompletos")
                 customErrorRepository.createError({
                     name: "User Register Error",
@@ -28,7 +30,7 @@ class authController{
             }
 
             const userName = req.body.email;
-            const userCreated = await authServices.registerAuthService(data);
+            const userCreated = await authServices.registerAuthService(newData);
 
             if(userCreated.status !== "Error"){
                 res.cookie("cookie-token", userCreated.payload, {maxAge: 60*60*1000, httpOnly: true});
@@ -137,6 +139,10 @@ class authController{
     };
     
     static logOutAuthController = async(req,res)=>{
+        const { email } = req.user;
+        const data = {last_connection: new Date()};
+        const user = { email: email };
+        const conn = authServices.updateProfileUser(user, data)
         res.clearCookie("cookie-token");  //elimino el token del usuario
         res.redirect("/login"); //debo redireccionar a login
     };

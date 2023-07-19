@@ -2,10 +2,11 @@ import { Router, json, urlencoded } from "express";
 import passport from "passport";
 import authenticate from "../middlewares/authenticate.js";
 import {authController} from "../Controllers/auth.controller.js";
+import { profileUploader } from "../utils.js";
 
 const authRouter = Router();
 
-authRouter.post("/register", authController.registerAuthController);
+authRouter.post("/register", profileUploader.single("avatar"), authController.registerAuthController);
 
 authRouter.post("/login", authController.loginAuthController);
 
@@ -20,6 +21,6 @@ authRouter.get("/github", passport.authenticate("github", { scope: ["user: email
 authRouter.get("/github-callback", authenticate("github", { failureRedirect: "/api/sessions/Register-Failure"}), authController.gitFailAuthController);
 
 //logOut de usuario
-authRouter.get("/logout", authController.logOutAuthController);
+authRouter.get("/logout", authenticate("jwt"), authController.logOutAuthController);
 
 export default authRouter;

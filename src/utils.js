@@ -2,6 +2,7 @@ import { enviromentOptions } from "./Config/enviroment.options.js";
 import multer from "multer";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import path from "path";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { faker } from "@faker-js/faker";
@@ -12,6 +13,7 @@ const __dirname = dirname(__filename);
 export {__dirname};
 
 // para subir archivos a la carpeta public
+
 const storage = multer.diskStorage({
     destination: './public/img',
     filename: function(req, file, cb){
@@ -21,6 +23,36 @@ const storage = multer.diskStorage({
 const dataStorage = multer({ storage });
 export {dataStorage};
 
+const profileStorage = multer.diskStorage({
+    destination: function(req, file,cb){
+        cb(null, path.join(__dirname,'/Files/Users/Images'))
+    },
+    filename: function(req, file, cb){
+        cb(null, `${req.body.email}-perfil-${file.originalname}`);
+    }
+});
+export const profileUploader = multer({storage: profileStorage});
+
+const productStorage = multer.diskStorage({
+    destination: function(req, file,cb){
+        cb(null, path.join(__dirname,"/Files/Products/Images"))
+    },
+    filename: function(req, file, cb){
+        cb(null, `${req.body.email}-prodImg-${file.originalname}`);
+    }
+});
+export const productUploader = multer({storage: productStorage});
+
+const documentStorage = multer.diskStorage({
+    destination: function(req, file,cb){
+        cb(null, path.join(__dirname,"/Files/Users/Documents"))
+    },
+    filename: function(req, file, cb){
+        cb(null, `${req.body.email}-document-${file.originalname}`);
+    }
+});
+export const documentsUploader = multer({storage: documentStorage});
+
 
 export const createHash = (password)=>{
     return bcrypt.hashSync(password, bcrypt.genSaltSync())
@@ -29,7 +61,6 @@ export const createHash = (password)=>{
 export const isValidPassword = (user, password)=>{
     return bcrypt.compareSync(password, user.password)
 };
-// implementacion para migrar a JSON WEB TOKEN
 
 const key = enviromentOptions.jwt.private_key;
 export const createToken = (user)=>{

@@ -15,5 +15,9 @@ class userRepository{
             return {status:"error", message: "Error updating User"};
         } 
     }
+    async userByEmailService(email){
+        const result = await this.dao.getUserByEmail(email);
+        return result;
+    };
 };
 export {userRepository};

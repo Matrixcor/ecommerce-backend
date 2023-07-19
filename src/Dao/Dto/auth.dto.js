@@ -10,6 +10,7 @@ export class createUserDto{
         this.password = createHash(user.password);
         this.cart = user.cart || "";
         this.role = type;
+        this.avatar = user.avatar;
     }
 }
 export class generateUserForTokenDto{
