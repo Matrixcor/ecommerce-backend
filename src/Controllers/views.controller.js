@@ -136,7 +136,6 @@ class viewsController {
             const dataUser = req.user;
             const uid = await viewServices.getUserDbService(dataUser.email);
             const data = { ...dataUser, uid: uid._id}
-            console.log(data)
             res.render("profile", {data});
         }catch(error){
             res.render("error");

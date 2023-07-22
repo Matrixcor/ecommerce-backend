@@ -22,7 +22,7 @@ class authRepository{
             const newUser = new createUserDto(data, role); //utilizo un dto para filtrar datos
             const user = await this.dao.userCreate(newUser); //creamos el usuario
             const dataForToken =  new generateUserForTokenDto(newUser);  //generamos el token
-            const accesToken = createToken({ dataForToken });
+            const accesToken = createToken({ ...dataForToken });
             logger.debug("Registro exitoso - recibio: first_name, last_name, email, age, password, genero el Token de acceso y lo devuelve al controler");
             logger.info("El usuario se creo correctamente");
             return {status:"succes", payload: accesToken};
@@ -41,7 +41,6 @@ class authRepository{
             if(isValidPassword(loginUser, password)){
                 loginUser.last_connection = new Date();
                 const updtUser = this.dao.updateUser(email, loginUser);
-
                 const dataForToken = new generateUserForTokenDto(loginUser);
                 const accesToken = createToken({...dataForToken});
                 logger.debug("log exitoso - recibio email y password, genero el Token de acceso y lo devuelve al controler");
@@ -55,7 +54,7 @@ class authRepository{
         }
     };
 
-    async restorePassService(email){ //genero el token
+    async restorePassService(email){
         try {
             const loginUser = await this.dao.getUser(email);
             if(!loginUser) return {status: "Error", message:"El usuario no existe"};
@@ -81,9 +80,9 @@ class authRepository{
         }
     };
 
-    async updateProfileUser(email, newData){
+    async updateProfileUser(email, newData){ // migrar esta funcion al modulo user
         try {
-            const key = email.email;
+            const key = email.email; //ver como mejorar esto
             const updatedUser = await this.dao.updateUser(key, newData);
             
             const dat = new generateUserForTokenDto(updatedUser.payload);

@@ -4,29 +4,37 @@
     <h4> Tu categoria de usuario es: {{data.role}}</h4>
 </div>
 
-
+<h4> Administrar productos</h4>
 <div>
    <a href="/profile/create"><button> Create Product </button></a>
 </div>
 <div>
     <a href="/profile/delete"><button> Delete Product</button></a>
 </div>
+<h4> Cambiar Rol de Usuario</h4>
+<div>
+    <form class="formRegisters" action="/api/users/premium/{{data.uid}}" method="GET">
+        <div class="butonContainer">
+            <button type="submit"> Change Role</button>
+        </div>
+    </form>
+</div>
 
-<h4> Formulario carga de documentos</h4>
+<h4> Cargar Documentos</h4>
 <div class="container">
     <div class="formContainer">
-        <form class="formRegister" action="/{{data.uid}}/documents" enctype="multipart/form-data"  method="post">
+        <form class="formRegister" action="/api/users/{{data.uid}}/documents" enctype="multipart/form-data"  method="post">
             <div class="InputContainer">
                 <label > Ingrese su identificacion: </label>
-                <input type="file" name="document">
+                <input type="file" name="identificacion">
             </div>
             <div class="InputContainer">
                 <label > Ingrese su Comprobante de domicilio: </label>
-                <input type="file" name="document">
+                <input type="file" name="comprobante-domicilio">
             </div>
             <div class="InputContainer">
                 <label > Ingrese su comprobante de estado de cuenta: </label>
-                <input type="file" name="document">
+                <input type="file" name="comprobante-cuenta">
             </div>
             <div class="butonContainer">
                 <button type="submit"> Upload Documents</button>
@@ -34,6 +42,7 @@
         </form>
     </div> 
 </div>
+<h4> Volver a productos </h4>
 <div>
     <a href="/products"><button> Volver</button></a>
 </div>

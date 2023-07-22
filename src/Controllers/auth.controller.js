@@ -12,7 +12,7 @@ const logger = currentLogger();
 
 class authController{
 
-    static registerAuthController = async(req,res, next)=>{
+    static registerAuthController = async(req, res, next)=>{
         try {
             const data = req.body;
             const file = req.file.path;
@@ -119,8 +119,7 @@ class authController{
             if(userUpdt.message != "Error"){res.send("Cambio de contraseña exitosa")}
             
         } catch (error) {
-            //next(error);
-            console.log(error)
+            next(error);
         }    
     
     };

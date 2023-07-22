@@ -57,7 +57,7 @@ app.use("/", loggerRouter);
 app.use("/api/users", usersRouter);
 app.use("/apidocs", swaggerUI.serve, swaggerUI.setup(swaggerSpecs));
 
-app.use(errorHandler); //middleware de error
+//app.use(errorHandler); //middleware de error
 
 const io = new Server(httpServer);
 //chat

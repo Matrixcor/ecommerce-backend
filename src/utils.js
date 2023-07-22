@@ -23,6 +23,31 @@ const storage = multer.diskStorage({
 const dataStorage = multer({ storage });
 export {dataStorage};
 
+const checkFieldProfile = (body)=>{
+    const { first_name, last_name, age, email, password } = body;
+    if(!first_name || !last_name || !age || !email || !password){
+        return false;
+    }else{
+        return true;
+    }
+};
+const checkFieldProduct = (body)=>{
+    const { title, description, price, code, status, category, stock, thumbnail } = body;
+    if(!title || !description || !price || !code || !status || !category || !stock || !thumbnail){
+        return false;
+    }else{
+        return true;
+    }
+};
+const multerProfileFilter = (req, file, cb)=>{
+    const isvalid = checkFieldProfile(req.body);
+    if(!isvalid){
+        cb(null, false);
+    }else{
+        cb(null, true);
+    }
+};
+
 const profileStorage = multer.diskStorage({
     destination: function(req, file,cb){
         cb(null, path.join(__dirname,'/Files/Users/Images'))
@@ -31,7 +56,7 @@ const profileStorage = multer.diskStorage({
         cb(null, `${req.body.email}-perfil-${file.originalname}`);
     }
 });
-export const profileUploader = multer({storage: profileStorage});
+export const profileUploader = multer({storage: profileStorage, fileFilter: multerProfileFilter});
 
 const productStorage = multer.diskStorage({
     destination: function(req, file,cb){
@@ -48,11 +73,10 @@ const documentStorage = multer.diskStorage({
         cb(null, path.join(__dirname,"/Files/Users/Documents"))
     },
     filename: function(req, file, cb){
-        cb(null, `${req.body.email}-document-${file.originalname}`);
+        cb(null, `${req.user.email}-document-${file.originalname}`);
     }
 });
 export const documentsUploader = multer({storage: documentStorage});
-
 
 export const createHash = (password)=>{
     return bcrypt.hashSync(password, bcrypt.genSaltSync())
