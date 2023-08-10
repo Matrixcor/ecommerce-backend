@@ -7,6 +7,14 @@ export const emailTemplateLogin = `
         <a href="https://www.google.com/">Explorar</a>
     </div>
 `;
+export const emailTemplateDeleteUsers = `
+    <div>
+        <h1>Lo Sentimos Mucho!!</h1>
+        <img src="https://fs-prod-cdn.nintendo-europe.com/media/images/10_share_images/portals_3/2x1_SuperMarioHub.jpg" style="width:250px"/>
+        <p>Lamentamos informarle quue su cuenta ha sido eliminada debido a un elevado tiempo de inactividad</p>
+        <a href="https://www.google.com/">Explorar</a>
+    </div>
+`;
 
 export const emailTemplateRecovery = (recoveryLink)=>{
     return `

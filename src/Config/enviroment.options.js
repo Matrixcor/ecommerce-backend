@@ -10,7 +10,8 @@ export const enviromentOptions ={
     },
     mongoDB:{
         url: process.env.MONGO_URL,
-        url_test: process.env.MONGO_TEST_URL
+        url_test: process.env.MONGO_TEST_URL,
+        url_production: process.env.MONGO_PRODUCTION_URL
     },
     devEnviroment:{
         node_env: process.env.NODE_ENV,

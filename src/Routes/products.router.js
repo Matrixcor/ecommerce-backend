@@ -16,8 +16,8 @@ productsRouter.get("/:pid", productsController.getProdByIdController); //authent
 
 productsRouter.post("/", productUploader.single("prodImg"), authenticate("jwt"), checkRole(["admin", "premium"]), productsController.addProdController); //solo administrador y premium authenticate("jwt"), checkRole(["admin", "premium"]),
 
-productsRouter.put("/:pid", authenticate("jwt"), checkRole(["admin"]), productsController.updateProdController); //solo administrador
+productsRouter.put("/:pid", authenticate("jwt"), checkRole(["admin"]), productsController.updateProdController);
 
-productsRouter.delete("/:pid", authenticate("jwt"), checkRole(["admin", "premium"]), productsController.deleteProdController); //solo administrador borra todo tipo de producto, premium solo los que le pertenece
+productsRouter.delete("/:pid", authenticate("jwt"), checkRole(["admin", "premium"]), productsController.deleteProdController);
 
 export default productsRouter;

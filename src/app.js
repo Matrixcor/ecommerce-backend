@@ -4,6 +4,7 @@ import { engine } from "express-handlebars";
 import { Server } from "socket.io";
 import passport from "passport";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 import { __dirname } from "./utils.js";
 import viewsRouter from "./Routes/views.router.js";
@@ -13,8 +14,7 @@ import cartsRouter from "./Routes/cart.router.js";
 import usersRouter from "./Routes/users.router.js";
 import startPassport from "./Config/passport.config.js";
 import { enviromentOptions } from "./Config/enviroment.options.js";
-import { chatManagerDb } from "./Dao/Mongo/chatManagerDb.js";
-import  { chatController }  from "./Controllers/chat.controller.js";
+
 import loggerRouter from "./Routes/log.router.js";
 import { addLogger } from "./Repository/logger.js";
 import { errorHandler } from "./middlewares/errorHandler.js"; 
@@ -27,10 +27,21 @@ const httpServer = app.listen(enviromentOptions.server.port, ()=>{ //httpServer;
     console.log(`Server listening in port ${enviromentOptions.server.port}`);
 });
 
+const corsOptions = {
+    origin: "http://localhost:3000",
+    credentials: true,
+    methods: ["GET","POST","PUT","DELETE"],
+    allowedHeaders:[
+       "Content-Type",
+       "Authorization",
+       "Access-Control-Allow-Credentials"
+    ]
+}
+ 
 app.use(express.json());
 app.use(urlencoded({extended: true}));
 app.use(express.static(__dirname + '/../public' ));
-
+app.use(cors(corsOptions));
 app.use(cookieParser());
 
 app.engine('handlebars', engine()); // handlebars
@@ -40,7 +51,7 @@ app.set('view engine','handlebars');
 
 app.use((req,res,next)=>{ // middleware socket
     req.io = io;
-    next();
+    next(); 
 });
 
 app.use(addLogger); //middleware de logger
@@ -60,18 +71,3 @@ app.use("/apidocs", swaggerUI.serve, swaggerUI.setup(swaggerSpecs));
 //app.use(errorHandler); //middleware de error
 
 const io = new Server(httpServer);
-//chat
-const groupMessages = new chatManagerDb();
-
-io.on("connection", (socket) => {
-    console.log("New client Connected")
-    socket.on("new-message", async (data) => {
-        const allMessages = await groupMessages.newMessage(data);
-        io.emit("messages", allMessages);
-    });
-    socket.on("new-user", async (username)=>{
-        const recovermesage = await groupMessages.getMessages();
-        socket.emit("messages",recovermesage);
-        socket.broadcast.emit("new-user",username);
-    });
-});

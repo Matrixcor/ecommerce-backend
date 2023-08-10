@@ -19,7 +19,6 @@ class productManagerDb {
     };
 
     async getAllProduct(){
-        //const products = await productModel.find().lean();
         const products = await productModel.paginate({},{});
         return {
             status: "succes", 

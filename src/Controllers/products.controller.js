@@ -59,9 +59,9 @@ class productsController{
             const productData = await productServices.getProdService(query, page, limit, sort );
 
             if(productData.status !== "Error"){
-                req.io.emit("sendData", productData.payload);
+                //req.io.emit("sendData", productData.payload); //para handlebars
                 res.redirect("/products")
-                //res.json(productData.payload);
+                res.send(productData.payload);
             }else{
                 logger.warning("El producto no pudo obtenerse de la base de datos");
                 logger.error("Error en getProdController - No se obtuvo el Producto");

@@ -1,13 +1,33 @@
-import { createToken } from "../utils.js";
-import { generateUserForTokenDto } from "../Dao/Dto/auth.dto.js";
+
 class userRepository{
     constructor(dao){
         this.dao = dao;
+    };
+    async getUsersService(){
+        try {
+            const users = await this.dao.getAllUsers();
+            return {status: "succes", payload: users};
+        } catch (error) {
+            return {status: "Error", message: "No se pudieron obtener todos los usuarios"}
+        }
+    }
+    async deleteInactiveUserService(){
+        try {
+            let fechaActual = new Date();
+            let periodoInactivo = 1000*60*60*24*2;
+            let valorBusqueda = fechaActual.getTime() - periodoInactivo;
+
+            const deleted = await this.dao.deleteInactive(valorBusqueda); // retorna array de usuarios aptos para borrar
+            return {status: "succes", payload: deleted};
+        } catch (error) {
+            return {status: "Error", message: "No se pudieron eliminar todos los usuarios inactivos"}
+        }
     };
     async changeRoleService(uid){
         try {
             let newData;
             const userDb = await this.dao.getUser(uid);
+            if(userDb.role == "admin"){ return {status: "Error", message: "No puede cambiar el rol a un usuario del tipo administrador"}}
             if(userDb.role == "premium"){
                 newData = {role: "user"}
             }else{
@@ -18,10 +38,7 @@ class userRepository{
                 };
             };
             const user = await this.dao.updateUserRole(uid, newData);
-            const dat = new generateUserForTokenDto(user.payload);
-            const newUserToken = createToken({...dat});
-            
-            return {status:"succes", payload: newUserToken}
+            return {status:"succes", payload: user}
         } catch (error) {
             return {status:"error", message: "Error updating User"};
         }

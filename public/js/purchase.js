@@ -6,21 +6,23 @@ socket.on("sendDataPurchase",async(updt)=>{
     Container.innerHTML = "";
     data.forEach(data => {
         const { prodTitle, prodPrice, prodImage, prodQuantity, amount } = data;
-        let BoxProduct = document.createElement('div');
-        BoxProduct.innerHTML = `
+        
+        let BoxCarrito = document.createElement('div');
+        BoxCarrito.setAttribute('class','row w-100 shadow-lg p-3 mb-5 bg-light rounded');
+        BoxCarrito.innerHTML = `
         <div>
-            <div>
-                <ul>    
-                    <li> Title: ${prodTitle} </li>
-                    <li> Price: ${prodPrice} </li>
-                    <li> Thumbnail: ${prodImage} </li>
-                    <li> Quantity: ${prodQuantity} </li>
-                    <li> Subtotal: <b>$</b> ${amount} </li>
-                </ul>
+            <div class="col-4 d-flex w-100 align-items-center justify-content-start p-2 border-bottom">
+                <img src= "${prodImage}"></img>
+                <h3 class="card__titulo"> ${prodTitle} </h3>
+            </div> 
+            <div class="col-4 d-flex w-100 align-items-center justify-content-between p-2 border-bottom">
+                <p class="item-price p-2">Precio por unidad: $ ${prodPrice} </p>
+                <p class="item-price p-2"> Cantidad: ${prodQuantity}</p>
+                <p class="item-price p-2"> Subtotal:$ ${amount}</p>                
             </div>
-        <div>
+        </div>
         `;
-        Container.appendChild(BoxProduct);
+        Container.appendChild(BoxCarrito);
     });
     
 });
@@ -47,7 +49,7 @@ const createTicketButton = async(cid)=>{
     BoxProduct.innerHTML = `
         <div>
             <a href="/${cid}/ticket">
-                <button id="purchase")>Hacer Compra</button>
+                <button id="purchase" class="btn btn-primary w-25 me-md-1 mt-2">Hacer Compra</button>
             </a>
         <div>  
     `;

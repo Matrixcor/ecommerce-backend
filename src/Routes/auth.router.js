@@ -4,15 +4,11 @@ import authenticate from "../middlewares/authenticate.js";
 import {authController} from "../Controllers/auth.controller.js";
 import { profileUploader } from "../utils.js";
 
-const authRouter = Router();
+const authRouter = Router(); 
 
 authRouter.post("/register", profileUploader.single("avatar"), authController.registerAuthController);
 
 authRouter.post("/login", authController.loginAuthController);
-
-authRouter.post("/restore", authController.restorePass); //genero token y se lo envio por mail
-
-authRouter.post("/recovery", authController.recoveryPass); //recibo la nueva contraseña y actualizo
 
 authRouter.get("/current", authenticate("jwt"), authController.currentAuthController);
 

@@ -4,7 +4,6 @@ import { customErrorRepository } from "../Repository/errorService/customError.Re
 import { generateNewCartErrorInfo, generateGetProdCartErrorInfo, generateDelCartErrorInfo } from "../Repository/errorService/errorGenerate.Repository.js"
 import { EError } from "../Enums/EError.js";
 import { currentLogger } from "../Repository/logger.js";
-import { userManagerDb } from "../Dao/Mongo/userManagerDb.js";
 
 const logger = currentLogger();
 class cartController{

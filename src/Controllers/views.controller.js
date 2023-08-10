@@ -12,14 +12,6 @@ class viewsController {
         const arrayProd = homeProducts.payload;
         res.render("home", {arrayProd});
     };
-    
-    static chatViewController= async(req,res)=>{
-        try{
-            res.render("chat");
-        }catch(error){
-            res.render("error");
-        }
-    };
 
     static cartProdViewController = async(req,res)=>{ //muestra el carrito con el boton
         try{
@@ -66,21 +58,6 @@ class viewsController {
     }
     // vistas web
 
-    static mockingProdsController = async(req,res)=>{
-        try {
-            const cant = req.query.cant || 50;
-            let arrayProds = [];
-            for(let i=0 ; i< cant ; i++){
-                const prods = await generateProducts();
-                arrayProds.push(prods);
-            }
-            logger.info("Mocking generado exitosamente");
-            res.json({arrayProds});
-        } catch (error) {
-            res.render("error");  
-        }
-    }
-
     static prodsViewController = async(req,res)=>{
         try{
             const {last_name, first_name, email, cart, role} = req.user;
@@ -105,32 +82,22 @@ class viewsController {
     
     static registerViewController = async(req,res)=>{
         try{
-            res.render("register");
+            res.render("register");  
         }catch(error){
             logger.warning("Error en registerViewController")
             res.render("error");
         }
     };
-
-    static recoveryViewController = async(req,res)=>{
-        try {
-            res.render("restore");
-        } catch (error){
-            logger.warning("Error en el recoveryViewController")
-            res.render("error");
-        }
-    }
-
-    static restoreViewController = async(req,res)=>{
-        try {
-            const token = req.query.token;
-            //renderizo la vista
-            res.render("newpass", {token})
-        } catch (error) {
-            res.render(error)
-        }
-    }
     
+    static panelViewController = async (req,res)=>{
+        try {
+            
+            res.render("panelControl")
+        } catch (error){
+            res.render("error")
+        }
+    };
+
     static profileViewController = async(req,res)=>{
         try{
             const dataUser = req.user;
@@ -155,7 +122,8 @@ class viewsController {
             let data;
             const {last_name, first_name, email, cart, role} = req.user;      //aca debo cargar los productos creados por el owner, por lo tanto debo saber que tipo de usuario es
             const dataLoginUser = {last_name, first_name, email, cart, role}; //puedo llamar a un DTO
-            //aca deberia colocar el filtro para motrar, si es admin traer todos los productos
+            //aca deberia colocar el filtro para mostrar, si es admin traer todos los productos
+
             (role == "admin") ? data = await viewServices.webGetProdService() : data = await viewServices.WebGetOwnerProdService(email); //hasta aca trae los productos del owner para eliminar
             const arrayProd = data.payload;
             const info = { arrayProd, dataLoginUser}

@@ -1,4 +1,4 @@
-import { connProdDao, connAuthDao, connCartDao, connChatDao, connTicketDao, connUserDao } from "../Dao/factory.js";
+import { connProdDao, connAuthDao, connCartDao, connTicketDao, connUserDao } from "../Dao/factory.js";
 
 import { userRepository } from "./user.Repository.js";
 import { authRepository } from "./auth.Repository.js";

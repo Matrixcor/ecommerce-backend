@@ -1,0 +1,58 @@
+<h1> Panel de control </h1>
+
+<div>
+    <div>
+        <h4> Administrar Usuarios</h4>
+        <button onclick = 'manageUsers()'> ver usuarios</button>
+    </div>
+    
+    <div id="usersContainer">
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">Nombre</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Cambiar Rol</th>
+                    <th>Eliminar Usuario</th>
+                </tr>
+                <tbody class="manageUser">
+
+                </tbody>
+            </thead>
+        </table>
+
+    </div>
+    <div>
+        <h4> Eliminar usuarios con mas de xxx dias de inactividad</h4>
+        <div class="butonContainer">
+            <button onclick='deleteInactiveUsers()'> eliminar usuarios</button>
+        </div>
+        <div id="deleteUserContainer">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Nombre</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                    </tr>
+                <tbody class="inactiveUser">
+
+                </tbody>
+            </thead>
+        </table>
+        </div>
+        
+    </div>
+    
+    <div>
+        <h4> Volver a productos </h4>
+        <div>
+            <a href="/products"><button> Volver</button></a>
+        </div>
+    </div>
+    
+    
+</div>
+
+<script src="/js/panel-control.js"></script>

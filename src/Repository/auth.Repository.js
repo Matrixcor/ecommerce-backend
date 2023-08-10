@@ -54,32 +54,6 @@ class authRepository{
         }
     };
 
-    async restorePassService(email){
-        try {
-            const loginUser = await this.dao.getUser(email);
-            if(!loginUser) return {status: "Error", message:"El usuario no existe"};
-            const data = new generateEmailForTokenDto(loginUser)
-            const expireTime = 60*60;
-            const emailToken = createEmailToken(data, expireTime);
-            return { status: "succes", emailToken}
-        } catch (error) {
-            return {status: "Error", messge:"no se pudo generar el token, o no se eoncontro el usuario"}
-        }
-    };
-
-    async newPassService(data, password){
-        try {
-            const email = data.email;
-            const user = await this.dao.getUser(email);
-            if(isValidPassword(user, password)){return {status: "Error", messge:"Las contraseñas no deben ser iguales"}}//quiere decir que son iguales las password
-            const newData = {password: createHash(password)}
-            const userUpdated = await this.updateProfileUser(data, newData);
-
-        } catch (error) {
-            return {status: "Error", messge:"no se pudo actualizar la contraseña"}
-        }
-    };
-
     async updateProfileUser(email, newData){ // migrar esta funcion al modulo user
         try {
             const key = email.email; //ver como mejorar esto

@@ -1,34 +1,32 @@
 <div>
-    <h4> SECCION PARA ELIMINAR UN PRODUCTO</h4>
+    <h1> SECCION PARA ELIMINAR UN PRODUCTO</h1>
 
     <div class="hGroup">
         <h4> Bienvenido {{info.dataLoginUser.first_name}}</h4>
         <h4> You are an: {{info.dataLoginUser.role}}</h4>
     </div>
-    
-<div id="productContainer">
-    {{#each info.arrayProd}}
-        <div class="boxProduct">
-            <div class="product">
-                <ul>
+    <div id="productContainer">
+
+    <div  class=" mt-2 row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4"> 
                     
-                    <li> <strong>Id:</strong> {{_id}} </li>
-                    <li> Title: {{title}} </li>
-                    <li> Description: {{description}} </li>
-                    <li> Owner: {{owner}} </li>
-                    <li> Price: {{price}} </li>
-                    <li> Code: {{code}} </li>
-                    <li> Status: {{status}} </li>
-                    <li> Category: {{category}} </li>
-                    <li> Stock: {{stock}} </li>
-                    <li> Thumbnail: {{thumbnail}} </li>
-                    
-                </ul>
+        {{#each info.arrayProd}}
+            <div class="boxProduct">
+              
+                <article class="col">
+                    <div class="card Animacion">
+                        <img src="{{thumbnail}}" class="card-img-top" alt="imagen {{title}}">
+                        <div class="card-body">
+                            <h3 class="card__titulo"> {{title}}</h3>
+                            <h4 class = "card__titulo"> $ {{price}} </h4>
+                        </div>
+                        <div>
+                            <button onclick="handleProd(`{{_id}}`)"><b>Eliminar de la Base de datos</b></button>
+                        </div>
+                    </div>
+                </article>
             </div>
-            <div>
-                <button onclick="handleProd(`{{_id}}`)"><b>Eliminar de la Base de datos</b></button>
-            </div>
-        </div>
-    {{/each}}
+        {{/each}}
+    </div>
 </div>
+<a href="/products"> Volver a inicio </a>
 <script src="/js/modifyProdDB.js"></script>
