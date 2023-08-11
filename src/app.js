@@ -1,10 +1,11 @@
 import express from "express";
 import { json , urlencoded } from "express";
-import { engine } from "express-handlebars";
+import handlebars from "express-handlebars";
 import { Server } from "socket.io";
 import passport from "passport";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import path from "path";
 
 import { __dirname } from "./utils.js";
 import viewsRouter from "./Routes/views.router.js";
@@ -14,6 +15,7 @@ import cartsRouter from "./Routes/cart.router.js";
 import usersRouter from "./Routes/users.router.js";
 import startPassport from "./Config/passport.config.js";
 import { enviromentOptions } from "./Config/enviroment.options.js";
+import connDatabase from "./Config/dBConnections.js";
 
 import loggerRouter from "./Routes/log.router.js";
 import { addLogger } from "./Repository/logger.js";
@@ -44,9 +46,9 @@ app.use(express.static(__dirname + '/../public' ));
 app.use(cors(corsOptions));
 app.use(cookieParser());
 
-app.engine('handlebars', engine()); // handlebars
-app.set('views', __dirname + '/Views');
-app.set('view engine','handlebars');
+app.engine('.hbs', handlebars.engine({extname: '.hbs'})); // handlebars
+app.set('views', path.join(__dirname, '/Views'));
+app.set("view engine",".hbs");
 
 
 app.use((req,res,next)=>{ // middleware socket
@@ -71,3 +73,4 @@ app.use("/apidocs", swaggerUI.serve, swaggerUI.setup(swaggerSpecs));
 //app.use(errorHandler); //middleware de error
 
 const io = new Server(httpServer);
+const connectDB = connDatabase();

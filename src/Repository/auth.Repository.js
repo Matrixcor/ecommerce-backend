@@ -16,6 +16,8 @@ class authRepository{
             let role ;
             const { email, password } = data;
             const userExist = await this.dao.getUser(email)
+
+            console.log("getuser db: ", userExist)
             if(userExist) return {status: "Error", message:"El usuario ya existe"};
 
             ((email === enviromentOptions.superAdmin.admin_email)  && (password === enviromentOptions.superAdmin.admin_password )) ? role = "admin" : role = "user"
@@ -36,6 +38,7 @@ class authRepository{
             const { email, password }= data;
             
             const loginUser = await this.dao.getUser(email);
+            console.log("get user login: ", loginUser)
             if(!loginUser) return {status: "Error", message:"El usuario no existe"};
 
             if(isValidPassword(loginUser, password)){

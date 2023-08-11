@@ -20,3 +20,4 @@
 {"level":"error","message":"Error en addProdCartController - Producto existente"}
 {"level":"error","message":"Error en addProdCartController - "}
 {"level":"error","message":"Error en addProdCartController - "}
+{"level":"error","message":"Error en loginAuthController - datos incorrectos"}
