@@ -1,6 +1,10 @@
 
 const manageUsers = async()=>{
-    const userInfo = await fetch("http://localhost:8080/api/users", {method: "get"})
+    const userInfo = await fetch("api/users", {method: "get",
+    headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json"
+    }})
     .then((res) => res.json()) //debo recibir el id del cart creado
     .then((data) =>{ return data });
     //return userInfo;
@@ -27,13 +31,16 @@ const manageUsers = async()=>{
 };
 
 const changeRole = async(uid)=>{    
-    const userInfo = await fetch(`http://localhost:8080/api/users/premium/${uid}`, {method: "get"})
+    const userInfo = await fetch(`/api/users/premium/${uid}`, {method: "get", headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json"
+    }})
     .then((res) => res.json())
     .then((data) =>{ return data})
 }
 
 const deleteInactiveUsers = async()=>{    
-    const userDeleted = await fetch(`http://localhost:8080/api/users/`, {method: "delete"})
+    const userDeleted = await fetch(`/api/users/`, {method: "delete"})
     .then((res) => res.json())
     .then((data) =>{ return data})
     const data = userDeleted.payload;

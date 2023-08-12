@@ -1,6 +1,9 @@
 
 const getUserCart = async()=>{ //verifica si el usuario tiene un carrito creado
-    const userInfo = await fetch("http://localhost:8080/api/sessions/current", {method: "get"}) //puede presentarse el problema de que el cart del user no se actualice y permita generar mas carritos
+    const userInfo = await fetch("/api/sessions/current", {method: "get", headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json"
+    }}) //puede presentarse el problema de que el cart del user no se actualice y permita generar mas carritos
     .then((res) => res.json()) //debo recibir el id del cart creado
     .then((data) =>{ 
         console.log(data)
@@ -9,7 +12,7 @@ const getUserCart = async()=>{ //verifica si el usuario tiene un carrito creado
 }
 
 const createCart = async(user)=>{ 
-    const datos = await fetch("http://localhost:8080/api/carts", {
+    const datos = await fetch("/api/carts", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -22,7 +25,10 @@ const createCart = async(user)=>{
 }
 
 const addToCart = async(pid, cid)=>{
-    const push = await fetch(`http://localhost:8080/api/carts/${cid}/products/${pid}`, {method: "POST"})
+    const push = await fetch(`/api/carts/${cid}/products/${pid}`, {method: "POST", headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json"
+    }})
     .then((res) => res.json()) //debo recibir el id del cart creado
     .then((data) => { return data })
 }

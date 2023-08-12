@@ -30,7 +30,7 @@ const httpServer = app.listen(enviromentOptions.server.port, ()=>{ //httpServer;
 });
 
 const corsOptions = {
-    origin: "http://localhost:3000",
+    origin: "https://ecommerce-backend-production-48c5.up.railway.app",
     credentials: true,
     methods: ["GET","POST","PUT","DELETE"],
     allowedHeaders:[

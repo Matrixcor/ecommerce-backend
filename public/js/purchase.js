@@ -27,7 +27,7 @@ socket.on("sendDataPurchase",async(updt)=>{
     
 });
 const getUserCart = async()=>{ //verifica si el usuario tiene un carrito creado
-    const userInfo = await fetch("http://localhost:8080/api/sessions/current", {method: "get"}) //puede presentarse el problema de que el cart del user no se actualice y permita generar mas carritos
+    const userInfo = await fetch("/api/sessions/current", {method: "get"}) //puede presentarse el problema de que el cart del user no se actualice y permita generar mas carritos
     .then((res) => res.json()) // recibo el id del cart creado
     .then((data) =>{ return data });
     return userInfo;
@@ -36,7 +36,10 @@ const getUserCart = async()=>{ //verifica si el usuario tiene un carrito creado
 const purchase = async()=>{
     const varios = await getUserCart();
     const cid = varios.cart;
-    const push = await fetch(`http://localhost:8080/api/carts/${cid}/purchase`, {method: "POST"}) //este activa el socket para mostrar productos del purchase
+    const push = await fetch(`/api/carts/${cid}/purchase`, {method: "POST",  headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json"
+    }}) //este activa el socket para mostrar productos del purchase
     .then((res) => res.json()) // recibo los productos que pasaron el proceso de compra
     .then((data) => { return data }) 
     createTicketButton(cid);
