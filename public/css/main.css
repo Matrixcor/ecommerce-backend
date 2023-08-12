@@ -43,14 +43,15 @@ h1{
 /* productos */
 .dataUserContainer{
     display: flex;
-    margin: auto;
+    align-items: center;
+    padding: 10px;
 }
 .hGroup{
     display: block;
 }
 #productContainer{
     display: block;
-    background-color: grey;
+    background-color: gainsboro;
 }
 .boxProduct{
     width: 500px;

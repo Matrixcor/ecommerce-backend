@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { enviromentOptions } from "./enviroment.options.js";
 
-const connDatabase = async()=>{
+
     try{
         let enviroment; 
         switch(enviromentOptions.devEnviroment.node_env){
@@ -23,5 +23,3 @@ const connDatabase = async()=>{
     }catch(error){
         console.log(`error: ${error}, unnable to connect dB!`);
     };
-};
-export default connDatabase;

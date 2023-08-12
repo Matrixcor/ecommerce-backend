@@ -16,6 +16,15 @@ export const emailTemplateDeleteUsers = `
     </div>
 `;
 
+export const emailTemplateDeletePremiumProds = `
+    <div>
+        <h1>Eccomerce te desea un abuena biemvenida !!!!</h1>
+        <img src="https://fs-prod-cdn.nintendo-europe.com/media/images/10_share_images/portals_3/2x1_SuperMarioHub.jpg" style="width:250px"/>
+        <p>Le informamos que se ha eliminado un producto</p>
+        <a href="https://www.google.com/">Explorar</a>
+    </div>
+`;
+
 export const emailTemplateRecovery = (recoveryLink)=>{
     return `
         <div>

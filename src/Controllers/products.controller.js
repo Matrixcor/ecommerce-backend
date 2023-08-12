@@ -1,4 +1,6 @@
 import  { productServices } from "../Repository/index.Repository.js"
+import { transporter } from "../Config/email.config.js";
+import { emailTemplateDeletePremiumProds } from "../Templates/email.Templates.js";
 
 import { customErrorRepository } from "../Repository/errorService/customError.Repository.js";
 import { generateProductErrorInfo } from "../Repository/errorService/errorGenerate.Repository.js"
@@ -116,10 +118,17 @@ class productsController{
                 logger.error("Error en deleteProdController - no se ingreso el valor id del producto");
                 res.send("Ingrese un valor ID");
             }
-            
             const productDeleted = await productServices.deleteProdService(pid, email, role);
+            if(productDeleted.status != "Error" && role === "premium"){
+                const content = await transporter.sendMail({
+                    from: "Servicio de notificaciones Ecommerce - Backend ",
+                    to: email, //es el correo del usuario registrado
+                    subject: "Eliminacion de producto",
+                    html: emailTemplateDeletePremiumProds
+                });
+            }
             // req.io.emit("sendData", productDeleted.payload);
-            res.send(productDeleted.message); //cambiar para retornar un body de respuesta y que lo tome el test
+            res.send(productDeleted.message);
         }catch(error){
             res.status(404).send(error);
         }

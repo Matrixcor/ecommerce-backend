@@ -15,7 +15,7 @@ import cartsRouter from "./Routes/cart.router.js";
 import usersRouter from "./Routes/users.router.js";
 import startPassport from "./Config/passport.config.js";
 import { enviromentOptions } from "./Config/enviroment.options.js";
-import connDatabase from "./Config/dBConnections.js";
+//import connDatabase from "./Config/dBConnections.js";
 
 import loggerRouter from "./Routes/log.router.js";
 import { addLogger } from "./Repository/logger.js";
@@ -73,4 +73,4 @@ app.use("/apidocs", swaggerUI.serve, swaggerUI.setup(swaggerSpecs));
 //app.use(errorHandler); //middleware de error
 
 const io = new Server(httpServer);
-const connectDB = connDatabase();
+//const connectDB = connDatabase();

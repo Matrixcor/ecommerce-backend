@@ -1,12 +1,11 @@
 import { authServices } from "../Repository/index.Repository.js";
 import { transporter } from "../Config/email.config.js";
-import { emailTemplateLogin, emailTemplateRecovery } from "../Templates/email.Templates.js";
+import { emailTemplateLogin } from "../Templates/email.Templates.js";
 
 import { customErrorRepository } from "../Repository/errorService/customError.Repository.js";
 import { generateUserRegErrorInfo, generateUserLogErrorInfo, authLogErrorInfo } from "../Repository/errorService/errorGenerate.Repository.js"
 import { EError } from "../Enums/EError.js";
 import { currentLogger } from "../Repository/logger.js";
-import { verifyEmailToken } from "../utils.js";
 
 const logger = currentLogger();
 
@@ -28,10 +27,8 @@ class authController{
                     errorCode: EError.INVALID_TYPES_ERROR
                 });
             }
-
             const userName = req.body.email;
             const userCreated = await authServices.registerAuthService(newData);
-
             if(userCreated.status !== "Error"){
                 res.cookie("cookie-token", userCreated.payload, {maxAge: 60*60*1000, httpOnly: true});
                 const content = await transporter.sendMail({
@@ -47,6 +44,7 @@ class authController{
                 logger.error("Error en registerAuthController - Usuario existente");
                 res.status(409).json(userCreated.message);
             }
+            
         } catch (error) {
             next(error);
         }
@@ -57,7 +55,6 @@ class authController{
         try {
             const data = req.body;
             const {email, password} = data;
-            console.log("login body: ",data)
             if(!email || !password) {
                 logger.warning("Faltan datos para realizar el loggin");
                 logger.error("Error en loginAuthController - Campos incompletos");

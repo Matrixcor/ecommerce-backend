@@ -31,12 +31,13 @@ const changeRole = async(uid)=>{
     .then((res) => res.json())
     .then((data) =>{ return data})
 }
+
 const deleteInactiveUsers = async()=>{    
     const userDeleted = await fetch(`http://localhost:8080/api/users/`, {method: "delete"})
     .then((res) => res.json())
     .then((data) =>{ return data})
     const data = userDeleted.payload;
-    console.log(data)
+  
     if(data.length == 0){
         const Container = document.querySelector("#deleteUserContainer")
         Container.innerHTML = "";

@@ -18,13 +18,16 @@ class userController{
             const inactiveUsers = await userServices.deleteInactiveUserService();
             if(inactiveUsers.status != "Error" && inactiveUsers.payload.length != 0){
                 inactiveUsers.payload.forEach(async (element) => {
+
                     console.log("element: ", element)
+                    
                     const content = await transporter.sendMail({
                         from: "Servicio de notificaciones Ecommerce - Backend ",
                         to: element.email, //es el correo del usuario eliminado
                         subject: "Eliminacion de cuenta por inactividad",
                         html: emailTemplateDeleteUsers
                     });
+                    
                 });
             }
             res.json(inactiveUsers)

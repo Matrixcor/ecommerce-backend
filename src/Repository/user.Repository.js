@@ -17,7 +17,7 @@ class userRepository{
             let periodoInactivo = 1000*60*60*24*2;
             let valorBusqueda = fechaActual.getTime() - periodoInactivo;
 
-            const deleted = await this.dao.deleteInactive(valorBusqueda); // retorna array de usuarios aptos para borrar
+            const deleted = await this.dao.deleteInactive(valorBusqueda);
             return {status: "succes", payload: deleted};
         } catch (error) {
             return {status: "Error", message: "No se pudieron eliminar todos los usuarios inactivos"}

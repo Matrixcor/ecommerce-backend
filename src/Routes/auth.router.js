@@ -16,7 +16,6 @@ authRouter.get("/github", passport.authenticate("github", { scope: ["user: email
 
 authRouter.get("/github-callback", authenticate("github", { failureRedirect: "/api/sessions/Register-Failure"}), authController.gitFailAuthController);
 
-//logOut de usuario
 authRouter.get("/logout", authenticate("jwt"), authController.logOutAuthController);
 
 export default authRouter;

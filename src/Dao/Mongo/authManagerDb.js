@@ -1,11 +1,7 @@
 import { userModel} from "./Models/user.Model.js"
 
 class authManagerDb{
-
-    async userCreate(newUser){
-        const createUser = await userModel.create(newUser)
-        return createUser;
-    }
+    
     async getUser(email){
         const result = await userModel.findOne({ email: email });
         return result;
@@ -20,6 +16,10 @@ class authManagerDb{
             return {status:"error", message: "Error updating product"};
         }
     }
+    async userCreate(newUser){
+        const user = await userModel.create(newUser);
+        return user;
+    };
 }
 
 export { authManagerDb };

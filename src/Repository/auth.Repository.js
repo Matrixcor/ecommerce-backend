@@ -8,21 +8,19 @@ const logger = currentLogger();
 
 class authRepository{
     constructor(dao){
-        this.dao = dao;
+        this.dao = dao; 
     };
-   
-    async registerAuthService(data){
+    async registerAuthService(newData){
         try {
             let role ;
-            const { email, password } = data;
+            const { email, password } = newData;
             const userExist = await this.dao.getUser(email)
-
-            console.log("getuser db: ", userExist)
-            if(userExist) return {status: "Error", message:"El usuario ya existe"};
+            if(userExist.email === email ) return {status: "Error", message:"El usuario ya existe"};
 
             ((email === enviromentOptions.superAdmin.admin_email)  && (password === enviromentOptions.superAdmin.admin_password )) ? role = "admin" : role = "user"
-            const newUser = new createUserDto(data, role); //utilizo un dto para filtrar datos
-            const user = await this.dao.userCreate(newUser); //creamos el usuario
+            const newUser = new createUserDto(newData, role); //utilizo un dto para filtrar datos
+            const user = await this.dao.userCreate(newUser) ; //creamos el usuario
+
             const dataForToken =  new generateUserForTokenDto(newUser);  //generamos el token
             const accesToken = createToken({ ...dataForToken });
             logger.debug("Registro exitoso - recibio: first_name, last_name, email, age, password, genero el Token de acceso y lo devuelve al controler");
@@ -36,9 +34,7 @@ class authRepository{
     async loginAuthService(data){
         try {
             const { email, password }= data;
-            
             const loginUser = await this.dao.getUser(email);
-            console.log("get user login: ", loginUser)
             if(!loginUser) return {status: "Error", message:"El usuario no existe"};
 
             if(isValidPassword(loginUser, password)){
